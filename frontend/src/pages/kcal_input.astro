@@ -1,0 +1,55 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <form action="" method="post" class="kcal-input-form">
+      <div class="kcal-input-form">
+        <label for="time">Time:</label>
+        <input type="datetime-local" name="time" id="time" required />
+      </div>
+      <div class="kcal-input-form">
+        <label for="what">What: </label>
+        <textarea name="what" id="what" required />
+      </div>
+      <div class="kcal-input-form">
+          <label for="kcal">Kcal:</label>
+          <input type="number" name="kcal" id="kcal" required />
+      </div>
+      <div class="kcal-input-form">
+          <label for="comment">comment: </label>
+          <textarea name="comment" id="comment" />
+      </div>
+      <div class="kcal-input-form">
+        <input type="submit" value="Submit" />
+      </div>
+    </form>
+</Layout>
+
+<script>
+let params = new URL(document.location as any).searchParams;
+let status = params.get("status");
+// TODO: pop success message
+console.log(status)
+</script>
+
+<style>
+form.kcal-input-form {
+  display: table;
+}
+
+div.kcal-input-form {
+  display: table-row;
+}
+
+label,
+input {
+  display: table-cell;
+  margin-bottom: 10px;
+}
+
+label {
+  padding-right: 10px;
+}
+
+</style>

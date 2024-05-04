@@ -11,8 +11,13 @@
     "disable:telemetry": "astro telemetry disable"
   },
   "dependencies": {
-    "astro": "^4.7.1",
     "@astrojs/check": "^0.5.10",
+    "@types/node": "^20.12.8",
+    "astro": "^4.7.1",
+    "tabulator-tables": "^6.2.1",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/tabulator-tables": "^6.2.0"
   }
 }

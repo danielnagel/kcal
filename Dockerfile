@@ -14,6 +14,8 @@ RUN npm install
 
 RUN npm run disable:telemetry
 
+ENV NODE_OPTIONS --max_old_space_size=8192
+
 RUN npm run build
 
 EXPOSE 8080
