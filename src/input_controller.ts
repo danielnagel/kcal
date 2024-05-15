@@ -51,7 +51,6 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
 }
 
 const kcalInputController = (req: Request, res: Response) => {
-    console.log(req.body)
     storeKcalInput(req.body)
     res.redirect('/input');
 }
