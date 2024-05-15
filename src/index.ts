@@ -2,15 +2,16 @@ import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 
+const port = 8080;
+const staticPath = __dirname + "/public";
+
 const app = express();
 const router = express.Router();
-
-const path = __dirname + "/frontend/";
-const port = 8080;
 
 // Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static(staticPath));
 
 type KcalStructure = { what: string, time: string, kcal: string, comment: string };
 type WeightStructure = {weight: string, date: string};
@@ -62,12 +63,16 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
 
 const kcalInputController = (req: Request, res: Response) => {
     storeKcalInput(req.body)
-    res.redirect('/kcal_input?status=200');
+    res.redirect('/input?status=200');
 }
 
-router.post('/kcal_input', kcalInputController);
+router.post('/input', kcalInputController);
 
-app.use(express.static(path));
+const sendHtml = (req: Request, res: Response) =>  res.sendFile(`${staticPath}${req.url}.html`);
+
+router.get('/input', sendHtml)
+router.get('/summary', sendHtml)
+
 app.use('/', router);
 
 

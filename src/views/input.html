@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>kcal - input</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="author" content="Daniel Nagel" />
+    <link href="/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>kcal</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/input">input</a></li>
+            <li><a href="/summary">summary</a></li>
+        </ul>
+    </header>
+    <main class="content">
+        <form action="" method="post" class="kcal-input-form">
+            <div class="kcal-input-form">
+                <label for="time">Time:</label>
+                <input type="datetime-local" name="time" id="time" required />
+            </div>
+            <div class="kcal-input-form">
+                <label for="what">What: </label>
+                <textarea name="what" id="what" required />
+            </div>
+            <div class="kcal-input-form">
+                <label for="kcal">Kcal:</label>
+                <input type="number" name="kcal" id="kcal" required />
+            </div>
+            <div class="kcal-input-form">
+                <label for="comment">comment: </label>
+                <textarea name="comment" id="comment" />
+            </div>
+            <div class="kcal-input-form">
+                <input type="submit" value="Submit" />
+            </div>
+        </form>
+    </main>
+    <script type="text/javascript" src="/input.js" ></script>
+</body>
+
+</html>

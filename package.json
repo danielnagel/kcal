@@ -4,18 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:backend && npm run build:frontend",
-    "build:backend": "cd backend && npm run build",
-    "build:frontend": "cd frontend && npm run build && cd .. && mkdir -p backend/dist/frontend && cp -r frontend/dist/* backend/dist/frontend",
-    "clean": "rm -rf backend/dist && rm -rf backend/node_modules && rm -rf frontend/dist && rm -rf frontend/node_modules",
-    "dev": "cd frontend && npm run dev -- --host",
-    "install:backend": "cd backend && npm i",
-    "install:frontend": "cd frontend && npm i",
-    "postinstall": "npm run install:backend && npm run install:frontend",
-    "serve": "node backend/dist/index.js",
-    "disable:telemetry": "cd frontend && npm run disable:telemetry"
+    "build": "tsc",
+    "postbuild": "mkdir -p dist/public && cp src/public/* dist/public && cp src/views/scripts/*.js dist/public && cp src/views/styles/*.css dist/public && cp src/views/*.html dist/public && cp node_modules/tabulator-tables/dist/css/tabulator.min.css dist/public && cp node_modules/tabulator-tables/dist/js/tabulator.min.js dist/public",
+    "clean": "rm -rf dist && rm -rf node_modules",
+    "prestart": "npm run build",
+    "start": "node dist/index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "dnagel",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "tabulator-tables": "^6.2.1",
+    "typescript": "^5.4.5"
+  }
 }
