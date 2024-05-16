@@ -30,6 +30,9 @@ body {
 /* input.html */
 form.kcal-input-form {
     display: table;
+    margin: 0 auto;
+    padding: 1em;  
+    border: solid 1px white;
 }
 
 div.kcal-input-form {
@@ -40,10 +43,26 @@ label,
 input {
     display: table-cell;
     margin-bottom: 10px;
+    height: 24px;
 }
 
 label {
     padding-right: 10px;
+}
+
+
+.form-input {
+  width: 200px;
+  max-width: 200px;
+  min-width: 200px;
+  padding: 0;
+  margin: 0px 0px 10px 0px;
+  box-sizing: border-box;
+}
+
+.form-submit {
+    width: 200px;
+    margin: 0px;
 }
 
 /* summary */
