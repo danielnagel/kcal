@@ -5,45 +5,36 @@
     <title>kcal - input</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="Daniel Nagel" />
     <link href="/index.css" rel="stylesheet">
 </head>
 
 <body>
-    <header>
-        <h1>kcal</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/input">input</a></li>
-            <li><a href="/summary">summary</a></li>
-        </ul>
-    </header>
-    <main class="content">
-        <form action="" method="post" class="kcal-input-form">
-            <div class="kcal-input-form">
-                <label for="time">Time:</label>
+    <div class="input-content">
+        <header>
+            <h1>kcal</h1>
+            <ul>
+                <li><a href="/">home</a></li>
+                <li><a href="/input">input</a></li>
+                <li><a href="/summary">summary</a></li>
+            </ul>
+        </header>
+        <main>
+            <form action="" method="post" class="kcal-input-form">
+                <label for="time">time</label>
                 <input class="form-input" type="datetime-local" name="time" id="time" required />
-            </div>
-            <div class="kcal-input-form">
-                <label for="what">What: </label>
-                <textarea class="form-input" name="what" id="what" required ></textarea>
-            </div>
-            <div class="kcal-input-form">
-                <label for="kcal">Kcal:</label>
+                <label for="what">what</label>
+                <textarea class="form-input" name="what" id="what" required></textarea>
+                <label for="kcal">calories</label>
                 <input class="form-input" type="number" name="kcal" id="kcal" required />
-            </div>
-            <div class="kcal-input-form">
-                <label for="comment">comment: </label>
-                <textarea class="form-input" name="comment" id="comment" ></textarea>
-            </div>
-            <div class="kcal-input-form">
-                <div></div>
+                <label for="comment">comment</label>
+                <textarea class="form-input" name="comment" id="comment"></textarea>
                 <input class="form-submit" type="submit" value="Submit" />
-            </div>
-        </form>
-    </main>
-    <script type="text/javascript" src="/input.js" ></script>
+            </form>
+        </main>
+    </div>
+    <script type="text/javascript" src="/input.js"></script>
 </body>
 
 </html>
