@@ -55,4 +55,25 @@ const kcalInputController = (req: Request, res: Response) => {
     res.redirect('/input');
 }
 
-export { kcalInputController };
+const loadAllKcal = async (): Promise<KcalStructure[]> => {
+    const filePath = `${__dirname}/data/data.json`;
+    try {
+        const content = await readFile(filePath, { encoding: 'utf-8' });
+        const dataStructure = JSON.parse(content);
+        if (!isDataStructure(dataStructure)) {
+            console.error(`File ${filePath} has unexpected content. Aborting.`);
+            return [];
+        }
+        return dataStructure.kcal;
+    } catch (e: unknown) {
+        // first write
+        if (e instanceof Error) console.error(`Couldn't read file ${filePath}. Message: ${e.message}`);
+        return [];
+    }
+}
+
+const allKcalDataController = async (_req: Request, res: Response) => {
+    res.json(await loadAllKcal());
+}
+
+export { kcalInputController, allKcalDataController };
