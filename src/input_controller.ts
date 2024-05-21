@@ -3,6 +3,7 @@ import { mkdir, writeFile, readFile } from "node:fs/promises";
 
 
 type KcalStructure = { what: string, time: string, kcal: string, comment: string };
+type ExtendedKcalStructure = { what: string, date: string, time: string, kcal: string, comment: string };
 type WeightStructure = { weight: string, date: string };
 type DataStructure = { kcal: KcalStructure[], weight: WeightStructure[] };
 
@@ -55,7 +56,21 @@ const kcalInputController = (req: Request, res: Response) => {
     res.redirect('/input');
 }
 
-const loadAllKcal = async (): Promise<KcalStructure[]> => {
+const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
+    return data.map<ExtendedKcalStructure>(d => {
+        const date = new Date(d.time).toLocaleDateString();
+        const time = new Date(d.time).toLocaleTimeString();
+        return {...d, date, time: time.substring(0, time.lastIndexOf(":"))};
+    })
+}
+
+const sortByDate = (a: KcalStructure, b: KcalStructure) => {
+    if(a.time < b.time) return -1;
+    if(a.time > b.time) return 1;
+    return 0;
+}
+
+const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
     const filePath = `${__dirname}/data/data.json`;
     try {
         const content = await readFile(filePath, { encoding: 'utf-8' });
@@ -64,7 +79,7 @@ const loadAllKcal = async (): Promise<KcalStructure[]> => {
             console.error(`File ${filePath} has unexpected content. Aborting.`);
             return [];
         }
-        return dataStructure.kcal;
+        return splitDateTimeInData(dataStructure.kcal.sort(sortByDate));
     } catch (e: unknown) {
         // first write
         if (e instanceof Error) console.error(`Couldn't read file ${filePath}. Message: ${e.message}`);
