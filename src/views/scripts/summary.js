@@ -9,17 +9,14 @@ const main = async () => {
 
     //create Tabulator on DOM element with id "example-table"
     var table = new Tabulator("#example-table", {
-        height:205, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-        data:data, //assign data to table
-        printAsHtml:true, //enable html table printing
-        printStyled:true,
+        data: data, //assign data to table
         groupBy: "date",
         columns:[ //Define Table Columns
-            {title:"what", field:"what", width: 80},
-            {title:"date", field:"date", width: 90},
-            {title:"time", field:"time", width: 50},
-            {title:"kcal", field:"kcal", width: 50},
-            {title:"comment", field:"comment", width: 80, print: false},
+            {title:"what", field:"what", formatter: "textarea"},
+            {title:"date", field:"date", visible: false},
+            {title:"time", field:"time"},
+            {title:"kcal", field:"kcal"},
+            {title:"comment", field:"comment", formatter: "textarea", print: false},
         ],
     });
 

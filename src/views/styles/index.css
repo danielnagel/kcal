@@ -120,6 +120,7 @@ label {
 
 .daily-info {
     width: 300px;
+    text-align: center;
 }
 /* summary */
 
@@ -128,9 +129,14 @@ label {
     top: 50%;
     left: 50%;
     margin-right: -50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
 
 .summary-table {
-    width: 350px;
+    max-width: 1200px;
+}
+
+.tabulator-row {
+    border-bottom: 1px solid #aaa;
 }
