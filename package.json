@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prebuild": "npm i",
     "build": "tsc",
     "postbuild": "mkdir -p dist/public && cp src/public/* dist/public && cp src/views/scripts/*.js dist/public && cp src/views/styles/*.css dist/public && cp src/views/*.html dist/public && cp node_modules/tabulator-tables/dist/css/tabulator.min.css dist/public && cp node_modules/tabulator-tables/dist/js/tabulator.min.js dist/public&& cp node_modules/chart.js/dist/chart.umd.js dist/public",
     "clean": "rm -rf dist && rm -rf node_modules",
