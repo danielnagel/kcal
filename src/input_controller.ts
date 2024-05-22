@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 
 
-type KcalStructure = { what: string, time: string, kcal: string, comment: string };
+type KcalStructure = { what: string, date: string, kcal: string, comment: string };
 type ExtendedKcalStructure = { what: string, date: string, time: string, kcal: string, comment: string };
 type WeightStructure = { weight: string, date: string };
 type DataStructure = { kcal: KcalStructure[], weight: WeightStructure[] };
@@ -58,15 +58,15 @@ const kcalInputController = (req: Request, res: Response) => {
 
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
     return data.map<ExtendedKcalStructure>(d => {
-        const date = new Date(d.time).toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "numeric"});
-        const time = new Date(d.time).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
+        const date = new Date(d.date).toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "numeric"});
+        const time = new Date(d.date).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
         return {...d, date, time};
     })
 }
 
 const sortByDate = (a: KcalStructure, b: KcalStructure) => {
-    if(a.time < b.time) return -1;
-    if(a.time > b.time) return 1;
+    if(a.date < b.date) return -1;
+    if(a.date > b.date) return 1;
     return 0;
 }
 
@@ -95,11 +95,11 @@ const loadTodayKcalSummary = async (): Promise<{kcal: number, time: string}> => 
     const result = {kcal: 0, time: "00:00"};
     const kcals = await loadFile();
     if(kcals.length === 0) return result;
-    const todayKcals = kcals.filter(k => new Date(k.time).toDateString() === new Date().toDateString());
+    const todayKcals = kcals.filter(k => new Date(k.date).toDateString() === new Date().toDateString());
     if(todayKcals.length === 0) return result;
     const sortedTodayKcals = todayKcals.sort(sortByDate);
     sortedTodayKcals.forEach(k => result.kcal += parseInt(k.kcal));
-    result.time = new Date(sortedTodayKcals[sortedTodayKcals.length -1].time).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
+    result.time = new Date(sortedTodayKcals[sortedTodayKcals.length -1].date).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
     return result;
 }
 
