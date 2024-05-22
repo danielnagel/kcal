@@ -1,0 +1,13 @@
+[Unit]
+Description=kcal application server
+After=network.target
+
+[Service]
+Type=simple
+User=daniel
+WorkingDirectory=/home/daniel/git/kcal
+ExecStart=/home/daniel/.nvm/versions/node/v21.7.3/bin/npm start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
