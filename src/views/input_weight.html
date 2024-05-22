@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>kcal - weight input</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Daniel Nagel" />
+    <link href="/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="input-content">
+        <header>
+            <h1>kcal</h1>
+            <ul>
+                <li><a href="/">home</a></li>
+                <li><a href="/input_kcal">input calories</a></li>
+                <li><a href="/summary_kcal">summary calories</a></li>
+                <li><a href="/input_weight">input weight</a></li>
+                <li><a href="/summary_weight">summary weight</a></li>
+            </ul>
+        </header>
+        <main>
+            <form action="" method="post" class="input-form">
+                <label for="date">date</label>
+                <input class="form-input" type="date" name="date" id="date" required />
+                <label for="weight">weight</label>
+                <input class="form-input" type="number" name="weight" id="weight" required />
+                <input class="form-submit" type="submit" value="Submit" />
+            </form>
+        </main>
+    </div>
+    <script type="text/javascript" src="/input_weight.js"></script>
+</body>
+
+</html>

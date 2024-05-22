@@ -71,7 +71,7 @@ header li a:hover {
 
 
 /* input.html */
-form.kcal-input-form {
+form.input-form {
     margin: 0 auto;
     padding: 10px;
     border: solid 1px white;
@@ -135,7 +135,7 @@ label {
 
 .summary-table {
     max-width: 1200px;
-    max-height: 1000px;
+    max-height: 900px;
 }
 
 .tabulator-row {

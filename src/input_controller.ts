@@ -53,7 +53,7 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
 
 const kcalInputController = (req: Request, res: Response) => {
     storeKcalInput(req.body)
-    res.redirect('/input');
+    res.redirect('/input_kcal');
 }
 
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
@@ -70,30 +70,35 @@ const sortByDate = (a: KcalStructure, b: KcalStructure) => {
     return 0;
 }
 
-const loadFile = async (): Promise<KcalStructure[]> => {
+const loadFile = async (): Promise<DataStructure> => {
     const filePath = `${__dirname}/data/data.json`;
     try {
         const content = await readFile(filePath, { encoding: 'utf-8' });
         const dataStructure = JSON.parse(content);
         if (!isDataStructure(dataStructure)) {
             console.error(`File ${filePath} has unexpected content. Aborting.`);
-            return [];
+            return {kcal: [], weight: []};
         }
-        return dataStructure.kcal.sort(sortByDate);
+        return dataStructure;
     } catch (e: unknown) {
         // first write
         if (e instanceof Error) console.error(`Couldn't read file ${filePath}. Message: ${e.message}`);
-        return [];
+        return {kcal: [], weight: []};
     }
 }
 
+const sortedKcalData = async () => {
+    const data = await loadFile();
+    return data.kcal.sort(sortByDate);
+}
+
 const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
-    return splitDateTimeInData(await loadFile());
+    return splitDateTimeInData(await sortedKcalData());
 }
 
 const loadTodayKcalSummary = async (): Promise<{kcal: number, time: string}> => {
     const result = {kcal: 0, time: "00:00"};
-    const kcals = await loadFile();
+    const kcals = await sortedKcalData();
     if(kcals.length === 0) return result;
     const todayKcals = kcals.filter(k => new Date(k.date).toDateString() === new Date().toDateString());
     if(todayKcals.length === 0) return result;
@@ -111,4 +116,58 @@ const allKcalDataController = async (req: Request, res: Response) => {
     }
 }
 
-export { kcalInputController, allKcalDataController };
+const storeWeightInput = async (reqBody: WeightStructure) => {
+    const path = `${__dirname}/data`;
+    try {
+        await mkdir(path);
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            if (!e.message.startsWith('EEXIST')) {
+                console.error(`Couldn't create directory ${path}. Message: ${e.message}`);
+                return;
+            }
+        }
+    }
+    const filePath = `${path}/data.json`;
+    try {
+        const content = await readFile(filePath, { encoding: 'utf-8' });
+        const dataStructure = JSON.parse(content);
+        if (!isDataStructure(dataStructure)) {
+            console.error(`File ${filePath} has unexpected content. Aborting.`);
+            return;
+        }
+        dataStructure.weight.push(reqBody);
+        try {
+            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
+        } catch (e: unknown) {
+            if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
+        }
+    } catch (e: unknown) {
+        // first write
+        const dataStructure: DataStructure = {
+            kcal: [],
+            weight: [reqBody]
+        }
+        try {
+            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
+        } catch (e: unknown) {
+            if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
+        }
+    }
+}
+
+const weightInputController = (req: Request, res: Response) => {
+        storeWeightInput(req.body)
+        res.redirect('/input_weight');
+}
+
+const loadAllWeight = async () => {
+    const data = await loadFile();
+    return data.weight;
+}
+
+const allWeightDataController = async (req: Request, res: Response) => {
+    res.json(await loadAllWeight());
+}
+
+export { kcalInputController, allKcalDataController, weightInputController, allWeightDataController };
