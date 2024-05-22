@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "postbuild": "mkdir -p dist/public && cp src/public/* dist/public && cp src/views/scripts/*.js dist/public && cp src/views/styles/*.css dist/public && cp src/views/*.html dist/public && cp node_modules/tabulator-tables/dist/css/tabulator.min.css dist/public && cp node_modules/tabulator-tables/dist/js/tabulator.min.js dist/public",
+    "postbuild": "mkdir -p dist/public && cp src/public/* dist/public && cp src/views/scripts/*.js dist/public && cp src/views/styles/*.css dist/public && cp src/views/*.html dist/public && cp node_modules/tabulator-tables/dist/css/tabulator.min.css dist/public && cp node_modules/tabulator-tables/dist/js/tabulator.min.js dist/public&& cp node_modules/chart.js/dist/chart.umd.js dist/public",
     "clean": "rm -rf dist && rm -rf node_modules",
     "prestart": "npm run build",
     "start": "node dist/index.js"
@@ -16,6 +16,7 @@
   "dependencies": {
     "@types/express": "^4.17.21",
     "body-parser": "^1.20.2",
+    "chart.js": "^4.4.3",
     "express": "^4.19.2",
     "tabulator-tables": "^6.2.1",
     "typescript": "^5.4.5"

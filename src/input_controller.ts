@@ -64,7 +64,7 @@ const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => 
     })
 }
 
-const sortByDate = (a: KcalStructure, b: KcalStructure) => {
+const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | WeightStructure) => {
     if(a.date < b.date) return -1;
     if(a.date > b.date) return 1;
     return 0;
@@ -163,7 +163,13 @@ const weightInputController = (req: Request, res: Response) => {
 
 const loadAllWeight = async () => {
     const data = await loadFile();
-    return data.weight;
+    const weights = data.weight.sort(sortByDate).map(item => {
+        return {
+            weight: item.weight,
+            date: new Date(item.date).toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "numeric"})
+        }
+    });
+    return weights;
 }
 
 const allWeightDataController = async (req: Request, res: Response) => {
