@@ -33,7 +33,7 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
         }
         dataStructure.kcal.push(reqBody);
         try {
-            await writeFile(filePath, JSON.stringify(dataStructure));
+            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
         } catch (e: unknown) {
             if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
         }
@@ -44,7 +44,7 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
             weight: []
         }
         try {
-            await writeFile(filePath, JSON.stringify(dataStructure));
+            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
         } catch (e: unknown) {
             if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
         }
@@ -58,9 +58,9 @@ const kcalInputController = (req: Request, res: Response) => {
 
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
     return data.map<ExtendedKcalStructure>(d => {
-        const date = new Date(d.time).toLocaleDateString();
-        const time = new Date(d.time).toLocaleTimeString();
-        return {...d, date, time: time.substring(0, time.lastIndexOf(":"))};
+        const date = new Date(d.time).toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "numeric"});
+        const time = new Date(d.time).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
+        return {...d, date, time};
     })
 }
 
@@ -70,7 +70,7 @@ const sortByDate = (a: KcalStructure, b: KcalStructure) => {
     return 0;
 }
 
-const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
+const loadFile = async (): Promise<KcalStructure[]> => {
     const filePath = `${__dirname}/data/data.json`;
     try {
         const content = await readFile(filePath, { encoding: 'utf-8' });
@@ -79,7 +79,7 @@ const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
             console.error(`File ${filePath} has unexpected content. Aborting.`);
             return [];
         }
-        return splitDateTimeInData(dataStructure.kcal.sort(sortByDate));
+        return dataStructure.kcal.sort(sortByDate);
     } catch (e: unknown) {
         // first write
         if (e instanceof Error) console.error(`Couldn't read file ${filePath}. Message: ${e.message}`);
@@ -87,8 +87,28 @@ const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
     }
 }
 
-const allKcalDataController = async (_req: Request, res: Response) => {
-    res.json(await loadAllKcal());
+const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
+    return splitDateTimeInData(await loadFile());
+}
+
+const loadTodayKcalSummary = async (): Promise<{kcal: number, time: string}> => {
+    const result = {kcal: 0, time: "00:00"};
+    const kcals = await loadFile();
+    if(kcals.length === 0) return result;
+    const todayKcals = kcals.filter(k => new Date(k.time).toDateString() === new Date().toDateString());
+    if(todayKcals.length === 0) return result;
+    const sortedTodayKcals = todayKcals.sort(sortByDate);
+    sortedTodayKcals.forEach(k => result.kcal += parseInt(k.kcal));
+    result.time = new Date(sortedTodayKcals[sortedTodayKcals.length -1].time).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
+    return result;
+}
+
+const allKcalDataController = async (req: Request, res: Response) => {
+    if(req.query.for === "today") {
+        res.json(await loadTodayKcalSummary());
+    } else {
+        res.json(await loadAllKcal());
+    }
 }
 
 export { kcalInputController, allKcalDataController };
