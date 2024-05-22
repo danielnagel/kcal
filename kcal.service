@@ -6,6 +6,7 @@ After=network.target
 Type=simple
 User=daniel
 WorkingDirectory=/home/daniel/git/kcal
+Environment="node=/home/daniel/.nvm/versions/node/v21.7.3/bin/node"
 ExecStart=/home/daniel/.nvm/versions/node/v21.7.3/bin/npm start
 Restart=on-failure
 
