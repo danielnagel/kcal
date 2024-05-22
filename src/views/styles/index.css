@@ -135,6 +135,7 @@ label {
 
 .summary-table {
     max-width: 1200px;
+    max-height: 1000px;
 }
 
 .tabulator-row {

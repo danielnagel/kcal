@@ -26,7 +26,7 @@ const main = async () => {
     });
 
     document.getElementById("print-table").addEventListener("click", function(){
-        table.print(false, true);
+        table.print(true, true);
      });
 }
 
