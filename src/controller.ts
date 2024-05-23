@@ -115,7 +115,7 @@ const loadAllWeight = async () => {
     const data = await readFileContent();
     const weights = data.weight.sort(sortByDate).map(item => {
         return {
-            weight: item.weight,
+            ...item,
             date: new Date(item.date).toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "numeric"})
         }
     });

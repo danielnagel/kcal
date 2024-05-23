@@ -2,19 +2,24 @@
 
     const response = await fetch('/weight');
     const data = await response.json();
-    const dates = data.map(item => item.date);
-    const weights = data.map(item => item.weight);
+    const date = data.map(item => item.date);
+    const weight = data.map(item => item.weight);
+    const waist = data.map(item => item.waist);
 
     new Chart(
         document.getElementById('summary-weight'),
         {
             type: 'line',
             data: {
-                labels: dates,
+                labels: date,
                 datasets: [
                     {
                         label: 'weight',
-                        data: weights
+                        data: weight
+                    },
+                    {
+                        label: 'waist',
+                        data: waist
                     }
                 ]
             },
