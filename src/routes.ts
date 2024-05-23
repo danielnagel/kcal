@@ -1,6 +1,11 @@
 import express from "express";
-import { kcalInputController, allKcalDataController, weightInputController, allWeightDataController } from "./input_controller";
-import { sendHtml } from "./controller";
+import {
+    kcalInputController,
+    allKcalDataController,
+    weightInputController,
+    allWeightDataController,
+    sendHtml
+} from "./controller";
 
 const router = express.Router();
 
