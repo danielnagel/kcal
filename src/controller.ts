@@ -1,48 +1,39 @@
 import { Request, Response } from "express";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 
+const staticPath = __dirname + "/public";
+const dataDirPath = `${__dirname}/data`;
+const dataFilePath = `${dataDirPath}/data.json`;
+
 const isDataStructure = (data: any): data is DataStructure => {
     return Array.isArray((data as DataStructure).kcal) && Array.isArray((data as DataStructure).weight);
 }
 
-const storeKcalInput = async (reqBody: KcalStructure) => {
-    const path = `${__dirname}/data`;
+const createDataDir = async () => {
     try {
-        await mkdir(path);
+        await mkdir(dataDirPath);
     } catch (e: unknown) {
         if (e instanceof Error) {
             if (!e.message.startsWith('EEXIST')) {
-                console.error(`Couldn't create directory ${path}. Message: ${e.message}`);
-                return;
+                console.error(`Couldn't create directory ${dataDirPath}. Message: ${e.message}`);
             }
         }
     }
-    const filePath = `${path}/data.json`;
+}
+
+const writeJsonToFile = async (data: DataStructure) => {
+    await createDataDir();
     try {
-        const content = await readFile(filePath, { encoding: 'utf-8' });
-        const dataStructure = JSON.parse(content);
-        if (!isDataStructure(dataStructure)) {
-            console.error(`File ${filePath} has unexpected content. Aborting.`);
-            return;
-        }
-        dataStructure.kcal.push(reqBody);
-        try {
-            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
-        } catch (e: unknown) {
-            if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
-        }
+        await writeFile(dataFilePath, JSON.stringify(data, null, 2));
     } catch (e: unknown) {
-        // first write
-        const dataStructure: DataStructure = {
-            kcal: [reqBody],
-            weight: []
-        }
-        try {
-            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
-        } catch (e: unknown) {
-            if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
-        }
+        if (e instanceof Error) console.error(`Couldn't create file ${dataFilePath}. Message: ${e.message}`);
     }
+}
+
+const storeKcalInput = async (reqBody: KcalStructure) => {
+    const fileContent = await readFileContent();
+    fileContent.kcal.push(reqBody);
+    await writeJsonToFile(fileContent);
 }
 
 const kcalInputController = (req: Request, res: Response) => {
@@ -64,25 +55,24 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
     return 0;
 }
 
-const loadFile = async (): Promise<DataStructure> => {
-    const filePath = `${__dirname}/data/data.json`;
+const readFileContent = async (): Promise<DataStructure> => {
     try {
-        const content = await readFile(filePath, { encoding: 'utf-8' });
+        const content = await readFile(dataFilePath, { encoding: 'utf-8' });
         const dataStructure = JSON.parse(content);
         if (!isDataStructure(dataStructure)) {
-            console.error(`File ${filePath} has unexpected content. Aborting.`);
+            console.error(`File ${dataFilePath} has unexpected content. Aborting.`);
             return {kcal: [], weight: []};
         }
         return dataStructure;
     } catch (e: unknown) {
         // first write
-        if (e instanceof Error) console.error(`Couldn't read file ${filePath}. Message: ${e.message}`);
+        if (e instanceof Error) console.error(`Couldn't read file ${dataFilePath}. Message: ${e.message}`);
         return {kcal: [], weight: []};
     }
 }
 
 const sortedKcalData = async () => {
-    const data = await loadFile();
+    const data = await readFileContent();
     return data.kcal.sort(sortByDate);
 }
 
@@ -111,43 +101,9 @@ const allKcalDataController = async (req: Request, res: Response) => {
 }
 
 const storeWeightInput = async (reqBody: WeightStructure) => {
-    const path = `${__dirname}/data`;
-    try {
-        await mkdir(path);
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            if (!e.message.startsWith('EEXIST')) {
-                console.error(`Couldn't create directory ${path}. Message: ${e.message}`);
-                return;
-            }
-        }
-    }
-    const filePath = `${path}/data.json`;
-    try {
-        const content = await readFile(filePath, { encoding: 'utf-8' });
-        const dataStructure = JSON.parse(content);
-        if (!isDataStructure(dataStructure)) {
-            console.error(`File ${filePath} has unexpected content. Aborting.`);
-            return;
-        }
-        dataStructure.weight.push(reqBody);
-        try {
-            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
-        } catch (e: unknown) {
-            if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
-        }
-    } catch (e: unknown) {
-        // first write
-        const dataStructure: DataStructure = {
-            kcal: [],
-            weight: [reqBody]
-        }
-        try {
-            await writeFile(filePath, JSON.stringify(dataStructure, null, 2));
-        } catch (e: unknown) {
-            if (e instanceof Error) console.error(`Couldn't create file ${filePath}. Message: ${e.message}`);
-        }
-    }
+    const fileContent = await readFileContent();
+    fileContent.weight.push(reqBody);
+    await writeJsonToFile(fileContent);
 }
 
 const weightInputController = (req: Request, res: Response) => {
@@ -156,7 +112,7 @@ const weightInputController = (req: Request, res: Response) => {
 }
 
 const loadAllWeight = async () => {
-    const data = await loadFile();
+    const data = await readFileContent();
     const weights = data.weight.sort(sortByDate).map(item => {
         return {
             weight: item.weight,
@@ -170,7 +126,6 @@ const allWeightDataController = async (req: Request, res: Response) => {
     res.json(await loadAllWeight());
 }
 
-const staticPath = __dirname + "/public";
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
 
 export {
