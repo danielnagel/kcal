@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 
-const staticPath = __dirname + "/public";
 const dataDirPath = `${__dirname}/data`;
 const dataFilePath = `${dataDirPath}/data.json`;
 
@@ -34,11 +33,6 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
     const fileContent = await readFileContent();
     fileContent.kcal.push(reqBody);
     await writeJsonToFile(fileContent);
-}
-
-const kcalInputController = (req: Request, res: Response) => {
-    storeKcalInput(req.body)
-    res.redirect('/input_kcal');
 }
 
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
@@ -92,13 +86,7 @@ const loadTodayKcalSummary = async (): Promise<{kcal: number, time: string}> => 
     return result;
 }
 
-const allKcalDataController = async (req: Request, res: Response) => {
-    if(req.query.for === "today") {
-        res.json(await loadTodayKcalSummary());
-    } else {
-        res.json(await loadAllKcal());
-    }
-}
+
 
 const storeWeightInput = async (reqBody: WeightStructure) => {
     const fileContent = await readFileContent();
@@ -106,12 +94,8 @@ const storeWeightInput = async (reqBody: WeightStructure) => {
     await writeJsonToFile(fileContent);
 }
 
-const weightInputController = (req: Request, res: Response) => {
-        storeWeightInput(req.body)
-        res.redirect('/input_weight');
-}
 
-const loadAllWeight = async () => {
+const loadAllWeight = async (): Promise<WeightStructure[]> => {
     const data = await readFileContent();
     const weights = data.weight.sort(sortByDate).map(item => {
         return {
@@ -122,16 +106,12 @@ const loadAllWeight = async () => {
     return weights;
 }
 
-const allWeightDataController = async (req: Request, res: Response) => {
-    res.json(await loadAllWeight());
-}
 
-const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
 
 export {
-    kcalInputController,
-    allKcalDataController,
-    weightInputController,
-    allWeightDataController,
-    sendHtml
+    storeKcalInput,
+    loadTodayKcalSummary,
+    loadAllKcal,
+    storeWeightInput,
+    loadAllWeight
 };
