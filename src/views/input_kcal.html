@@ -11,31 +11,29 @@
 </head>
 
 <body>
-    <div class="input-content">
-        <header>
-            <h1>kcal</h1>
-            <ul>
-                <li><a href="/">home</a></li>
-                <li><a href="/input_kcal">input calories</a></li>
-                <li><a href="/summary_kcal">summary calories</a></li>
-                <li><a href="/input_weight">input weight</a></li>
-                <li><a href="/summary_weight">summary weight</a></li>
-            </ul>
-        </header>
-        <main>
-            <form action="" method="post" class="input-form">
-                <label for="date">date</label>
-                <input class="form-input" type="datetime-local" name="date" id="date" required />
-                <label for="what">what</label>
-                <textarea class="form-input" name="what" id="what" required></textarea>
-                <label for="kcal">calories</label>
-                <input class="form-input" type="number" name="kcal" id="kcal" required />
-                <label for="comment">comment</label>
-                <textarea class="form-input" name="comment" id="comment"></textarea>
-                <input class="form-submit" type="submit" value="Submit" />
-            </form>
-        </main>
-    </div>
+    <header>
+        <h1>kcal</h1>
+        <ul>
+            <li><a href="/">home</a></li>
+            <li><a href="/input_kcal">input calories</a></li>
+            <li><a href="/summary_kcal">summary calories</a></li>
+            <li><a href="/input_weight">input weight</a></li>
+            <li><a href="/summary_weight">summary weight</a></li>
+        </ul>
+    </header>
+    <main>
+        <form action="" method="post" class="input-form">
+            <label for="date">date</label>
+            <input class="form-input" type="datetime-local" name="date" id="date" required />
+            <label for="what">what</label>
+            <textarea class="form-input" name="what" id="what" required></textarea>
+            <label for="kcal">calories</label>
+            <input class="form-input" type="number" name="kcal" id="kcal" required />
+            <label for="comment">comment</label>
+            <textarea class="form-input" name="comment" id="comment"></textarea>
+            <input class="form-submit" type="submit" value="Submit" />
+        </form>
+    </main>
     <script type="text/javascript" src="/input_kcal.js"></script>
 </body>
 

@@ -121,6 +121,7 @@ label {
 .daily-info {
     width: 300px;
     text-align: center;
+    margin: auto;
 }
 /* summary */
 
