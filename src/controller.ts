@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 
 const dataDirPath = `${__dirname}/data`;
