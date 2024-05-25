@@ -16,6 +16,15 @@ test.describe("storing and loading data", () => {
     assert.deepEqual(JSON.stringify(expect, null, 2), result);
   });
 
+  test('not store no kcal', async () => {
+    const expect: DataStructure = { kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "test" }], weight: [] };
+    await storeKcalInput({not: "kcal"} as unknown as KcalStructure);
+    await storeKcalInput(expect.kcal[0]);
+    await storeKcalInput(null as unknown as KcalStructure);
+    const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    assert.deepEqual(JSON.stringify(expect, null, 2), result);
+  });
+
   test('load all kcal', async () => {
     const expect: DataStructure = { kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "test" }, { what: "test2", kcal: "1234", date: "2024-05-24T09:27", comment: "test2" }], weight: [] };
     await storeKcalInput(expect.kcal[0]);
@@ -30,6 +39,15 @@ test.describe("storing and loading data", () => {
   test('store weight', async () => {
     const expect: DataStructure = { kcal: [], weight: [{ date: "2024-05-24", weight: "80", waist: "70" }] };
     await storeWeightInput(expect.weight[0]);
+    const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    assert.deepEqual(JSON.stringify(expect, null, 2), result);
+  });
+
+  test('not store no weight', async () => {
+    const expect: DataStructure = { kcal: [], weight: [{ date: "2024-05-24", weight: "80", waist: "70" }] };
+    await storeWeightInput({not: "weight"} as unknown as WeightStructure);
+    await storeWeightInput(expect.weight[0]);
+    await storeWeightInput(null as unknown as WeightStructure);
     const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
     assert.deepEqual(JSON.stringify(expect, null, 2), result);
   });

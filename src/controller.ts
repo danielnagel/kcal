@@ -1,11 +1,8 @@
 import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { isDataStructure, isKcalStructure, isWeightStructure } from "./typeguards";
 
 const dataDirPath = `${__dirname}/data`;
 const dataFilePath = `${dataDirPath}/data.json`;
-
-const isDataStructure = (data: any): data is DataStructure => {
-    return Array.isArray((data as DataStructure).kcal) && Array.isArray((data as DataStructure).weight);
-}
 
 const createDataDir = async () => {
     try {
@@ -13,7 +10,7 @@ const createDataDir = async () => {
     } catch (e: unknown) {
         if (e instanceof Error) {
             if (!e.message.startsWith('EEXIST')) {
-                console.error(`Couldn't create directory ${dataDirPath}. Message: ${e.message}`);
+                console.error(`(controller) Couldn't create directory ${dataDirPath}. Message: ${e.message}`);
             }
         }
     }
@@ -24,12 +21,16 @@ const writeJsonToFile = async (data: DataStructure) => {
     try {
         await writeFile(dataFilePath, JSON.stringify(data, null, 2));
     } catch (e: unknown) {
-        if (e instanceof Error) console.error(`Couldn't create file ${dataFilePath}. Message: ${e.message}`);
+        if (e instanceof Error) console.error(`(controller) Couldn't create file ${dataFilePath}. Message: ${e.message}`);
     }
 }
 
 const storeKcalInput = async (reqBody: KcalStructure) => {
     const fileContent = await readFileContent();
+    if(!isKcalStructure(reqBody)) {
+        console.error("(controller) Request does not contain a valid KcalStructure object, aborting.");
+        return;
+    }
     fileContent.kcal.push(reqBody);
     await writeJsonToFile(fileContent);
 }
@@ -53,7 +54,7 @@ const readFileContent = async (): Promise<DataStructure> => {
         const content = await readFile(dataFilePath, { encoding: 'utf-8' });
         const dataStructure = JSON.parse(content);
         if (!isDataStructure(dataStructure)) {
-            console.error(`File ${dataFilePath} has unexpected content. Aborting.`);
+            console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
             return {kcal: [], weight: []};
         }
         return dataStructure;
@@ -88,6 +89,10 @@ const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
 
 const storeWeightInput = async (reqBody: WeightStructure) => {
     const fileContent = await readFileContent();
+    if(!isWeightStructure(reqBody)) {
+        console.error("(controller) Request does not contain a valid WeightStructure object, aborting.");
+        return;
+    }
     fileContent.weight.push(reqBody);
     await writeJsonToFile(fileContent);
 }
