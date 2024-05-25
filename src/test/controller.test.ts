@@ -1,4 +1,4 @@
-import {test, mock} from "node:test";
+import { test, mock } from "node:test";
 import assert from "assert/strict";
 import { loadAllKcal, loadAllWeight, loadTodayKcalSummary, storeKcalInput, storeWeightInput } from "../controller";
 import { readFile, rm } from "node:fs/promises";
@@ -18,7 +18,7 @@ test.describe("storing and loading data", () => {
 
   test('not store no kcal', async () => {
     const expect: DataStructure = { kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "test" }], weight: [] };
-    await storeKcalInput({not: "kcal"} as unknown as KcalStructure);
+    await storeKcalInput({ not: "kcal" } as unknown as KcalStructure);
     await storeKcalInput(expect.kcal[0]);
     await storeKcalInput(null as unknown as KcalStructure);
     const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
@@ -45,7 +45,7 @@ test.describe("storing and loading data", () => {
 
   test('not store no weight', async () => {
     const expect: DataStructure = { kcal: [], weight: [{ date: "2024-05-24", weight: "80", waist: "70" }] };
-    await storeWeightInput({not: "weight"} as unknown as WeightStructure);
+    await storeWeightInput({ not: "weight" } as unknown as WeightStructure);
     await storeWeightInput(expect.weight[0]);
     await storeWeightInput(null as unknown as WeightStructure);
     const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
@@ -59,7 +59,7 @@ test.describe("storing and loading data", () => {
     const resultStored = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
     assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
     const resultLoaded = await loadAllWeight();
-    const expectLoaded: WeightStructure[] = [{ ...expect.weight[1], date: "04.05.2024"}, { ...expect.weight[0], date: "24.05.2024"}];
+    const expectLoaded: WeightStructure[] = [{ ...expect.weight[1], date: "04.05.2024" }, { ...expect.weight[0], date: "24.05.2024" }];
     assert.deepEqual(resultLoaded, expectLoaded)
   });
 
@@ -72,10 +72,10 @@ test.describe("storing and loading data", () => {
     assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
 
     // mock date
-    mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 24).getTime()});
+    mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 24).getTime() });
 
     const resultLoaded = await loadTodayKcalSummary();
-    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27"};
+    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27" };
     assert.deepEqual(resultLoaded, expectLoaded)
   });
 

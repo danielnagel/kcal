@@ -1,5 +1,5 @@
 export const isDataStructure = (data: any): data is DataStructure => {
-    return Array.isArray((data as DataStructure).kcal) && Array.isArray((data as DataStructure).weight);
+    return data && Array.isArray((data as DataStructure).kcal) && Array.isArray((data as DataStructure).weight);
 }
 
 export const isKcalStructure = (data: any): data is KcalStructure => {
