@@ -1,6 +1,2 @@
-const now = new Date();
-const nowIso = now.toISOString();
-const normalizedNow = nowIso.substring(0, nowIso.lastIndexOf(":"));
-
 const datetimeInput = document.querySelector("input[type=datetime-local]");
-datetimeInput.value = normalizedNow;
+datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"}) }`;
