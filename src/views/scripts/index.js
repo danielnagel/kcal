@@ -6,7 +6,7 @@ const loadTodayKcalData = async () => {
 const main = async () => {
     const data = await loadTodayKcalData();
     document.getElementById("today-calories").innerText = `calories: ${data.kcal}`
-    document.getElementById("today-last-meal").innerText = `last meal: ${data.time}`
+    document.getElementById("today-last-meal").innerText = `last meal: ${data.date}`
 }
 
 main();

@@ -59,7 +59,6 @@ const readFileContent = async (): Promise<DataStructure> => {
         return dataStructure;
     } catch (e: unknown) {
         // first write
-        if (e instanceof Error) console.error(`Couldn't read file ${dataFilePath}. Message: ${e.message}`);
         return {kcal: [], weight: []};
     }
 }
@@ -73,15 +72,15 @@ const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
     return splitDateTimeInData(await sortedKcalData());
 }
 
-const loadTodayKcalSummary = async (): Promise<{kcal: number, time: string}> => {
-    const result = {kcal: 0, time: "00:00"};
+const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
+    const result = {kcal: 0, date: "00:00"};
     const kcals = await sortedKcalData();
     if(kcals.length === 0) return result;
     const todayKcals = kcals.filter(k => new Date(k.date).toDateString() === new Date().toDateString());
     if(todayKcals.length === 0) return result;
     const sortedTodayKcals = todayKcals.sort(sortByDate);
     sortedTodayKcals.forEach(k => result.kcal += parseInt(k.kcal));
-    result.time = new Date(sortedTodayKcals[sortedTodayKcals.length -1].date).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
+    result.date = new Date(sortedTodayKcals[sortedTodayKcals.length -1].date).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
     return result;
 }
 
