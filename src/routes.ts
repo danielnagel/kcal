@@ -4,7 +4,8 @@ import {
     loadAllKcal,
     loadTodayKcalSummary,
     storeWeightInput,
-    loadAllWeight
+    loadAllWeight,
+    loadUniqueKcalInput
 } from "./controller";
 
 const staticPath = __dirname + "/public";
@@ -23,6 +24,8 @@ const postWeight = (req: Request, res: Response) => {
 const getAllKcalData = async (req: Request, res: Response) => {
     if(req.query.for === "today") {
         res.json(await loadTodayKcalSummary());
+    } else if(req.query.by === "what") {
+        res.json(await loadUniqueKcalInput());
     } else {
         res.json(await loadAllKcal());
     }

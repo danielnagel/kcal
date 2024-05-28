@@ -1,6 +1,6 @@
 import { test, mock } from "node:test";
 import assert from "assert/strict";
-import { loadAllKcal, loadAllWeight, loadTodayKcalSummary, storeKcalInput, storeWeightInput } from "../controller";
+import { loadAllKcal, loadAllWeight, loadTodayKcalSummary, storeKcalInput, storeWeightInput, loadUniqueKcalInput } from "../controller";
 import { readFile, rm } from "node:fs/promises";
 
 test.describe("storing and loading data", () => {
@@ -78,5 +78,35 @@ test.describe("storing and loading data", () => {
     const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27" };
     assert.deepEqual(resultLoaded, expectLoaded)
   });
+
+  test('load all unique kcal input', async () => {
+    const expect: DataStructure = {
+      kcal: [
+        { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
+        { what: "test3", kcal: "444", date: "2024-05-04T18:46", comment: "" },
+        { what: "test2", kcal: "444", date: "2024-05-04T18:46", comment: "" },
+        { what: "test4", kcal: "444", date: "2024-05-04T18:46", comment: "" },
+        { what: "test", kcal: "200", date: "2024-05-04T18:46", comment: "" },
+        { what: "test2", kcal: "444", date: "2024-05-14T18:46", comment: "" },
+        { what: "test2", kcal: "1234", date: "2024-05-24T09:27", comment: "" }
+      ], weight: []
+    };
+    await storeKcalInput(expect.kcal[0]);
+    await storeKcalInput(expect.kcal[1]);
+    await storeKcalInput(expect.kcal[2]);
+    await storeKcalInput(expect.kcal[3]);
+    await storeKcalInput(expect.kcal[4]);
+    await storeKcalInput(expect.kcal[5]);
+    await storeKcalInput(expect.kcal[6]);
+
+    const resultLoaded = await loadUniqueKcalInput();
+    const expectLoaded: ReducedKcalStructure[] = [
+      { what: "test", kcal: "123" },
+      { what: "test2", kcal: "1234" },
+      { what: "test3", kcal: "444" },
+      { what: "test4", kcal: "444" },
+    ];
+    assert.deepEqual(resultLoaded, expectLoaded)
+  })
 
 })

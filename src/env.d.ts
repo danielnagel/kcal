@@ -3,3 +3,4 @@ type ExtendedKcalStructure = { what: string, date: string, time: string, kcal: s
 type WeightStructure = { weight: string, waist: string, date: string };
 type DataStructure = { kcal: KcalStructure[], weight: WeightStructure[] };
 type KcalSummary = {kcal: number, date: string};
+type ReducedKcalStructure = { what: string, kcal: string };
