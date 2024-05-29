@@ -1,0 +1,9 @@
+[Unit]
+Description=Repeats backup-kcal.service daily.
+
+[Timer]
+OnCalendar=daily
+Unit=backup-kcal.service
+
+[Install]
+WantedBy=multi-user.target

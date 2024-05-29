@@ -1,0 +1,10 @@
+[Unit]
+Description=Starts kcal backup script.
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/daniel/git/kcal/backup.sh
+User=daniel
+
+[Install]
+WantedBy=multi-user.target
