@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=daniel
-ExecStart=/bin/bash /home/daniel/bin/install-and-start-kcal.sh
+ExecStart=/bin/bash /home/daniel/git/kcal/start.sh
 
 [Install]
 WantedBy=multi-user.target
