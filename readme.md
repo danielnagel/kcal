@@ -18,19 +18,19 @@ sudo systemctl start kcal.service
 
 ```bash
 chmod +x ~/git/kcal/backup.sh
-sudo ln -s /home/daniel/git/kcal/kcal-backup.service /etc/systemd/system/kcal-backup.service
-sudo ln -s /home/daniel/git/kcal/kcal-backup.timer /etc/systemd/system/kcal-backup.timer
+sudo ln -s /home/daniel/git/kcal/backup-kcal.service /etc/systemd/system/backup-kcal.service
+sudo ln -s /home/daniel/git/kcal/backup-kcal.timer /etc/systemd/system/backup-kcal.timer
 
 # activate
-sudo systemctl enable kcal-backup.timer
-sudo systemctl start kcal-backup.timer
+sudo systemctl enable backup-kcal.timer
+sudo systemctl start backup-kcal.timer
 ```
 
 ## logs
 
 ```bash
 # after service was activated
-journalctl -u kcal -u kcal-backup
+journalctl -u kcal -u backup-kcal -f
 ```
 
 ## uninstall
@@ -46,6 +46,6 @@ sudo systemctl stop kcal.service
 
 ```bash
 # deactivate service
-sudo systemctl disable kcal-backup.timer
-sudo systemctl stop kcal-backup.timer
+sudo systemctl disable backup-kcal.timer
+sudo systemctl stop backup-kcal.timer
 ```
