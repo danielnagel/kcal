@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Function to check if nvm is installed and install if not
 check_and_install_nvm() {
-  if ! command -v nvm &> /dev/null; then
+  if command -v nvm &> /dev/null; then
     echo "nvm not found. Installing nvm..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
     export NVM_DIR="$HOME/.nvm"
@@ -12,16 +11,16 @@ check_and_install_nvm() {
   fi
 }
 
-# Function to check if Node.js version 21 or higher is installed and install if not
 check_and_install_node() {
+  local NODE_VERSION="$1"
   source ~/.nvm/nvm.sh
-  NODE_VERSION=$(node -v | grep -oE '[0-9]+' | head -1)
-  if [ -z "$NODE_VERSION" ] || [ "$NODE_VERSION" -lt 21 ]; then
-    echo "Node.js version 21 or higher not found. Installing Node.js version 21..."
-    nvm install 21
-    nvm use 21
+  INSTALLED_NODE_VERSION=$(node -v | grep -oE '[0-9]+' | head -1)
+  if [ -z "$INSTALLED_NODE_VERSION" ] || [ "$INSTALLED_NODE_VERSION" -lt "$NODE_VERSION" ]; then
+    echo "Node.js version $NODE_VERSION or higher not found. Installing Node.js version $NODE_VERSION..."
+    nvm install "$NODE_VERSION"
+    nvm use "$NODE_VERSION"
   else
-    echo "Node.js version 21 or higher is already installed."
+    echo "Node.js version $NODE_VERSION or higher is already installed."
   fi
 }
 
@@ -71,10 +70,9 @@ restart_or_start_service() {
 }
 
 # Main script
-check_and_install_nvm
-check_and_install_node
-
 if [ "$EUID" -ne 0 ]; then
+    check_and_install_nvm
+    check_and_install_node 21
     sudo "$0" "$@"
     exit $?
 fi
