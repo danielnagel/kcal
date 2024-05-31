@@ -1,5 +1,21 @@
 #!/bin/bash
 
+check_and_make_scripts_executable() {
+  local PROJECT_DIR="$1"
+  local SCRIPTS=("backup.sh" "start.sh")
+
+  for script in "${SCRIPTS[@]}"; do
+    local SCRIPT_PATH="$PROJECT_DIR/$script"
+    if [ -e "$SCRIPT_PATH" ]; then
+      if [ ! -x "$SCRIPT_PATH" ]; then
+        echo "$script is not executable. Making it executable..."
+        chmod +x "$SCRIPT_PATH"
+        echo "$script is now executable."
+      fi
+    fi
+  done
+}
+
 check_and_install_nvm() {
   if command -v nvm &> /dev/null; then
     echo "nvm not found. Installing nvm..."
@@ -70,14 +86,15 @@ restart_or_start_service() {
 }
 
 # Main script
+PROJECT_DIR="/home/daniel/git/kcal"
 if [ "$EUID" -ne 0 ]; then
-    check_and_install_nvm
-    check_and_install_node 21
-    sudo "$0" "$@"
-    exit $?
+  check_and_make_scripts_executable "$PROJECT_DIR"
+  check_and_install_nvm
+  check_and_install_node 21
+  sudo "$0" "$@"
+  exit $?
 fi
 
-PROJECT_DIR="/home/daniel/git/kcal"
 create_symlink "$PROJECT_DIR/kcal.service" "/etc/systemd/system/kcal.service"
 create_symlink "$PROJECT_DIR/backup-kcal.service" "/etc/systemd/system/backup-kcal.service"
 create_symlink "$PROJECT_DIR/backup-kcal.timer" "/etc/systemd/system/backup-kcal.timer"
