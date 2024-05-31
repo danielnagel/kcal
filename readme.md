@@ -1,51 +1,43 @@
 # kcal
 
-Collect data about what you've eaten, in your own home network.
+> Web Server for tracking daily calorie intake.
 
-## installation
+With the kcal web server, daily nutrition can be tracked.
+Additionally, today's calorie intake is summarized on the homepage.
+Furthermore, the current weight and waist can be entered and tracked over time in a graph.
 
-### server
+This project runs exclusively on a Debian-based Linux system.
+The project has been tested on a Raspberry Pi 3 with the operating system Raspbian GNU/Linux 12.
+Node version 21 is required
+
+## install
+
+With the `install.sh` script, the project can be installed.
+If the project has been updated, the same command can be used to update the project.
 
 ```bash
-chmod +x ~/git/kcal/start.sh
-sudo ln -s /home/daniel/git/kcal/kcal.service /etc/systemd/system/kcal.service
-
-# start
-sudo systemctl start kcal.service
-```
-
-### backup
-
-```bash
-chmod +x ~/git/kcal/backup.sh
-sudo ln -s /home/daniel/git/kcal/backup-kcal.service /etc/systemd/system/backup-kcal.service
-sudo ln -s /home/daniel/git/kcal/backup-kcal.timer /etc/systemd/system/backup-kcal.timer
-
-# activate
-sudo systemctl enable backup-kcal.timer
-sudo systemctl start backup-kcal.timer
+./install.sh
 ```
 
 ## logs
 
+After all services have been started,
+e.g., by using the `install.sh` script,
+the logs can be viewed with the following command.
+
 ```bash
-# after service was activated
 journalctl -u kcal -u backup-kcal -f
 ```
 
 ## uninstall
 
-### server
+All services can be stopped/disabled as follows.
 
 ```bash
-# deactivate service
+# deactivate web server service
 sudo systemctl stop kcal.service
-```
 
-### backup
-
-```bash
-# deactivate service
+# deactivate backup service
 sudo systemctl disable backup-kcal.timer
 sudo systemctl stop backup-kcal.timer
 ```
