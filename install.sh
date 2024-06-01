@@ -87,13 +87,14 @@ restart_or_start_service() {
 
 create_service_from_template() {
     local PROJECT_DIR="$1"
-    local TEMPLATE="$2"
-    local OUTPUT_FILE="$3"
+    local PROJECT_USER="$2"
+    local TEMPLATE="$3"
+    local OUTPUT_FILE="$4"
 
     # Check if the input file exists
     if [ -f "$TEMPLATE" ]; then
         # Use sed to replace the placeholder with the value of PROJECT_DIR and write to the output file
-        sed "s|\$PROJECT_DIR|$PROJECT_DIR|g" "$TEMPLATE" > "$OUTPUT_FILE"
+        sed -e "s|\$PROJECT_DIR|$PROJECT_DIR|g" -e "s|\$PROJECT_USER|$PROJECT_USER|g" "$TEMPLATE" > "$OUTPUT_FILE"
         echo "Created $OUTPUT_FILE."
     else
         echo "Template $TEMPLATE not found."
@@ -113,8 +114,8 @@ if [ -f "$ENVIRONMENT_FILE" ]; then
             check_and_make_scripts_executable "$PROJECT_DIR"
             check_and_install_nvm
             check_and_install_node 21
-            create_service_from_template "$PROJECT_DIR" "$PROJECT_DIR/kcal.service-template" "$PROJECT_DIR/kcal.service"
-            create_service_from_template "$PROJECT_DIR" "$PROJECT_DIR/backup-kcal.service-template" "$PROJECT_DIR/backup-kcal.service"
+            create_service_from_template "$PROJECT_DIR" "$PROJECT_USER" "$PROJECT_DIR/kcal.service-template" "$PROJECT_DIR/kcal.service"
+            create_service_from_template "$PROJECT_DIR" "$PROJECT_USER" "$PROJECT_DIR/backup-kcal.service-template" "$PROJECT_DIR/backup-kcal.service"
             sudo "$0" "$@"
             exit $?
         fi
