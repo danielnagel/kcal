@@ -3,8 +3,8 @@ Description=Starts kcal backup script.
 
 [Service]
 Type=simple
-ExecStart=/bin/bash /home/daniel/git/kcal/backup.sh
-User=daniel
+ExecStart=$PROJECT_DIR
+User=$PROJECT_USER
 
 [Install]
 WantedBy=multi-user.target

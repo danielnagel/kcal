@@ -85,19 +85,45 @@ restart_or_start_service() {
   fi
 }
 
+create_service_from_template() {
+    local PROJECT_DIR="$1"
+    local TEMPLATE="$2"
+    local OUTPUT_FILE="$3"
+
+    # Check if the input file exists
+    if [ -f "$TEMPLATE" ]; then
+        # Use sed to replace the placeholder with the value of PROJECT_DIR and write to the output file
+        sed "s|\$PROJECT_DIR|$PROJECT_DIR|g" "$TEMPLATE" > "$OUTPUT_FILE"
+        echo "Created $OUTPUT_FILE."
+    else
+        echo "Template $TEMPLATE not found."
+    fi
+}
+
 # Main script
-PROJECT_DIR="/home/daniel/git/kcal"
-if [ "$EUID" -ne 0 ]; then
-  check_and_make_scripts_executable "$PROJECT_DIR"
-  check_and_install_nvm
-  check_and_install_node 21
-  sudo "$0" "$@"
-  exit $?
+if [ -f .env ]; then
+    source .env
+    
+    # Check if PROJECT_DIR is set and not empty
+    if [ -n "$PROJECT_DIR" ]; then
+        if [ "$EUID" -ne 0 ]; then
+            check_and_make_scripts_executable "$PROJECT_DIR"
+            check_and_install_nvm
+            check_and_install_node 21
+            create_service_from_template "$PROJECT_DIR" "$PROJECT_DIR/kcal.service-template" "$PROJECT_DIR/kcal.service"
+            create_service_from_template "$PROJECT_DIR" "$PROJECT_DIR/backup-kcal.service-template" "$PROJECT_DIR/backup-kcal.service"
+            sudo "$0" "$@"
+            exit $?
+        fi
+
+        create_symlink "$PROJECT_DIR/kcal.service" "/etc/systemd/system/kcal.service"
+        create_symlink "$PROJECT_DIR/backup-kcal.service" "/etc/systemd/system/backup-kcal.service"
+        create_symlink "$PROJECT_DIR/backup-kcal.timer" "/etc/systemd/system/backup-kcal.timer"
+
+        enable_and_start_timer "backup-kcal.timer"
+        restart_or_start_service "kcal.service"
+    fi
+else
+    echo ".env file not found."
+    echo "run 'cp example.env .env' and set environment variables to your environment."
 fi
-
-create_symlink "$PROJECT_DIR/kcal.service" "/etc/systemd/system/kcal.service"
-create_symlink "$PROJECT_DIR/backup-kcal.service" "/etc/systemd/system/backup-kcal.service"
-create_symlink "$PROJECT_DIR/backup-kcal.timer" "/etc/systemd/system/backup-kcal.timer"
-
-enable_and_start_timer "backup-kcal.timer"
-restart_or_start_service "kcal.service"

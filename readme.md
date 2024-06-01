@@ -12,6 +12,20 @@ Node version 21 is required
 
 ## install
 
+### setup environment
+
+Before running the `install.sh` script,
+you should copy the file `example.env` as follows
+and adjust the environment variables to match your environment.
+If you don't want to back up your data,
+you can leave the `BACKUP_DIRECTORY` environment variable empty.
+
+```bash
+# in project dir
+cp example.env .env
+# update .env
+```
+
 With the `install.sh` script, the project can be installed.
 If the project has been updated, the same command can be used to update the project.
 
