@@ -101,8 +101,11 @@ create_service_from_template() {
 }
 
 # Main script
-if [ -f .env ]; then
-    source .env
+TEMP_PROJECT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+ENVIRONMENT_FILE="$TEMP_PROJECT_DIR/.env"
+
+if [ -f "$ENVIRONMENT_FILE" ]; then
+    source "$ENVIRONMENT_FILE"
     
     # Check if PROJECT_DIR is set and not empty
     if [ -n "$PROJECT_DIR" ]; then
