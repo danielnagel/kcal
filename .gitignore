@@ -1,2 +1,5 @@
 dist
 node_modules
+.env
+kcal.service
+backup-kcal.service
