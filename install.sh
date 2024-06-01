@@ -1,7 +1,6 @@
 #!/bin/bash
 
 check_and_make_scripts_executable() {
-  local PROJECT_DIR="$1"
   local SCRIPTS=("backup.sh" "start.sh")
 
   for script in "${SCRIPTS[@]}"; do
@@ -86,10 +85,8 @@ restart_or_start_service() {
 }
 
 create_service_from_template() {
-    local PROJECT_DIR="$1"
-    local PROJECT_USER="$2"
-    local TEMPLATE="$3"
-    local OUTPUT_FILE="$4"
+    local TEMPLATE="$1"
+    local OUTPUT_FILE="$2"
 
     # Check if the input file exists
     if [ -f "$TEMPLATE" ]; then
@@ -111,11 +108,11 @@ if [ -f "$ENVIRONMENT_FILE" ]; then
     # Check if PROJECT_DIR is set and not empty
     if [ -n "$PROJECT_DIR" ]; then
         if [ "$EUID" -ne 0 ]; then
-            check_and_make_scripts_executable "$PROJECT_DIR"
+            check_and_make_scripts_executable
             check_and_install_nvm
             check_and_install_node 21
-            create_service_from_template "$PROJECT_DIR" "$PROJECT_USER" "$PROJECT_DIR/kcal.service-template" "$PROJECT_DIR/kcal.service"
-            create_service_from_template "$PROJECT_DIR" "$PROJECT_USER" "$PROJECT_DIR/backup-kcal.service-template" "$PROJECT_DIR/backup-kcal.service"
+            create_service_from_template "$PROJECT_DIR/kcal.service-template" "$PROJECT_DIR/kcal.service"
+            create_service_from_template "$PROJECT_DIR/backup-kcal.service-template" "$PROJECT_DIR/backup-kcal.service"
             sudo "$0" "$@"
             exit $?
         fi
