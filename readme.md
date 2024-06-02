@@ -10,6 +10,12 @@ This project runs exclusively on a Debian-based Linux system.
 The project has been tested on a Raspberry Pi 3 with the operating system Raspbian GNU/Linux 12.
 Node version 21 is required
 
+## frontend
+
+There is a daily overview for calories intake
+
+<img src="/docs/kcal-home.png" style="width: 250px; margin: auto"/>
+
 ## install
 
 ### setup environment
