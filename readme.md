@@ -12,9 +12,21 @@ Node version 21 is required
 
 ## frontend
 
-There is a daily overview for calories intake
+The current calorie intake can be viewed on the home page.
 
-<img src="/docs/kcal-home.png" style="width: 250px; margin: auto"/>
+<img src="/docs/kcal-home.png" style="width: 250px"/>
+
+Additional calories can be entered.
+
+<img src="/docs/kcal-input-kcal.png" style="width: 250px"/>
+
+All entered calories can be viewed.
+
+<img src="/docs/kcal-summary-kcal.png" style="width: 400px"/>
+
+Weight can also be recorded and viewed in a graph.
+
+<img src="/docs/kcal-summary-weight.png" style="width: 400px"/>
 
 ## install
 
