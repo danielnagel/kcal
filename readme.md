@@ -14,19 +14,19 @@ Node version 21 is required
 
 The current calorie intake can be viewed on the home page.
 
-<img src="/docs/kcal-home.png" style="width: 250px"/>
+<img src="/docs/kcal-home.png" style="width: 150px"/>
 
 Additional calories can be entered.
 
-<img src="/docs/kcal-input-kcal.png" style="width: 250px"/>
+<img src="/docs/kcal-input-kcal.png" style="width: 150px"/>
 
 All entered calories can be viewed.
 
-<img src="/docs/kcal-summary-kcal.png" style="width: 400px"/>
+<img src="/docs/kcal-summary-kcal.png" style="width: 300px"/>
 
 Weight can also be recorded and viewed in a graph.
 
-<img src="/docs/kcal-summary-weight.png" style="width: 400px"/>
+<img src="/docs/kcal-summary-weight.png" style="width: 300px"/>
 
 ## install
 
