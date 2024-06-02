@@ -55,3 +55,22 @@ sudo systemctl stop kcal.service
 sudo systemctl disable backup-kcal.timer
 sudo systemctl stop backup-kcal.timer
 ```
+
+## about
+
+I developed this project to track my daily calorie intake.
+Additionally, I used a lightweight technology stack since the Raspberry Pi has limited memory available.
+Therefore, I only use an Express server without a frontend framework for this project.
+Previously, I used Astro, but due to the limited available memory, I couldn't build on the Raspberry Pi.
+The project uses systemd services to run the server or perform backups.
+I wanted to see if I could get the project up and running quickly on other Debian-based operating systems using scripts,
+and I believe I have succeeded, as described in the installation chapter.
+Since I use this project daily, it will continue to evolve.
+
+### What I Learned
+
+1. Working with systemd units (services and timers).
+2. Refreshed knowledge of Bash scripting.
+3. Refreshed knowledge of Express.
+4. Using Tabulator and Chart.js.
+5. Unit testing with the Node Test Runner.
