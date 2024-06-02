@@ -126,17 +126,22 @@ label {
 /* summary */
 
 .summary-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
+    max-width: 1200px;
+    max-height: 600px;
+    margin: auto;
     text-align: center;
+    padding: 5px;
 }
 
 .summary-table {
-    max-width: 1200px;
-    max-height: 900px;
+    max-width: 1000px;
+    max-height: 400px;
+    margin: auto;
+}
+
+.summary-weight { 
+    background-color: #eee;
+    border: solid 1px cadetblue;
 }
 
 .tabulator-row {

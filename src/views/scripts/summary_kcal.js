@@ -11,8 +11,9 @@ const main = async () => {
     var table = new Tabulator("#example-table", {
         data: data, //assign data to table
         groupBy: "date",
+        layout: "fitColumns",
         columns:[ //Define Table Columns
-            {title:"what", field:"what", formatter: "textarea"},
+            {title:"what", field:"what"},
             {title:"date", field:"date", visible: false},
             {title:"time", field:"time"},
             {title:"kcal", field:"kcal"},

@@ -25,6 +25,10 @@
             },
             options: {
                 responsive: true,
-            }
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+            },
         });
 })();
