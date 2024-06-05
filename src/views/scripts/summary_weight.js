@@ -1,6 +1,5 @@
 (async () => {
-
-    const response = await fetch('/weight');
+    const response = await fetch('/api/weight');
     const data = await response.json();
     const date = data.map(item => item.date);
     const weight = data.map(item => item.weight);
