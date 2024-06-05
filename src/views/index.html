@@ -8,6 +8,13 @@
     <meta name="viewport" content="width=device-width" />
     <meta name="author" content="Daniel Nagel" />
     <link href="/index.css" rel="stylesheet">
+    <script>
+        if (navigator.serviceWorker) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/serviceworker.js');
+            })
+        }   
+    </script>
 </head>
 
 <body>
