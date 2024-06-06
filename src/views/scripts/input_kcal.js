@@ -1,10 +1,5 @@
-(async () => {
-    const datetimeInput = document.querySelector("input[type=datetime-local]");
-    datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
-
-    const response = await fetch('/api/kcal?by=what');
-    const data = await response.json();
-
+const renderSuggestionList = (data) => {
+    // build suggestion list
     const what = data.map(item => item.what);
     const detaillist = document.getElementById("suggestion-list");
     what.forEach(item => {
@@ -13,6 +8,7 @@
         detaillist.appendChild(option);
     });
 
+    // paste kcal to from selected suggestion into kcal field
     const whatInput = document.getElementById("what");
     const kcalInput = document.getElementById("kcal");
     whatInput.addEventListener("input", () => {
@@ -23,4 +19,13 @@
             }
         }
     });
+}
+
+(async () => {
+    const datetimeInput = document.querySelector("input[type=datetime-local]");
+    datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
+
+    const response = await fetch('/api/kcal?by=what');
+    renderSuggestionList(await response.json());
+    serviceWorkerOnMessageHandler(renderSuggestionList);
 })();

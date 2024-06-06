@@ -1,7 +1,4 @@
-(async () => {
-    const response = await fetch('/api/kcal');
-    const data = await response.json()
-
+const renderTable = (data) => {
     //create Tabulator on DOM element with id "example-table"
     var table = new Tabulator("#example-table", {
         data: data, //assign data to table
@@ -24,4 +21,10 @@
     document.getElementById("print-table").addEventListener("click", function () {
         table.print(true, true);
     });
+}
+
+(async () => {
+    const response = await fetch('/api/kcal');
+    renderTable(await response.json());
+    serviceWorkerOnMessageHandler(renderTable);
 })();

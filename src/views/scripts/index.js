@@ -1,6 +1,10 @@
+const renderDailyCalories = (data) => {
+    if (typeof data.kcal !== "undefined") document.getElementById("today-calories").innerText = `calories: ${data.kcal}`
+    if (typeof data.date !== "undefined") document.getElementById("today-last-meal").innerText = `last meal: ${data.date}`
+}
+
 (async () => {
     const response = await fetch('/api/kcal?for=today');
-    const data = await response.json()
-    document.getElementById("today-calories").innerText = `calories: ${data.kcal}`
-    document.getElementById("today-last-meal").innerText = `last meal: ${data.date}`
+    renderDailyCalories(await response.json());
+    serviceWorkerOnMessageHandler(renderDailyCalories);
 })();
