@@ -9,6 +9,13 @@
     <meta name="author" content="Daniel Nagel" />
     <link href="index.css" rel="stylesheet">
     <script type="text/javascript" src="/chart.umd.js"></script>
+    <script>
+        if (navigator.serviceWorker) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/serviceworker.js');
+            })
+        }   
+    </script>
 </head>
 
 <body>
