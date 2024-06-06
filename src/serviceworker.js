@@ -23,11 +23,54 @@ self.addEventListener('install', (e) => {
     }));
 });
 
-self.addEventListener('fetch', (e) => {
+const putInCache = async (request, response) => {
+    if (response.type === "error" || response.type === "opaque") {
+        return Promise.resolve(); // do not put in cache network errors
+    }
+
+    const cache = await caches.open(cache_name);
+    await cache.put(request, response.clone());
+}
+
+const update = async (request) => {
+    const response = await fetch(request.url);
+    await putInCache(request, response);
+    return Promise.resolve(response);
+}
+
+const refresh = async (response) => {
+    const jsonResponse = await response.json();
+    self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+            client.postMessage(
+                JSON.stringify({
+                    type: response.url,
+                    data: jsonResponse
+                })
+            );
+        });
+    });
+    return jsonResponse;
+}
+
+const respondCacheOrFetch = (e) => {
     e.respondWith(
         caches.match(e.request)
-            .then((response) => {
-                return response || fetch(e.request);
+            .then((cached) => {
+                // cache first strategy
+                return cached || fetch(e.request);
             })
     );
+}
+
+self.addEventListener('fetch', (e) => {
+    if (e.request.url.includes("/api/")) {
+        // response to API requests, Cache Update Refresh strategy
+        respondCacheOrFetch(e);
+        // https://pwa-workshop.js.org/4-api-cache/#implementation
+        e.waitUntil(update(e.request).then(refresh));
+    } else {
+        // static files
+        respondCacheOrFetch(e);
+    }
 });
