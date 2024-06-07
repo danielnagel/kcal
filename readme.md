@@ -2,6 +2,10 @@
 
 > Web Server for tracking daily calorie intake.
 
+<div style="width: 100%">
+    <img src="/docs/icon.png" style="margin: auto"/>
+</div>
+
 With the kcal web server, daily nutrition can be tracked.
 Additionally, today's calorie intake is summarized on the homepage.
 Furthermore, the current weight and waist can be entered and tracked over time in a graph.
@@ -14,19 +18,33 @@ Node version 21 is required
 
 The current calorie intake can be viewed on the home page.
 
-<img src="/docs/kcal-home.png" style="width: 150px"/>
+<div style="width: 100%">
+    <img src="/docs/kcal-home.png" style="width: 300px; margin: auto"/>
+</div>
 
 Additional calories can be entered.
 
-<img src="/docs/kcal-input-kcal.png" style="width: 150px"/>
+<div style="width: 100%">
+    <img src="/docs/kcal-input-kcal.png" style="width: 300px; margin: auto"/>
+</div>
 
 All entered calories can be viewed.
 
-<img src="/docs/kcal-summary-kcal.png" style="width: 300px"/>
+<div style="width: 100%">
+    <img src="/docs/kcal-summary-kcal.png" style="width: 300px; margin: auto"/>
+</div>
+
+Weight can be entered.
+
+<div style="width: 100%">
+    <img src="/docs/kcal-input-weight.png" style="width: 300px; margin: auto"/>
+</div>
 
 Weight can also be recorded and viewed in a graph.
 
-<img src="/docs/kcal-summary-weight.png" style="width: 300px"/>
+<div style="width: 100%">
+    <img src="/docs/kcal-summary-weight.png" style="width: 300px; margin: auto"/>
+</div>
 
 ## install
 
@@ -95,3 +113,4 @@ Since I use this project daily, it will continue to evolve.
 6. Caching using service workers.
 7. Using the local storage to persist data from the form,
    when page is offline, to prevent data loss.
+8. Web app manifest.
