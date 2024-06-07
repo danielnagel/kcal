@@ -1,0 +1,11 @@
+{
+    "name": "+k",
+    "start_url": "index.html",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "src": "favicon.ico"
+      }
+    ]
+  }
+  
