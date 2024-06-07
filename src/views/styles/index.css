@@ -7,38 +7,34 @@ body {
     margin: 0;
 }
 
+:root {
+    --primary: #101010;
+    --secondary: #eee;
+    --accent: cadetblue;
+    color: var(--secondary);
+    font-size: 18px;
+    font-family: system-ui, sans-serif;
+    background: var(--primary);
+}
+
+/* header */
+
 header {
     max-width: 300px;
     margin: auto;
-    display: col;
-}
-
-.index-content {
-    position: absolute;
-    top: 28%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
-}
-
-.input-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%)
+    display: flex;
+    gap: 10px;
 }
 
 header h1 {
     margin: 0;
-    text-align: center;
 }
 
 header ul {
     list-style: none;
-    margin: auto 0 10px 0;
+    margin: auto;
     padding: 0;
-    background-color: cadetblue;
+    display: flex;
 }
 
 header li {
@@ -47,34 +43,41 @@ header li {
 
 header li a {
     display: block;
-    color: white;
-    text-align: center;
-    padding: 4px 12px;
-    text-decoration: none;
-    border: 1px solid white;
+    padding: 8px;
+    color: var(--secondary);
+}
+
+header li a.active {
+    color: var(--accent);
 }
 
 header li a:hover {
-    background-color: #111;
+    color: var(--accent);
 }
 
-:root {
-    --primary: #101010;
-    --secondary: #dadada;
-    --accent: #2755ee;
-    --accent-secondary: #000000;
-    color: var(--secondary);
-    font-size: 18px;
-    font-family: system-ui, sans-serif;
-    background: var(--primary);
+/* index.html */
+.index-content {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
 }
+
 
 
 /* input.html */
+.input-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
 form.input-form {
     margin: 0 auto;
     padding: 10px;
-    border: solid 1px white;
+    border: solid 1px var(--secondary);
     width: 290px;
     display: flex;
     flex-direction: column;
@@ -84,12 +87,12 @@ input,
 textarea {
     width: 100%;
     box-sizing: border-box;
-    border: 1px solid cadetblue;
+    border: 1px solid var(--accent);
     border-radius: 4px;
 }
 
 label {
-    color: cadetblue;
+    color: var(--accent);
     font-weight: bold;
     margin-left: 5%;
 }
@@ -107,9 +110,9 @@ label {
 .form-submit {
     width: 90%;
     margin: 10px auto 0px auto;
-    background-color: cadetblue;
-    border: 1px solid white;
-    color: white;
+    background-color: var(--accent);
+    border: 1px solid var(--secondary);
+    color: var(--secondary);
     padding: 6px;
     text-decoration: none;
     font-weight: bold;
@@ -130,18 +133,18 @@ label {
     max-height: 600px;
     margin: auto;
     text-align: center;
-    padding: 5px;
+    padding: 10px;
 }
 
 .summary-table {
     max-width: 1000px;
-    max-height: 400px;
+    max-height: 500px;
     margin: auto;
 }
 
 .summary-weight { 
-    background-color: #eee;
-    border: solid 1px cadetblue;
+    background-color: var(--secondary);
+    border: solid 1px var(--accent);
 }
 
 .tabulator-row {
