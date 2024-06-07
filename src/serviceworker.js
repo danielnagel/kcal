@@ -6,6 +6,7 @@ const urls_to_cache = [
     '/summary_kcal',
     '/summary_weight',
     '/index.js',
+    '/utils.js',
     '/input_kcal.js',
     '/input_weight.js',
     '/summary_kcal.js',
