@@ -92,3 +92,6 @@ Since I use this project daily, it will continue to evolve.
 3. Refreshed knowledge of Express.
 4. Using Tabulator and Chart.js.
 5. Unit testing with the Node Test Runner.
+6. Caching using service workers.
+7. Using the local storage to persist data from the form,
+   when page is offline, to prevent data loss.
