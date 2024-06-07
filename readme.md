@@ -2,9 +2,9 @@
 
 > Web Server for tracking daily calorie intake.
 
-<div style="width: 100%">
-    <img src="/docs/icon.png" style="margin: auto"/>
-</div>
+<p align="center">
+    <img src="/docs/icon.png" />
+</p>
 
 With the kcal web server, daily nutrition can be tracked.
 Additionally, today's calorie intake is summarized on the homepage.
@@ -18,33 +18,33 @@ Node version 21 is required
 
 The current calorie intake can be viewed on the home page.
 
-<div style="width: 100%">
-    <img src="/docs/kcal-home.png" style="width: 300px; margin: auto"/>
-</div>
+<p align="center">
+    <img src="/docs/kcal-home.png" width="300"/>
+</p>
 
 Additional calories can be entered.
 
-<div style="width: 100%">
-    <img src="/docs/kcal-input-kcal.png" style="width: 300px; margin: auto"/>
-</div>
+<p align="center">
+    <img src="/docs/kcal-input-kcal.png" width="300"/>
+</p>
 
 All entered calories can be viewed.
 
-<div style="width: 100%">
-    <img src="/docs/kcal-summary-kcal.png" style="width: 300px; margin: auto"/>
-</div>
+<p align="center">
+    <img src="/docs/kcal-summary-kcal.png" width="300"/>
+</p>
 
 Weight can be entered.
 
-<div style="width: 100%">
-    <img src="/docs/kcal-input-weight.png" style="width: 300px; margin: auto"/>
-</div>
+<p align="center">
+    <img src="/docs/kcal-input-weight.png" width="300"/>
+</p>
 
 Weight can also be recorded and viewed in a graph.
 
-<div style="width: 100%">
-    <img src="/docs/kcal-summary-weight.png" style="width: 300px; margin: auto"/>
-</div>
+<p align="center">
+    <img src="/docs/kcal-summary-weight.png" width="300"/>
+</p>
 
 ## install
 
