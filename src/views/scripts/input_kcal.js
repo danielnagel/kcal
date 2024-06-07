@@ -25,6 +25,15 @@ const renderSuggestionList = (data) => {
     const datetimeInput = document.querySelector("input[type=datetime-local]");
     datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
 
+    const form = document.getElementById('kcal-form');
+    form.onformdata = (e) => {
+        const formData = {};
+        e.formData.forEach((value, key) => {
+            formData[key] = value;
+        })
+        console.log(formData)
+    }
+
     const response = await fetch('/api/kcal?by=what');
     renderSuggestionList(await response.json());
     serviceWorkerOnMessageHandler(renderSuggestionList);
