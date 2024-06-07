@@ -1,3 +1,10 @@
+const storageItemKey = "unsendFormData";
+
+const updateDateTimeInput = () => {
+    const datetimeInput = document.querySelector("input[type=datetime-local]");
+    datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
+}
+
 const renderSuggestionList = (data) => {
     // build suggestion list
     const what = data.map(item => item.what);
@@ -21,18 +28,69 @@ const renderSuggestionList = (data) => {
     });
 }
 
-(async () => {
-    const datetimeInput = document.querySelector("input[type=datetime-local]");
-    datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
-
+const formHandling = () => {
     const form = document.getElementById('kcal-form');
-    form.onformdata = (e) => {
-        const formData = {};
-        e.formData.forEach((value, key) => {
-            formData[key] = value;
-        })
-        console.log(formData)
+    form.onsubmit = async (e) => {
+        if (!localStorage) return;
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        const dataList = [data];
+        const storedData = localStorage.getItem(storageItemKey);
+        if (storedData) {
+            try {
+                dataList.push(...JSON.parse(storedData));
+            } catch (e) {
+                console.error(`could not parse data from store. stored data: ${storedData}`);
+            }
+        }
+        try {
+            const response = await fetch("/api/input_kcal", {
+                method: "POST",
+                body: JSON.stringify(dataList),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            if (response.status == 200)
+                localStorage.removeItem(storageItemKey);
+        } catch (e) {
+            localStorage.setItem(storageItemKey, JSON.stringify(dataList));
+        }
+        form.reset();
+        updateDateTimeInput();
+        renderOfflineInfo();
     }
+}
+
+const renderOfflineInfo = () => {
+    const offlineMessage = document.getElementById("offline-message");
+    if (localStorage) {
+        const storedData = localStorage.getItem(storageItemKey);
+        if (storedData) {
+            const data = [];
+            try {
+                data.push(...JSON.parse(storedData));
+            } catch (e) {
+                console.error(`could not parse data from store. stored data: ${storedData}`);
+            }
+            offlineMessage.innerText = `You are offline, ${data.length} form data items stored.`;
+            offlineMessage.onclick = () => navigator.clipboard.writeText(storedData);
+            return;
+        }
+    }
+    offlineMessage.innerText = '';
+    offlineMessage.onclick = null;
+}
+
+(async () => {
+    updateDateTimeInput()
+
+    formHandling();
+    renderOfflineInfo();
 
     const response = await fetch('/api/kcal?by=what');
     renderSuggestionList(await response.json());

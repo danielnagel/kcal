@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import {
-    storeKcalInput,
+    storeMultipleKcalInput,
     loadAllKcal,
     loadTodayKcalSummary,
     storeWeightInput,
@@ -12,7 +12,7 @@ const staticPath = __dirname + "/public";
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
 
 const postKcal = (req: Request, res: Response) => {
-    storeKcalInput(req.body)
+    storeMultipleKcalInput(req.body)
     res.redirect('/input_kcal');
 }
 
@@ -22,9 +22,9 @@ const postWeight = (req: Request, res: Response) => {
 }
 
 const getAllKcalData = async (req: Request, res: Response) => {
-    if(req.query.for === "today") {
+    if (req.query.for === "today") {
         res.json(await loadTodayKcalSummary());
-    } else if(req.query.by === "what") {
+    } else if (req.query.by === "what") {
         res.json(await loadUniqueKcalInput());
     } else {
         res.json(await loadAllKcal());

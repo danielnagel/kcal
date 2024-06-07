@@ -35,6 +35,16 @@ const storeKcalInput = async (reqBody: KcalStructure) => {
     await writeJsonToFile(fileContent);
 }
 
+const storeMultipleKcalInput = async (reqBody: KcalStructure[]) => {
+    if (!Array.isArray(reqBody)) {
+        console.error("(controller) Request does not contain an array, aborting.");
+        return;
+    }
+    for (const item of reqBody) {
+        await storeKcalInput(item);
+    }
+}
+
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
     return data.map<ExtendedKcalStructure>(d => {
         const date = new Date(d.date).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -106,19 +116,20 @@ const loadAllWeight = async (): Promise<WeightStructure[]> => {
     return weights;
 }
 
-const loadUniqueKcalInput =  async (): Promise<ReducedKcalStructure[]> => {
+const loadUniqueKcalInput = async (): Promise<ReducedKcalStructure[]> => {
     const kcalData = await sortedKcalData();
     const what = kcalData.map(item => item.what);
     const reducedWhat = new Set(what);
     const reducedKcal: ReducedKcalStructure[] = Array.from(reducedWhat).sort().map(item => {
         const filteredKcal = kcalData.filter(d => d.what === item);
-        return {what: item, kcal: filteredKcal[filteredKcal.length -1].kcal};
+        return { what: item, kcal: filteredKcal[filteredKcal.length - 1].kcal };
     });
     return reducedKcal;
 }
 
 export {
     storeKcalInput,
+    storeMultipleKcalInput,
     loadTodayKcalSummary,
     loadAllKcal,
     storeWeightInput,

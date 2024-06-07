@@ -30,7 +30,7 @@
         </ul>
     </header>
     <main>
-        <form action="/api/input_kcal" method="post" class="input-form" id="kcal-form">
+        <form class="input-form" id="kcal-form">
             <label for="date">date</label>
             <input class="form-input" type="datetime-local" name="date" id="date" required />
             <label for="what">what</label>
@@ -42,6 +42,7 @@
             <textarea class="form-input" name="comment" id="comment"></textarea>
             <input class="form-submit" type="submit" value="Submit" />
         </form>
+        <p id="offline-message"></p>
     </main>
     <script type="text/javascript" src="/input_kcal.js"></script>
 </body>

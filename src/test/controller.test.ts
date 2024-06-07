@@ -1,6 +1,14 @@
 import { test, mock } from "node:test";
 import assert from "assert/strict";
-import { loadAllKcal, loadAllWeight, loadTodayKcalSummary, storeKcalInput, storeWeightInput, loadUniqueKcalInput } from "../controller";
+import {
+  loadAllKcal,
+  loadAllWeight,
+  loadTodayKcalSummary,
+  storeKcalInput,
+  storeMultipleKcalInput,
+  storeWeightInput,
+  loadUniqueKcalInput
+} from "../controller";
 import { readFile, rm } from "node:fs/promises";
 
 test.describe("storing and loading data", () => {
@@ -21,6 +29,13 @@ test.describe("storing and loading data", () => {
     await storeKcalInput({ not: "kcal" } as unknown as KcalStructure);
     await storeKcalInput(expect.kcal[0]);
     await storeKcalInput(null as unknown as KcalStructure);
+    const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    assert.deepEqual(JSON.stringify(expect, null, 2), result);
+  });
+
+  test('store multiple kcal', async () => {
+    const expect: DataStructure = { kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "test" }, { what: "test9", kcal: "23", date: "2024-05-12T17:27", comment: "test" }], weight: [] };
+    await storeMultipleKcalInput(expect.kcal);
     const result = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
     assert.deepEqual(JSON.stringify(expect, null, 2), result);
   });
