@@ -17,6 +17,10 @@ body {
     background: var(--primary);
 }
 
+.hidden {
+    display: none;
+}
+
 /* header */
 
 header {
@@ -62,6 +66,12 @@ header li a:hover {
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%)
+}
+
+.daily-info {
+    width: 300px;
+    text-align: center;
+    margin: auto;
 }
 
 
@@ -121,11 +131,11 @@ label {
     font-size: 14px
 }
 
-.daily-info {
+.offline-container {
     width: 300px;
-    text-align: center;
     margin: auto;
 }
+
 /* summary */
 
 .summary-content {

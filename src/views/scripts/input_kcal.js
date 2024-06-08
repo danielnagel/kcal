@@ -28,46 +28,67 @@ const renderSuggestionList = (data) => {
     });
 }
 
+const getFormDataJson = (form) => {
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+    return data;
+}
+
+const getParsedStoredData = () => {
+    const result = [];
+    if (!localStorage) return [];
+    const storedData = localStorage.getItem(storageItemKey);
+    if (storedData) {
+        try {
+            result.push(...JSON.parse(storedData));
+        } catch (e) {
+            console.error(`could not parse data from store. stored data: ${storedData}`);
+        }
+    }
+    return result;
+}
+
+const sendDataList = async (dataList) => {
+    try {
+        const response = await fetch("/api/input_kcal", {
+            method: "POST",
+            body: JSON.stringify(dataList),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        if (response.status == 200 && localStorage)
+            localStorage.removeItem(storageItemKey);
+    } catch (e) {
+        if (localStorage) localStorage.setItem(storageItemKey, JSON.stringify(dataList));
+    }
+}
+
 const formHandling = () => {
     const form = document.getElementById('kcal-form');
     form.onsubmit = async (e) => {
-        if (!localStorage) return;
         e.preventDefault();
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-        const dataList = [data];
-        const storedData = localStorage.getItem(storageItemKey);
-        if (storedData) {
-            try {
-                dataList.push(...JSON.parse(storedData));
-            } catch (e) {
-                console.error(`could not parse data from store. stored data: ${storedData}`);
-            }
-        }
-        try {
-            const response = await fetch("/api/input_kcal", {
-                method: "POST",
-                body: JSON.stringify(dataList),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            if (response.status == 200)
-                localStorage.removeItem(storageItemKey);
-        } catch (e) {
-            localStorage.setItem(storageItemKey, JSON.stringify(dataList));
-        }
+        await sendDataList([...getParsedStoredData(), getFormDataJson(form)]);
         form.reset();
         updateDateTimeInput();
         renderOfflineInfo();
     }
 }
 
+const showOfflineContainer = () => {
+    const offlineContainer = document.getElementById("offline-container");
+    if (offlineContainer.classList.contains("hidden")) offlineContainer.classList.remove("hidden");
+}
+
+const hideOfflineContainer = () => {
+    const offlineContainer = document.getElementById("offline-container");
+    if (!offlineContainer.classList.contains("hidden")) offlineContainer.classList.add("hidden");
+}
+
 const renderOfflineInfo = () => {
-    const offlineMessage = document.getElementById("offline-message");
     if (localStorage) {
         const storedData = localStorage.getItem(storageItemKey);
         if (storedData) {
@@ -77,13 +98,20 @@ const renderOfflineInfo = () => {
             } catch (e) {
                 console.error(`could not parse data from store. stored data: ${storedData}`);
             }
-            offlineMessage.innerText = `You are offline, ${data.length} form data items stored.`;
-            offlineMessage.onclick = () => navigator.clipboard.writeText(storedData);
+            const offlineMessage = document.getElementById("offline-message");
+            const copyButton = document.getElementById("offline-copy-button");
+            const sendButton = document.getElementById("offline-resend-button");
+            offlineMessage.innerText = `Data could not be send, ${data.length} stored items.`;
+            copyButton.onclick = () => copyToClipboard(storedData);
+            sendButton.onclick = async () => {
+                await sendDataList(getParsedStoredData())
+                if(localStorage && !localStorage.getItem(storageItemKey)) hideOfflineContainer();
+            };
+            showOfflineContainer();
             return;
         }
     }
-    offlineMessage.innerText = '';
-    offlineMessage.onclick = null;
+    hideOfflineContainer();
 }
 
 (async () => {
