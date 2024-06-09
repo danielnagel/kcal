@@ -33,3 +33,22 @@ const copyToClipboard = (text) => {
         unsecuredCopyToClipboard(text);
       }
 }
+
+const installServiceWorker = () => {
+    if (navigator.serviceWorker) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/serviceworker.js');
+        })
+    }
+}
+
+const persistData = async () => {
+    if (navigator.storage && navigator.storage.persist) {
+        await navigator.storage.persist();
+    }
+}
+
+const bootstrapApp = () => {
+    installServiceWorker();
+    persistData();
+}

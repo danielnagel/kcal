@@ -9,14 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="Daniel Nagel" />
     <link href="/index.css" rel="stylesheet">
-    <script>
-        if (navigator.serviceWorker) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/serviceworker.js');
-            })
-        }   
-    </script>
     <script type="text/javascript" src="/utils.js"></script>
+    <script>
+        bootstrapApp();
+    </script>
 </head>
 
 <body>

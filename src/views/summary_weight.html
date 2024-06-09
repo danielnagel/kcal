@@ -10,14 +10,10 @@
     <meta name="author" content="Daniel Nagel" />
     <link href="index.css" rel="stylesheet">
     <script type="text/javascript" src="/chart.umd.js"></script>
-    <script>
-        if (navigator.serviceWorker) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/serviceworker.js');
-            })
-        }   
-    </script>
     <script type="text/javascript" src="/utils.js"></script>
+    <script>
+        bootstrapApp();
+    </script>
 </head>
 
 <body>
