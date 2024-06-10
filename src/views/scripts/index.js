@@ -1,6 +1,6 @@
 const renderDailyCalories = (data) => {
-    if (typeof data.kcal !== "undefined") document.getElementById("today-calories").innerText = `calories: ${data.kcal}`
-    if (typeof data.date !== "undefined") document.getElementById("today-last-meal").innerText = `last meal: ${data.date}`
+    if (typeof data.kcal !== "undefined") document.getElementById("today-calories").innerText = `today calories: ${data.kcal}`
+    if (typeof data.date !== "undefined") document.getElementById("today-last-meal").innerText = `last meal: ${data.date} (${data.ago}h ago)`
 }
 
 (async () => {

@@ -87,10 +87,10 @@ test.describe("storing and loading data", () => {
     assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
 
     // mock date
-    mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 24).getTime() });
+    mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime() });
 
     const resultLoaded = await loadTodayKcalSummary();
-    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27" };
+    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27", ago: 2 };
     assert.deepEqual(resultLoaded, expectLoaded)
   });
 

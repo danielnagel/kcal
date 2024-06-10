@@ -84,14 +84,16 @@ const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
 }
 
 const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
-    const result = { kcal: 0, date: "00:00" };
+    const result = { kcal: 0, date: "00:00", ago: 0 };
     const kcals = await sortedKcalData();
     if (kcals.length === 0) return result;
     const todayKcals = kcals.filter(k => new Date(k.date).toDateString() === new Date().toDateString());
     if (todayKcals.length === 0) return result;
     const sortedTodayKcals = todayKcals.sort(sortByDate);
     sortedTodayKcals.forEach(k => result.kcal += parseInt(k.kcal));
-    result.date = new Date(sortedTodayKcals[sortedTodayKcals.length - 1].date).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    const lastDate = new Date(sortedTodayKcals[sortedTodayKcals.length - 1].date);
+    result.date = lastDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    result.ago = Math.floor((new Date().getTime() - lastDate.getTime()) / 1000 / 60 / 60);
     return result;
 }
 
