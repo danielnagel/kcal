@@ -26,11 +26,11 @@ const writeJsonToFile = async (data: DataStructure) => {
 }
 
 const storeKcalInput = async (reqBody: KcalStructure) => {
-    const fileContent = await readFileContent();
     if (!isKcalStructure(reqBody)) {
         console.error("(controller) Request does not contain a valid KcalStructure object, aborting.");
         return;
     }
+    const fileContent = await getStoredDataStructure();
     fileContent.kcal.push(reqBody);
     await writeJsonToFile(fileContent);
 }
@@ -59,23 +59,29 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
     return 0;
 }
 
-const readFileContent = async (): Promise<DataStructure> => {
+const readFileContent = async (): Promise<unknown> => {
     try {
         const content = await readFile(dataFilePath, { encoding: 'utf-8' });
-        const dataStructure = JSON.parse(content);
-        if (!isDataStructure(dataStructure)) {
-            console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-            return { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
-        }
-        return dataStructure;
+        const jsonContent = JSON.parse(content);
+        return jsonContent;
     } catch (e: unknown) {
-        // first write
-        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
+        // file not found, or content is not json
+        return {};
     }
 }
 
+
+const getStoredDataStructure = async (): Promise<DataStructure> => {
+    const jsonContent = await readFileContent();
+    if (!isDataStructure(jsonContent)) {
+        console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
+        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
+    }
+    return jsonContent;
+}
+
 const sortedKcalData = async () => {
-    const data = await readFileContent();
+    const data = await getStoredDataStructure();
     return data.kcal.sort(sortByDate);
 }
 
@@ -84,16 +90,16 @@ const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
 }
 
 const loadUserConfiguration = async () => {
-    const data = await readFileContent();
+    const data = await getStoredDataStructure();
     return data.user;
 }
 
 const storeUserConfiguration = async (reqBody: UserConfigStructure) => {
-    const fileContent = await readFileContent();
     if (!isUserConfigStructure(reqBody)) {
         console.error("(controller) Request does not contain a valid UserConfigStructure object, aborting.");
         return;
     }
+    const fileContent = await getStoredDataStructure();
     fileContent.user = reqBody;
     await writeJsonToFile(fileContent);
 }
@@ -147,17 +153,17 @@ const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
 }
 
 const storeWeightInput = async (reqBody: WeightStructure) => {
-    const fileContent = await readFileContent();
     if (!isWeightStructure(reqBody)) {
         console.error("(controller) Request does not contain a valid WeightStructure object, aborting.");
         return;
     }
+    const fileContent = await getStoredDataStructure();
     fileContent.weight.push(reqBody);
     await writeJsonToFile(fileContent);
 }
 
 const loadAllWeight = async (): Promise<WeightStructure[]> => {
-    const data = await readFileContent();
+    const data = await getStoredDataStructure();
     const weights = data.weight.sort(sortByDate).map(item => {
         return {
             ...item,
