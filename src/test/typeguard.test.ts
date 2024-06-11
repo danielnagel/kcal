@@ -1,11 +1,11 @@
 import { test } from "node:test";
 import assert from "assert/strict";
-import { isDataStructure, isKcalStructure, isWeightStructure } from "../typeguards";
+import { isDataStructure, isKcalStructure, isWeightStructure, isUserConfigStructure } from "../typeguards";
 
 test.describe("typeguards", () => {
 
     test('object is DataStructure', async () => {
-        const expect: DataStructure = { kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "test" }], weight: [] };
+        const expect: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 0 } };
         assert(isDataStructure(expect));
     });
 
@@ -41,6 +41,19 @@ test.describe("typeguards", () => {
 
     test('null is not WeightStructure', async () => {
         assert(!isWeightStructure(null));
+    });
+
+    test('object is UserConfigStructure', async () => {
+        const expect: UserConfigStructure = { dailyKcalTarget: 2000 };
+        assert(isUserConfigStructure(expect));
+    });
+
+    test('object is not UserConfigStructure', async () => {
+        assert(!isUserConfigStructure({ something: "else" }));
+    });
+
+    test('null is not UserConfigStructure', async () => {
+        assert(!isUserConfigStructure(null));
     });
 
 })

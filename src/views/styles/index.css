@@ -74,7 +74,21 @@ header li a:hover {
     margin: auto;
 }
 
+.progress-container {
+    margin: auto;
+    width: 80%;
+    background-color: var(--secondary);
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
 
+.progress-bar {
+    height: 30px;
+    width: 0;
+    background-color: var(--accent);
+    transition: width 0.25s;
+}
 
 /* input.html */
 .input-content {

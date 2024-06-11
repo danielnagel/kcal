@@ -1,5 +1,8 @@
 export const isDataStructure = (data: any): data is DataStructure => {
-    return data && Array.isArray((data as DataStructure).kcal) && Array.isArray((data as DataStructure).weight);
+    return data &&
+        Array.isArray((data as DataStructure).kcal) &&
+        Array.isArray((data as DataStructure).weight) &&
+        typeof (data as DataStructure).user !== "undefined";
 }
 
 export const isKcalStructure = (data: any): data is KcalStructure => {
@@ -15,5 +18,11 @@ export const isWeightStructure = (data: any): data is WeightStructure => {
         typeof (data as WeightStructure).waist !== "undefined" &&
         typeof (data as WeightStructure).weight !== "undefined" &&
         typeof (data as WeightStructure).date !== "undefined"
+    );
+}
+
+export const isUserConfigStructure = (data: any): data is UserConfigStructure => {
+    return data && (
+        typeof (data as UserConfigStructure).dailyKcalTarget !== "undefined"
     );
 }

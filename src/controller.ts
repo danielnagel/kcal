@@ -1,5 +1,5 @@
 import { mkdir, writeFile, readFile } from "node:fs/promises";
-import { isDataStructure, isKcalStructure, isWeightStructure } from "./typeguards";
+import { isDataStructure, isKcalStructure, isUserConfigStructure, isWeightStructure } from "./typeguards";
 
 const dataDirPath = `${__dirname}/data`;
 const dataFilePath = `${dataDirPath}/data.json`;
@@ -65,12 +65,12 @@ const readFileContent = async (): Promise<DataStructure> => {
         const dataStructure = JSON.parse(content);
         if (!isDataStructure(dataStructure)) {
             console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-            return { kcal: [], weight: [] };
+            return { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
         }
         return dataStructure;
     } catch (e: unknown) {
         // first write
-        return { kcal: [], weight: [] };
+        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
     }
 }
 
@@ -83,8 +83,23 @@ const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
     return splitDateTimeInData(await sortedKcalData());
 }
 
+const loadUserConfiguration = async () => {
+    const data = await readFileContent();
+    return data.user;
+}
+
+const storeUserConfiguration = async (reqBody: UserConfigStructure) => {
+    const fileContent = await readFileContent();
+    if (!isUserConfigStructure(reqBody)) {
+        console.error("(controller) Request does not contain a valid UserConfigStructure object, aborting.");
+        return;
+    }
+    fileContent.user = reqBody;
+    await writeJsonToFile(fileContent);
+}
+
 const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
-    const result = { kcal: 0, date: "00:00", ago: 0 };
+    const result: KcalSummary = { kcal: 0, date: "00:00", ago: 0, dailyKcalTarget: 0 };
     const kcals = await sortedKcalData();
     if (kcals.length === 0) return result;
     const todayKcals = kcals.filter(k => new Date(k.date).toDateString() === new Date().toDateString());
@@ -94,6 +109,8 @@ const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
     const lastDate = new Date(sortedTodayKcals[sortedTodayKcals.length - 1].date);
     result.date = lastDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
     result.ago = Math.floor((new Date().getTime() - lastDate.getTime()) / 1000 / 60 / 60);
+    const userConfiguration = await loadUserConfiguration();
+    result.dailyKcalTarget = userConfiguration.dailyKcalTarget;
     return result;
 }
 
@@ -136,5 +153,7 @@ export {
     loadAllKcal,
     storeWeightInput,
     loadAllWeight,
-    loadUniqueKcalInput
+    loadUniqueKcalInput,
+    loadUserConfiguration,
+    storeUserConfiguration
 };
