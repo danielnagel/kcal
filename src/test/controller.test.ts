@@ -16,7 +16,8 @@ import { readFile, rm } from "node:fs/promises";
 test.describe("storing and loading data", () => {
 
   test.afterEach(async () => {
-    await rm(__dirname + "/../data", { recursive: true })
+    await rm(__dirname + "/../data", { recursive: true });
+    mock.timers.reset();
   })
 
   test('store kcal', async () => {
@@ -107,7 +108,268 @@ test.describe("storing and loading data", () => {
     mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime() });
 
     const resultLoaded = await loadTodayKcalSummary();
-    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27", ago: 2, dailyKcalTarget: 2000 };
+    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27", ago: 2, dailyKcalTarget: 2000, pastDailyKcal: [] };
+    assert.deepEqual(resultLoaded, expectLoaded)
+  });
+
+  test('load today kcal, different data set', async () => {
+    const expect: DataStructure = {
+      kcal: [
+        {
+          "date": "2024-05-25T11:00",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-25T16:48",
+          "what": "test",
+          "kcal": "150",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-25T19:00",
+          "what": "test",
+          "kcal": "1500",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-26T12:00",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-26T14:53",
+          "what": "test",
+          "kcal": "100",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-26T17:14",
+          "what": "test",
+          "kcal": "700",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-26T18:04",
+          "what": "test",
+          "kcal": "360",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-26T21:00",
+          "what": "test",
+          "kcal": "600",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-27T09:48",
+          "what": "test",
+          "kcal": "550",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-27T13:45",
+          "what": "test",
+          "kcal": "600",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-27T17:30",
+          "what": "test",
+          "kcal": "600",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-27T18:19",
+          "what": "test",
+          "kcal": "180",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-28T10:00",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-28T14:45",
+          "what": "test",
+          "kcal": "700",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-28T14:48",
+          "what": "test",
+          "kcal": "100",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-28T19:04",
+          "what": "test",
+          "kcal": "800",
+          "comment": ""
+        },
+      ], weight: [], user: { dailyKcalTarget: 2000 }
+    };
+    await storeMultipleKcalInput(expect.kcal);
+    const resultStored = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
+
+    // mock date
+    mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 28, 22, 22, 0, 0).getTime() });
+
+    const resultLoaded = await loadTodayKcalSummary();
+    const expectLoaded: KcalSummary = {
+      kcal: 2100, date: "19:04", ago: 3, dailyKcalTarget: 2000, pastDailyKcal: [
+        { kcal: 1930, date: "27.05.2024" },
+        { kcal: 2260, date: "26.05.2024" },
+        { kcal: 2150, date: "25.05.2024" },
+      ]
+    };
+    assert.deepEqual(resultLoaded, expectLoaded)
+  });
+
+  test('load today kcal, between months', async () => {
+    const expect: DataStructure = {
+      kcal: [
+        {
+          "date": "2024-05-30T10:00",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        }, {
+          "date": "2024-05-30T14:00",
+          "what": "test",
+          "kcal": "700",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-30T18:13",
+          "what": "test",
+          "kcal": "600",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-30T21:46",
+          "what": "test",
+          "kcal": "300",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-31T11:00",
+          "what": "test",
+          "kcal": "700",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-31T12:00",
+          "what": "test",
+          "kcal": "80",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-31T14:48",
+          "what": "test",
+          "kcal": "450",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-31T15:10",
+          "what": "test",
+          "kcal": "80",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-31T21:34",
+          "what": "test",
+          "kcal": "600",
+          "comment": ""
+        },
+        {
+          "date": "2024-05-31T22:27",
+          "what": "test",
+          "kcal": "300",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-01T11:30",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-01T16:40",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-01T21:12",
+          "what": "test",
+          "kcal": "700",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-01T22:31",
+          "what": "test",
+          "kcal": "300",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-01T00:05",
+          "what": "test",
+          "kcal": "80",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-02T12:45",
+          "what": "test",
+          "kcal": "500",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-02T14:13",
+          "what": "test",
+          "kcal": "150",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-02T17:32",
+          "what": "test",
+          "kcal": "300",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-02T18:20",
+          "what": "test",
+          "kcal": "600",
+          "comment": ""
+        },
+        {
+          "date": "2024-06-02T20:47",
+          "what": "test",
+          "kcal": "150",
+          "comment": ""
+        },
+      ], weight: [], user: { dailyKcalTarget: 2000 }
+    };
+    await storeMultipleKcalInput(expect.kcal);
+    const resultStored = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
+
+    // mock date
+    mock.timers.enable({ apis: ['Date'], now: new Date(2024, 5, 2, 22, 22, 0, 0).getTime() });
+
+    const resultLoaded = await loadTodayKcalSummary();
+    const expectLoaded: KcalSummary = {
+      kcal: 1700, date: "20:47", ago: 1, dailyKcalTarget: 2000, pastDailyKcal: [
+        { kcal: 2080, date: "01.06.2024" },
+        { kcal: 2210, date: "31.05.2024" },
+        { kcal: 2100, date: "30.05.2024" },
+      ]
+    };
     assert.deepEqual(resultLoaded, expectLoaded)
   });
 

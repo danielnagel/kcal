@@ -47,8 +47,8 @@ const storeMultipleKcalInput = async (reqBody: KcalStructure[]) => {
 
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
     return data.map<ExtendedKcalStructure>(d => {
-        const date = new Date(d.date).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
-        const time = new Date(d.date).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+        const date = getGermanDateString(new Date(d.date));
+        const time = getGermanTimeString(new Date(d.date));
         return { ...d, date, time };
     })
 }
@@ -98,19 +98,50 @@ const storeUserConfiguration = async (reqBody: UserConfigStructure) => {
     await writeJsonToFile(fileContent);
 }
 
+const getSortedDataForDate = (date: Date, data: KcalStructure[]): KcalStructure[] => {
+    const result: KcalStructure[] = [];
+    const matchedData = data.filter(d => new Date(d.date).toDateString() === date.toDateString());
+    if (matchedData.length === 0) return result;
+    return matchedData.sort(sortByDate);
+}
+
+const sumCalories = (data: KcalStructure[]) => {
+    let result = 0;
+    data.forEach(d => result += parseInt(d.kcal));
+    return result;
+}
+
+const getGermanDateString = (date: Date) => {
+    return date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+const getGermanTimeString = (date: Date) => {
+    return date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+}
+
 const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
-    const result: KcalSummary = { kcal: 0, date: "00:00", ago: 0, dailyKcalTarget: 0 };
+    const result: KcalSummary = { kcal: 0, date: "00:00", ago: 0, dailyKcalTarget: 0, pastDailyKcal: [] };
     const kcals = await sortedKcalData();
     if (kcals.length === 0) return result;
-    const todayKcals = kcals.filter(k => new Date(k.date).toDateString() === new Date().toDateString());
-    if (todayKcals.length === 0) return result;
-    const sortedTodayKcals = todayKcals.sort(sortByDate);
-    sortedTodayKcals.forEach(k => result.kcal += parseInt(k.kcal));
+    const today = new Date();
+    const sortedTodayKcals = getSortedDataForDate(today, kcals);
+    result.kcal = sumCalories(sortedTodayKcals)
     const lastDate = new Date(sortedTodayKcals[sortedTodayKcals.length - 1].date);
-    result.date = lastDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-    result.ago = Math.floor((new Date().getTime() - lastDate.getTime()) / 1000 / 60 / 60);
+    result.date = getGermanTimeString(lastDate);
+    result.ago = Math.floor((today.getTime() - lastDate.getTime()) / 1000 / 60 / 60);
     const userConfiguration = await loadUserConfiguration();
     result.dailyKcalTarget = userConfiguration.dailyKcalTarget;
+    const kcalHistory = 3;
+    for (let i = 0; i < kcalHistory; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - (i + 1));
+        const matchedKcals = getSortedDataForDate(date, kcals);
+        if(matchedKcals.length === 0) continue;
+        result.pastDailyKcal.push({
+            date: getGermanDateString(date),
+            kcal: sumCalories(matchedKcals)
+        });
+    }
     return result;
 }
 
@@ -129,7 +160,7 @@ const loadAllWeight = async (): Promise<WeightStructure[]> => {
     const weights = data.weight.sort(sortByDate).map(item => {
         return {
             ...item,
-            date: new Date(item.date).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })
+            date: getGermanDateString(new Date(item.date))
         }
     });
     return weights;
