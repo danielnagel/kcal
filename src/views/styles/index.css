@@ -79,7 +79,6 @@ header li a:hover {
     width: 80%;
     background-color: var(--secondary);
     border-radius: 5px;
-    margin-bottom: 20px;
     overflow: hidden;
 }
 
@@ -88,6 +87,10 @@ header li a:hover {
     width: 0;
     background-color: var(--accent);
     transition: width 0.25s;
+}
+
+.progress-info-container {
+    margin-bottom: 40px;
 }
 
 /* input.html */

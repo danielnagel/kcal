@@ -124,9 +124,10 @@ const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
     const kcals = await sortedKcalData();
     if (kcals.length === 0) return result;
     const today = new Date();
-    const sortedTodayKcals = getSortedDataForDate(today, kcals);
-    result.kcal = sumCalories(sortedTodayKcals)
-    const lastDate = new Date(sortedTodayKcals[sortedTodayKcals.length - 1].date);
+    const matchedKcals = getSortedDataForDate(today, kcals);
+    if(matchedKcals.length === 0) return result;
+    result.kcal = sumCalories(matchedKcals)
+    const lastDate = new Date(matchedKcals[matchedKcals.length - 1].date);
     result.date = getGermanTimeString(lastDate);
     result.ago = Math.floor((today.getTime() - lastDate.getTime()) / 1000 / 60 / 60);
     const userConfiguration = await loadUserConfiguration();
