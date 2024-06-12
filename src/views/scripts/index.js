@@ -29,12 +29,12 @@ const removeProgressInfoContainer = () => {
 
 const renderDailyCalories = (data) => {
     removeProgressInfoContainer();
-    if (typeof data.date !== "undefined" && typeof data.ago !== "undefined") {
-        document.getElementById("today-last-meal").innerText = `last meal: ${data.date} (${data.ago}h ago)`;
+    if (typeof data.lastMealTime !== "undefined" && typeof data.lastMealAgo !== "undefined") {
+        document.getElementById("today-last-meal").innerText = `last meal: ${data.lastMealTime} (${data.lastMealAgo}h ago)`;
     }
 
-    if (typeof data.kcal !== "undefined" && typeof data.dailyKcalTarget !== "undefined") {
-        renderProgressInfoContainer("today", data.kcal, data.dailyKcalTarget);
+    if (typeof data.todayKcal !== "undefined" && typeof data.dailyKcalTarget !== "undefined") {
+        renderProgressInfoContainer("today", data.todayKcal, data.dailyKcalTarget);
     }
 
     if (Array.isArray(data.pastDailyKcal) && typeof data.dailyKcalTarget !== "undefined") {

@@ -109,7 +109,7 @@ test.describe("storing and loading data", () => {
     mock.timers.enable({ apis: ['Date'], now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime() });
 
     const resultLoaded = await loadTodayKcalSummary();
-    const expectLoaded: KcalSummary = { kcal: 1357, date: "19:27", ago: 2, dailyKcalTarget: 2000, pastDailyKcal: [] };
+    const expectLoaded: KcalSummary = { todayKcal: 1357, lastMealTime: "19:27", lastMealAgo: 2, dailyKcalTarget: 2000, pastDailyKcal: [] };
     assert.deepEqual(resultLoaded, expectLoaded)
   });
 
@@ -223,7 +223,7 @@ test.describe("storing and loading data", () => {
 
     const resultLoaded = await loadTodayKcalSummary();
     const expectLoaded: KcalSummary = {
-      kcal: 2100, date: "19:04", ago: 3, dailyKcalTarget: 2000, pastDailyKcal: [
+      todayKcal: 2100, lastMealTime: "19:04", lastMealAgo: 3, dailyKcalTarget: 2000, pastDailyKcal: [
         { kcal: 1930, date: "27.05.2024" },
         { kcal: 2260, date: "26.05.2024" },
         { kcal: 2150, date: "25.05.2024" },
@@ -365,7 +365,7 @@ test.describe("storing and loading data", () => {
 
     const resultLoaded = await loadTodayKcalSummary();
     const expectLoaded: KcalSummary = {
-      kcal: 1700, date: "20:47", ago: 1, dailyKcalTarget: 2000, pastDailyKcal: [
+      todayKcal: 1700, lastMealTime: "20:47", lastMealAgo: 1, dailyKcalTarget: 2000, pastDailyKcal: [
         { kcal: 2080, date: "01.06.2024" },
         { kcal: 2210, date: "31.05.2024" },
         { kcal: 2100, date: "30.05.2024" },

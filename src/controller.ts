@@ -153,18 +153,19 @@ const getGermanTimeString = (date: Date) => {
 }
 
 const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
-    const result: KcalSummary = { kcal: 0, date: "00:00", ago: 0, dailyKcalTarget: 0, pastDailyKcal: [] };
+    const result: KcalSummary = { todayKcal: 0, lastMealTime: "00:00", lastMealAgo: 0, dailyKcalTarget: 0, pastDailyKcal: [] };
+    const userConfiguration = await loadUserConfiguration();
+    result.dailyKcalTarget = userConfiguration.dailyKcalTarget;
     const kcals = await sortedKcalData();
     if (kcals.length === 0) return result;
     const today = new Date();
     const matchedKcals = getSortedDataForDate(today, kcals);
-    if(matchedKcals.length === 0) return result;
-    result.kcal = sumCalories(matchedKcals)
-    const lastDate = new Date(matchedKcals[matchedKcals.length - 1].date);
-    result.date = getGermanTimeString(lastDate);
-    result.ago = Math.floor((today.getTime() - lastDate.getTime()) / 1000 / 60 / 60);
-    const userConfiguration = await loadUserConfiguration();
-    result.dailyKcalTarget = userConfiguration.dailyKcalTarget;
+    if(matchedKcals.length) {
+        result.todayKcal = sumCalories(matchedKcals)
+        const lastDate = new Date(matchedKcals[matchedKcals.length - 1].date);
+        result.lastMealTime = getGermanTimeString(lastDate);
+        result.lastMealAgo = Math.floor((today.getTime() - lastDate.getTime()) / 1000 / 60 / 60);
+    }
     const kcalHistory = 3;
     for (let i = 0; i < kcalHistory; i++) {
         const date = new Date();
