@@ -1,12 +1,13 @@
 import { Request, Response, Router } from "express";
 import {
-    storeMultipleKcalInput,
-    loadAllKcal,
-    loadTodayKcalSummary,
-    storeWeightInput,
-    loadAllWeight,
-    loadUniqueKcalInput
-} from "./controller";
+  storeMultipleKcalInput,
+  loadAllKcal,
+  loadTodayKcalSummary,
+  storeWeightInput,
+  loadAllWeight,
+  loadUniqueKcalInput,
+  loadWeightTarget,
+} from "./controller"
 
 const staticPath = __dirname + "/public";
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
@@ -31,7 +32,13 @@ const getAllKcalData = async (req: Request, res: Response) => {
     }
 }
 
-const getAllWeightData = async (_req: Request, res: Response) => res.json(await loadAllWeight());
+const getAllWeightData = async (req: Request, res: Response) => {
+    if (req.query.summary === "true") {
+        res.json(await loadWeightTarget());
+    } else {
+        res.json(await loadAllWeight());
+    }
+}
 
 const router = Router();
 

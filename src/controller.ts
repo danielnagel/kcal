@@ -228,6 +228,11 @@ const loadUniqueKcalInput = async (): Promise<ReducedKcalStructure[]> => {
     return reducedKcal;
 }
 
+const loadWeightTarget = async (): Promise<WeightTargetSummary> => {
+    const userConfiguration = await loadUserConfiguration();
+    return { weightTarget: userConfiguration.weightTarget };
+}
+
 export {
     storeKcalInput,
     storeMultipleKcalInput,
@@ -238,5 +243,6 @@ export {
     loadUniqueKcalInput,
     loadUserConfiguration,
     storeUserConfiguration,
-    createOrUpdateDataJson
+    createOrUpdateDataJson,
+    loadWeightTarget
 };

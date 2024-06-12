@@ -11,6 +11,7 @@ import {
   storeUserConfiguration,
   loadUserConfiguration,
   createOrUpdateDataJson,
+  loadWeightTarget,
 } from "../controller"
 import { readFile, rm, writeFile, mkdir } from "node:fs/promises"
 
@@ -660,5 +661,30 @@ test.describe("storing and loading data", () => {
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
       user: { dailyKcalTarget: 2100, weightTarget: 90 },
     })
+  })
+
+  test("load today kcal", async () => {
+    const expect: DataStructure = {
+      kcal: [],
+      weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
+      user: { dailyKcalTarget: 2000, weightTarget: 90 },
+    }
+    await storeWeightInput(expect.weight[0])
+    const resultStored = await readFile(__dirname + "/../data/data.json", {
+      encoding: "utf-8",
+    })
+    assert.deepEqual(JSON.stringify(expect, null, 2), resultStored)
+
+    // mock date
+    mock.timers.enable({
+      apis: ["Date"],
+      now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime(),
+    })
+
+    const resultLoaded = await loadWeightTarget()
+    const expectLoaded: WeightTargetSummary = {
+      weightTarget: 90
+    }
+    assert.deepEqual(resultLoaded, expectLoaded)
   })
 })

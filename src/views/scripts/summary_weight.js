@@ -34,8 +34,17 @@ const renderChart = (data) => {
         });
 }
 
+const renderWeightTarget = async (data) => {
+    const container = document.getElementById("summary-weight-container");
+    const text = document.createElement("p");
+    text.innerText = `Target is ${data.weightTarget}kg`
+    container.appendChild(text);
+}
+
 (async () => {
     const response = await fetch('/api/weight');
     renderChart(await response.json());
+    const targetResponse = await fetch('/api/weight?summary=true');
+    renderWeightTarget(await targetResponse.json())
     serviceWorkerOnMessageHandler(renderChart);
 })();
