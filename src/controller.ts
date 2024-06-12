@@ -59,6 +59,33 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
     return 0;
 }
 
+const createOrUpdateDataJson = async (): Promise<void> => {
+    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
+    const jsonContent = await readFileContent();
+    
+    if(isDataStructure(jsonContent)) {
+        // file available and correct format, nothing to do
+        return;
+    }
+
+    if(jsonContent) {
+        // file probably has old format and will be updated
+        if(typeof (jsonContent as DataStructure).user === "undefined") {
+            // user object missing
+            (jsonContent as DataStructure).user = defaultJsonContent.user;
+        }
+        if(isDataStructure(jsonContent)) {
+            // file now has correct format, write
+            await writeJsonToFile(jsonContent);
+            return;
+        }
+    }
+
+    // possibly no file created yet
+    await writeJsonToFile(defaultJsonContent);
+    return;
+}
+
 const readFileContent = async (): Promise<unknown> => {
     try {
         const content = await readFile(dataFilePath, { encoding: 'utf-8' });
@@ -66,7 +93,7 @@ const readFileContent = async (): Promise<unknown> => {
         return jsonContent;
     } catch (e: unknown) {
         // file not found, or content is not json
-        return {};
+        return null;
     }
 }
 
@@ -193,5 +220,6 @@ export {
     loadAllWeight,
     loadUniqueKcalInput,
     loadUserConfiguration,
-    storeUserConfiguration
+    storeUserConfiguration,
+    createOrUpdateDataJson
 };

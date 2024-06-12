@@ -9,9 +9,10 @@ import {
   storeWeightInput,
   loadUniqueKcalInput,
   storeUserConfiguration,
-  loadUserConfiguration
+  loadUserConfiguration,
+  createOrUpdateDataJson,
 } from "../controller";
-import { readFile, rm } from "node:fs/promises";
+import { readFile, rm, writeFile, mkdir } from "node:fs/promises";
 
 test.describe("storing and loading data", () => {
 
@@ -401,6 +402,63 @@ test.describe("storing and loading data", () => {
       { what: "test4", kcal: "444" },
     ];
     assert.deepEqual(resultLoaded, expectLoaded)
-  })
+  });
+
+  test('create data.json, if not available', async () => {
+    let readFileResult = "";
+    try {
+      readFileResult = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    } catch (e) {
+      readFileResult = "file not available";
+    }
+    assert(readFileResult, "file not available");
+    await createOrUpdateDataJson();
+    try {
+      readFileResult = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    } catch (e) {
+      readFileResult = "file not available";
+    }
+    assert(readFileResult, JSON.stringify({ kcal: [], weight: [], user: { dailyKcalTarget: 2000 } }));
+  });
+
+  test('update data.json, if user variable is missing', async () => {
+    const expectedContent = JSON.stringify({kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" }], weight: [{ date: "2024-05-24", weight: "80", waist: "70" }]});
+    await mkdir(__dirname + "/../data");
+    await writeFile(__dirname + "/../data/data.json", expectedContent);
+    let readFileResult = "";
+    try {
+      readFileResult = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    } catch (e) {
+      readFileResult = "file not available";
+    }
+    assert(readFileResult, expectedContent);
+    await createOrUpdateDataJson();
+    try {
+      readFileResult = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    } catch (e) {
+      readFileResult = "file not available";
+    }
+    assert(readFileResult, JSON.stringify({ kcal: [{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" }], weight: [{ date: "2024-05-24", weight: "80", waist: "70" }], user: { dailyKcalTarget: 2000 } }));
+  });
+
+  test('create new data.json content, if data.json is available, but cannot be fixed', async () => {
+    const expectedContent = JSON.stringify({something: "else"});
+    await mkdir(__dirname + "/../data");
+    await writeFile(__dirname + "/../data/data.json", expectedContent);
+    let readFileResult = "";
+    try {
+      readFileResult = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    } catch (e) {
+      readFileResult = "file not available";
+    }
+    assert(readFileResult, expectedContent);
+    await createOrUpdateDataJson();
+    try {
+      readFileResult = await readFile(__dirname + "/../data/data.json", { encoding: 'utf-8' });
+    } catch (e) {
+      readFileResult = "file not available";
+    }
+    assert(readFileResult, JSON.stringify({ kcal: [], weight: [], user: { dailyKcalTarget: 2000 } }));
+  });
 
 })
