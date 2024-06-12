@@ -3,7 +3,7 @@ Description=Starts kcal backup script.
 
 [Service]
 Type=simple
-ExecStart=$PROJECT_DIR
+ExecStart=/bin/bash $PROJECT_DIR/backup.sh
 User=$PROJECT_USER
 
 [Install]
