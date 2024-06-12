@@ -59,31 +59,47 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
     return 0;
 }
 
+const updateUserConfig = async (is: DataStructure, should: DataStructure): Promise<void> => {
+    if (typeof is.user === "undefined") {
+        is.user = should.user;
+    } else if (!isUserConfigStructure(is.user)) {
+      if (
+        typeof (is.user as UserConfigStructure).dailyKcalTarget ===
+        "undefined"
+      ) {
+        ;(is.user as UserConfigStructure).dailyKcalTarget =
+          should.user.dailyKcalTarget
+      }
+      if (
+        typeof (is.user as UserConfigStructure).weightTarget ===
+        "undefined"
+      ) {
+        ;(is.user as UserConfigStructure).weightTarget =
+          should.user.weightTarget
+      }
+    }
+}
+
 const createOrUpdateDataJson = async (): Promise<void> => {
-    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
+    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90 } };
     const jsonContent = await readFileContent();
-    
-    if(isDataStructure(jsonContent)) {
-        // file available and correct format, nothing to do
-        return;
-    }
 
-    if(jsonContent) {
-        // file probably has old format and will be updated
-        if(typeof (jsonContent as DataStructure).user === "undefined") {
-            // user object missing
-            (jsonContent as DataStructure).user = defaultJsonContent.user;
-        }
-        if(isDataStructure(jsonContent)) {
-            // file now has correct format, write
+    if (!jsonContent ||
+        (typeof (jsonContent as DataStructure).kcal === "undefined" &&
+        typeof (jsonContent as DataStructure).weight === "undefined")) {
+        // possibly no file created yet or is no valid data structure
+        await writeJsonToFile(defaultJsonContent);
+    } else if (!isDataStructure(jsonContent)) {
+        updateUserConfig((jsonContent as DataStructure), defaultJsonContent);
+        // file now has correct format, write
+        if (isDataStructure(jsonContent)) {
             await writeJsonToFile(jsonContent);
-            return;
         }
+    } else if (isDataStructure(jsonContent)) {
+        updateUserConfig(jsonContent, defaultJsonContent);
+        // file now has correct format, write
+        await writeJsonToFile(jsonContent);
     }
-
-    // possibly no file created yet
-    await writeJsonToFile(defaultJsonContent);
-    return;
 }
 
 const readFileContent = async (): Promise<unknown> => {
@@ -102,7 +118,7 @@ const getStoredDataStructure = async (): Promise<DataStructure> => {
     const jsonContent = await readFileContent();
     if (!isDataStructure(jsonContent)) {
         console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000 } };
+        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90 } };
     }
     return jsonContent;
 }
