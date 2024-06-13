@@ -164,6 +164,13 @@ const getGermanDateString = (date: Date) => {
     return date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
+const getGermanMonthString = (date: Date) => {
+  return date.toLocaleDateString("de-DE", {
+    month: "2-digit",
+    year: "numeric",
+  })
+}
+
 const getGermanTimeString = (date: Date) => {
     return date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
 }
@@ -206,6 +213,16 @@ const storeWeightInput = async (reqBody: WeightStructure) => {
     await writeJsonToFile(fileContent);
 }
 
+const storeMultipleWeightInput = async (reqBody: WeightStructure[]) => {
+  if (!Array.isArray(reqBody)) {
+    console.error("(controller) Request does not contain an array, aborting.")
+    return
+  }
+  for (const item of reqBody) {
+    await storeWeightInput(item)
+  }
+}
+
 const loadAllWeight = async (): Promise<WeightStructure[]> => {
     const data = await getStoredDataStructure();
     const weights = data.weight.sort(sortByDate).map(item => {
@@ -230,7 +247,20 @@ const loadUniqueKcalInput = async (): Promise<ReducedKcalStructure[]> => {
 
 const loadWeightTarget = async (): Promise<WeightTargetSummary> => {
     const userConfiguration = await loadUserConfiguration();
-    return { weightTarget: userConfiguration.weightTarget };
+    const weights = await loadAllWeight();
+    const mostRecentWeight = weights[weights.length - 1];
+    const difference = parseInt(mostRecentWeight.weight) - userConfiguration.weightTarget;
+    const twoKiloPerMonth = Math.round(difference / 2);
+    const twoKiloDate = new Date();
+    twoKiloDate.setMonth(twoKiloDate.getMonth() + twoKiloPerMonth);
+    const twoKiloPrediction = getGermanMonthString(twoKiloDate);
+    const oneKiloPerMonth = Math.round(difference);
+    const oneKiloDate = new Date()
+    oneKiloDate.setMonth(oneKiloDate.getMonth() + oneKiloPerMonth)
+    const oneKiloPrediction = getGermanMonthString(oneKiloDate);
+    return {
+        weightTarget: userConfiguration.weightTarget, twoKiloPrediction, oneKiloPrediction
+    };
 }
 
 export {
@@ -239,6 +269,7 @@ export {
     loadTodayKcalSummary,
     loadAllKcal,
     storeWeightInput,
+    storeMultipleWeightInput,
     loadAllWeight,
     loadUniqueKcalInput,
     loadUserConfiguration,

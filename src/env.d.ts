@@ -6,4 +6,4 @@ type KcalSummary = {todayKcal: number, lastMealTime: string, lastMealAgo: number
 type ReducedKcalStructure = { what: string, kcal: string };
 type UserConfigStructure = {dailyKcalTarget: number, weightTarget: number};
 type DailyKcalAndTime = {kcal: number, date: string};
-type WeightTargetSummary = { weightTarget: number };
+type WeightTargetSummary = { weightTarget: number, twoKiloPrediction: string, oneKiloPrediction: string };
