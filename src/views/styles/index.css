@@ -24,7 +24,7 @@ body {
 /* header */
 
 header {
-    max-width: 300px;
+    max-width: 350px;
     margin: auto;
     display: flex;
     gap: 10px;

@@ -7,6 +7,8 @@ import {
   loadAllWeight,
   loadUniqueKcalInput,
   loadWeightTarget,
+  storeUserConfiguration,
+  loadUserConfiguration,
 } from "./controller"
 
 const staticPath = __dirname + "/public";
@@ -40,6 +42,15 @@ const getAllWeightData = async (req: Request, res: Response) => {
     }
 }
 
+const getConfiguration = async (_req: Request, res: Response) => {
+    res.json(await loadUserConfiguration());
+}
+
+const postConfiguration = (req: Request, res: Response) => {
+    storeUserConfiguration(req.body)
+    res.redirect('/configuration');
+}
+
 const router = Router();
 
 router.post('/api/input_kcal', postKcal);
@@ -50,5 +61,8 @@ router.get('/api/kcal', getAllKcalData);
 router.get('/summary_kcal', sendHtml)
 router.get('/api/weight', getAllWeightData);
 router.get('/summary_weight', sendHtml)
+router.get('/configuration', sendHtml);
+router.get('/api/configuration', getConfiguration);
+router.post('/api/configuration', postConfiguration);
 
 export { router };
