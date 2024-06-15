@@ -10,7 +10,7 @@ body {
 :root {
     --primary: #101010;
     --secondary: #eee;
-    --accent: cadetblue;
+    --accent: #5f9ea0;
     color: var(--secondary);
     font-size: 18px;
     font-family: system-ui, sans-serif;

@@ -11,8 +11,18 @@ const updateConfiguration = (data) => {
   }
 }
 
+// TODO: store on server
+// TODO: put color into local storage
+// TODO: load initial on every page, if set, set the color
+
 ;(async () => {
   const response = await fetch("/api/configuration")
   updateConfiguration(await response.json())
   serviceWorkerOnMessageHandler(updateConfiguration)
+
+  const userColorInput = document.getElementById("userColor");
+  const r = document.querySelector(':root');
+  userColorInput.oninput = (e) => {
+    r.style.setProperty('--accent', e.target.value);
+  }
 })()
