@@ -77,11 +77,18 @@ const updateUserConfig = async (is: DataStructure, should: DataStructure): Promi
         ;(is.user as UserConfigStructure).weightTarget =
           should.user.weightTarget
       }
+      if (
+        typeof (is.user as UserConfigStructure).color ===
+        "undefined"
+      ) {
+        ;(is.user as UserConfigStructure).color =
+          should.user.color
+      }
     }
 }
 
 const createOrUpdateDataJson = async (): Promise<void> => {
-    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90 } };
+    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0" } };
     const jsonContent = await readFileContent();
 
     if (!jsonContent ||
@@ -118,7 +125,7 @@ const getStoredDataStructure = async (): Promise<DataStructure> => {
     const jsonContent = await readFileContent();
     if (!isDataStructure(jsonContent)) {
         console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90 } };
+        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0" } };
     }
     return jsonContent;
 }

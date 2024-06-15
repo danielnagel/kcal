@@ -9,20 +9,21 @@ const updateConfiguration = (data) => {
     const weightTarget = document.getElementById("weightTarget")
     weightTarget.value = data.weightTarget
   }
+  if (data.color !== undefined) {
+    const color = document.getElementById("color")
+    color.value = data.color
+  }
 }
-
-// TODO: store on server
-// TODO: put color into local storage
-// TODO: load initial on every page, if set, set the color
 
 ;(async () => {
   const response = await fetch("/api/configuration")
   updateConfiguration(await response.json())
   serviceWorkerOnMessageHandler(updateConfiguration)
 
-  const userColorInput = document.getElementById("userColor");
+  const userColorInput = document.getElementById("color");
   const r = document.querySelector(':root');
   userColorInput.oninput = (e) => {
     r.style.setProperty('--accent', e.target.value);
+    if (localStorage) localStorage.setItem("color", e.target.value);
   }
 })()

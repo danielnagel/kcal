@@ -48,7 +48,16 @@ const persistData = async () => {
     }
 }
 
+const setColorFromStorage = () => {
+    if (localStorage) {
+        const color = localStorage.getItem("color");
+        const r = document.querySelector(':root');
+        r.style.setProperty('--accent', color);
+    }
+}
+
 const bootstrapApp = () => {
     installServiceWorker();
     persistData();
+    setColorFromStorage();
 }
