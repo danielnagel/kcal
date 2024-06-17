@@ -102,6 +102,8 @@ The project uses systemd services to run the server or perform backups.
 I wanted to see if I could get the project up and running quickly on other Debian-based operating systems using scripts,
 and I believe I have succeeded, as described in the installation chapter.
 Since I use this project daily, it will continue to evolve.
+I also tried to migrate the project to the [deno runtime](https://deno.com/).
+But it [currently doesn't support arm32 architecture](https://github.com/denoland/deno/issues/2295).
 
 ### What I Learned
 
