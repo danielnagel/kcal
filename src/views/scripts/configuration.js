@@ -13,6 +13,10 @@ const updateConfiguration = (data) => {
     const color = document.getElementById("color")
     color.value = data.color
   }
+  if (data.kcalHistoryCount !== undefined) {
+    const kcalHistoryCount = document.getElementById("kcalHistoryCount")
+    kcalHistoryCount.value = data.kcalHistoryCount
+  }
 }
 
 ;(async () => {

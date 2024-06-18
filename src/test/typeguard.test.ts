@@ -12,7 +12,7 @@ test.describe("typeguards", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [],
-      user: { dailyKcalTarget: 0, weightTarget: 0, color: "" },
+      user: { dailyKcalTarget: 0, weightTarget: 0, color: "", kcalHistoryCount: 0 },
     }
     assert(isDataStructure(expect))
   })
@@ -64,7 +64,8 @@ test.describe("typeguards", () => {
     const expect: UserConfigStructure = {
       dailyKcalTarget: 2000,
       weightTarget: 90,
-      color: ""
+      color: "",
+      kcalHistoryCount: 0
     }
     assert(isUserConfigStructure(expect))
   })

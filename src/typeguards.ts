@@ -32,6 +32,7 @@ export const isUserConfigStructure = (
     data &&
     typeof (data as UserConfigStructure).dailyKcalTarget !== "undefined" &&
     typeof (data as UserConfigStructure).weightTarget !== "undefined" &&
-    typeof (data as UserConfigStructure).color !== "undefined"
+    typeof (data as UserConfigStructure).color !== "undefined" &&
+    typeof (data as UserConfigStructure).kcalHistoryCount !== "undefined"
   )
 }

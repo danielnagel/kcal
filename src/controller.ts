@@ -84,11 +84,18 @@ const updateUserConfig = async (is: DataStructure, should: DataStructure): Promi
         ;(is.user as UserConfigStructure).color =
           should.user.color
       }
+      if (
+        typeof (is.user as UserConfigStructure).kcalHistoryCount ===
+        "undefined"
+      ) {
+        ;(is.user as UserConfigStructure).kcalHistoryCount =
+          should.user.kcalHistoryCount
+      }
     }
 }
 
 const createOrUpdateDataJson = async (): Promise<void> => {
-    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0" } };
+    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 } };
     const jsonContent = await readFileContent();
 
     if (!jsonContent ||
@@ -125,7 +132,7 @@ const getStoredDataStructure = async (): Promise<DataStructure> => {
     const jsonContent = await readFileContent();
     if (!isDataStructure(jsonContent)) {
         console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0" } };
+        return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 } };
     }
     return jsonContent;
 }
@@ -183,9 +190,9 @@ const getGermanTimeString = (date: Date) => {
 }
 
 const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
-    const result: KcalSummary = { todayKcal: 0, lastMealTime: "00:00", lastMealAgo: 0, dailyKcalTarget: 0, pastDailyKcal: [] };
-    const userConfiguration = await loadUserConfiguration();
-    result.dailyKcalTarget = userConfiguration.dailyKcalTarget;
+    const result: KcalSummary = { todayKcal: 0, lastMealTime: "00:00", lastMealAgo: 0, dailyKcalTarget: 0, pastDailyKcal: [], actualKcalHistorySum: 0, expectedKcalHistorySum: 0, kcalHistorySumDifference: 0 };
+    const {dailyKcalTarget, kcalHistoryCount} = await loadUserConfiguration();
+    result.dailyKcalTarget = dailyKcalTarget;
     const kcals = await sortedKcalData();
     if (kcals.length === 0) return result;
     const today = new Date();
@@ -196,16 +203,21 @@ const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
         result.lastMealTime = getGermanTimeString(lastDate);
         result.lastMealAgo = Math.floor((today.getTime() - lastDate.getTime()) / 1000 / 60 / 60);
     }
-    const kcalHistory = 3;
-    for (let i = 0; i < kcalHistory; i++) {
+    for (let i = 0; i < kcalHistoryCount; i++) {
         const date = new Date();
         date.setDate(date.getDate() - (i + 1));
         const matchedKcals = getSortedDataForDate(date, kcals);
         if(matchedKcals.length === 0) continue;
+        const summedCalories = sumCalories(matchedKcals);
         result.pastDailyKcal.push({
             date: getGermanDateString(date),
-            kcal: sumCalories(matchedKcals)
+            kcal: summedCalories
         });
+        result.actualKcalHistorySum += summedCalories;
+    }
+    if (result.pastDailyKcal.length > 0) {
+        result.expectedKcalHistorySum = dailyKcalTarget * result.pastDailyKcal.length;
+        result.kcalHistorySumDifference = result.actualKcalHistorySum - result.expectedKcalHistorySum;
     }
     return result;
 }
