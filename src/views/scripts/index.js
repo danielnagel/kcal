@@ -25,6 +25,22 @@ const renderProgressInfoContainer = (labelText, is, goal) => {
 
 const removeProgressInfoContainer = () => {
     document.querySelectorAll('.progress-info-container').forEach(e => e.remove());
+    document.querySelectorAll('.calories-summary-info').forEach(e => e.remove());
+}
+
+const calculateColor = (difference) => {
+    if(difference >= 1500 || difference <= -1500) return "red"
+    if(difference >= 1000 || difference <= -1000) return "orangered"
+    if(difference >= 500 || difference <= -500) return "orange";
+    return "var(--secondary)"
+}
+
+const renderKcalHistorySummary = (actual, expected, difference, days, target) => {
+    const text = document.createElement("p");
+    text.classList.add("calories-summary-info");
+    text.innerHTML = `last <strong>${days} days</strong> difference is <strong style="color: ${calculateColor(difference)}">${difference} kcal</strong>`;
+    text.title = `Considering daily target of ${target} kcal, overall kcal consumption should be ${expected} kcal and is ${actual} kcal.`;
+    document.getElementById("daily-info-container").appendChild(text);
 }
 
 const renderDailyCalories = (data) => {
@@ -37,7 +53,11 @@ const renderDailyCalories = (data) => {
         renderProgressInfoContainer("today", data.todayKcal, data.dailyKcalTarget);
     }
 
+    
     if (Array.isArray(data.pastDailyKcal) && typeof data.dailyKcalTarget !== "undefined") {
+        if (data.actualKcalHistorySum !== undefined && data.expectedKcalHistorySum !== undefined && data.kcalHistorySumDifference !== undefined) {
+            renderKcalHistorySummary(data.actualKcalHistorySum, data.expectedKcalHistorySum, data.kcalHistorySumDifference, data.pastDailyKcal.length, data.dailyKcalTarget);
+        }
         data.pastDailyKcal.forEach(d => {
             if (typeof d.date !== "undefined" && typeof d.kcal !== "undefined") {
                 renderProgressInfoContainer(d.date, d.kcal, data.dailyKcalTarget);
