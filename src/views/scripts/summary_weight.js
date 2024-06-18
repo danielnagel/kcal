@@ -1,6 +1,7 @@
 let chartInstance = undefined;
 
 const renderChart = (data) => {
+    if (!Array.isArray(data)) return;
     if (chartInstance) chartInstance.destroy();
     
     const date = data.map(item => item.date);
