@@ -67,7 +67,7 @@ test.describe("storing and loading data", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [],
-      user: { dailyKcalTarget: 1000, weightTarget: 80, color: "#ff0000", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 1000, weightTarget: 80, color: "#ff0000", kcalHistoryCount: 3, user: "" },
     }
     await storeUserConfiguration(expect.user)
     const resultStored = await readFile(__dirname + "/../data/data.json", {
@@ -82,7 +82,7 @@ test.describe("storing and loading data", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     }
     await storeWeightInput(expect.weight[0])
     const result = await readFile(__dirname + "/../data/data.json", {
@@ -95,7 +95,7 @@ test.describe("storing and loading data", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     }
     await storeWeightInput({ not: "weight" } as unknown as WeightStructure)
     await storeWeightInput(expect.weight[0])
@@ -113,7 +113,7 @@ test.describe("storing and loading data", () => {
         { date: "2024-05-24", weight: "80", waist: "70" },
         { date: "2024-05-04", weight: "85", waist: "75" },
       ],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     }
     await storeWeightInput(expect.weight[0])
     await storeWeightInput(expect.weight[1])
@@ -137,7 +137,7 @@ test.describe("storing and loading data", () => {
         { what: "test2", kcal: "1234", date: "2024-05-24T09:27", comment: "" },
       ],
       weight: [],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     }
     await storeMultipleKcalInput(expect.kcal)
     const resultStored = await readFile(__dirname + "/../data/data.json", {
@@ -260,7 +260,7 @@ test.describe("storing and loading data", () => {
     assert.deepEqual(JSON.parse(readFileResult), {
       kcal: [],
       weight: [],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     })
   })
 
@@ -295,7 +295,7 @@ test.describe("storing and loading data", () => {
         { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
       ],
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     })
   })
 
@@ -323,7 +323,7 @@ test.describe("storing and loading data", () => {
     assert.deepEqual(JSON.parse(readFileResult), {
       kcal: [],
       weight: [],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     })
   })
 
@@ -359,7 +359,7 @@ test.describe("storing and loading data", () => {
         { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
       ],
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2100, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+      user: { dailyKcalTarget: 2100, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
     })
   })
 

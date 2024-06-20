@@ -98,7 +98,7 @@ export const dataStructure1: DataStructure = {
         },
     ],
     weight: [],
-    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
 }
 
 export const dataStructure2: DataStructure = {
@@ -225,7 +225,7 @@ export const dataStructure2: DataStructure = {
         },
     ],
     weight: [],
-    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 2 },
+    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 2, user: "" },
 }
 
 export const dataStructure3: DataStructure = {
@@ -238,7 +238,7 @@ export const dataStructure3: DataStructure = {
         },
     ],
     weight: [],
-    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
 }
 
 
@@ -258,7 +258,7 @@ export const dataStructure4: DataStructure = {
         },
     ],
     weight: [],
-    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
 }
 
 
@@ -273,7 +273,7 @@ export const dataStructure5: DataStructure = {
         { what: "test2", kcal: "1234", date: "2024-05-24T09:27", comment: "" },
     ],
     weight: [],
-    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
 }
 
 
@@ -306,5 +306,5 @@ export const dataStructure6: DataStructure = {
             waist: "112",
         },
     ],
-    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3 },
+    user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
 }
