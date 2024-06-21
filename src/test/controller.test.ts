@@ -24,38 +24,38 @@ test.describe("storing and loading data", () => {
   })
 
   test("store kcal", async () => {
-    await storeKcalInput(dataStructure3.kcal[0])
-    const result = await readFile(__dirname + "/../data/data.json", {
+    await storeKcalInput(dataStructure3.kcal[0], "test-user")
+    const result = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure3, null, 2), result)
   })
 
   test("not store no kcal", async () => {
-    await storeKcalInput({ not: "kcal" } as unknown as KcalStructure)
-    await storeKcalInput(dataStructure3.kcal[0])
-    await storeKcalInput(null as unknown as KcalStructure)
-    const result = await readFile(__dirname + "/../data/data.json", {
+    await storeKcalInput({ not: "kcal" } as unknown as KcalStructure, "test-user")
+    await storeKcalInput(dataStructure3.kcal[0], "test-user")
+    await storeKcalInput(null as unknown as KcalStructure, "test-user")
+    const result = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure3, null, 2), result)
   })
 
   test("store multiple kcal", async () => {
-    await storeMultipleKcalInput(dataStructure1.kcal)
-    const result = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleKcalInput(dataStructure1.kcal, "test-user")
+    const result = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure1, null, 2), result)
   })
 
   test("load all kcal", async () => {
-    await storeMultipleKcalInput(dataStructure4.kcal)
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleKcalInput(dataStructure4.kcal, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure4, null, 2), resultStored)
-    const resultLoaded = await loadAllKcal()
+    const resultLoaded = await loadAllKcal("test-user")
     const expectLoaded: ExtendedKcalStructure[] = [
       { ...dataStructure4.kcal[1], date: "24.05.2024", time: "09:27" },
       { ...dataStructure4.kcal[0], date: "24.05.2024", time: "19:27" },
@@ -67,14 +67,14 @@ test.describe("storing and loading data", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [],
-      user: { dailyKcalTarget: 1000, weightTarget: 80, color: "#ff0000", kcalHistoryCount: 3, user: "" },
+      user: { dailyKcalTarget: 1000, weightTarget: 80, color: "#ff0000", kcalHistoryCount: 3, user: "test-user" },
     }
-    await storeUserConfiguration(expect.user)
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeUserConfiguration(expect.user, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(expect, null, 2), resultStored)
-    const resultLoaded = await loadUserConfiguration()
+    const resultLoaded = await loadUserConfiguration("test-user")
     assert.deepEqual(resultLoaded, expect.user)
   })
 
@@ -82,10 +82,10 @@ test.describe("storing and loading data", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
     }
-    await storeWeightInput(expect.weight[0])
-    const result = await readFile(__dirname + "/../data/data.json", {
+    await storeWeightInput(expect.weight[0], "test-user")
+    const result = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(expect, null, 2), result)
@@ -95,12 +95,12 @@ test.describe("storing and loading data", () => {
     const expect: DataStructure = {
       kcal: [],
       weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
     }
-    await storeWeightInput({ not: "weight" } as unknown as WeightStructure)
-    await storeWeightInput(expect.weight[0])
-    await storeWeightInput(null as unknown as WeightStructure)
-    const result = await readFile(__dirname + "/../data/data.json", {
+    await storeWeightInput({ not: "weight" } as unknown as WeightStructure, "test-user")
+    await storeWeightInput(expect.weight[0], "test-user")
+    await storeWeightInput(null as unknown as WeightStructure, "test-user")
+    const result = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(expect, null, 2), result)
@@ -113,15 +113,14 @@ test.describe("storing and loading data", () => {
         { date: "2024-05-24", weight: "80", waist: "70" },
         { date: "2024-05-04", weight: "85", waist: "75" },
       ],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
     }
-    await storeWeightInput(expect.weight[0])
-    await storeWeightInput(expect.weight[1])
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleWeightInput(expect.weight, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(expect, null, 2), resultStored)
-    const resultLoaded = await loadAllWeight()
+    const resultLoaded = await loadAllWeight("test-user")
     const expectLoaded: WeightStructure[] = [
       { ...expect.weight[1], date: "04.05.2024" },
       { ...expect.weight[0], date: "24.05.2024" },
@@ -137,10 +136,10 @@ test.describe("storing and loading data", () => {
         { what: "test2", kcal: "1234", date: "2024-05-24T09:27", comment: "" },
       ],
       weight: [],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
+      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
     }
-    await storeMultipleKcalInput(expect.kcal)
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleKcalInput(expect.kcal, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(expect, null, 2), resultStored)
@@ -151,7 +150,7 @@ test.describe("storing and loading data", () => {
       now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime(),
     })
 
-    const resultLoaded = await loadTodayKcalSummary()
+    const resultLoaded = await loadTodayKcalSummary("test-user")
     const expectLoaded: KcalSummary = {
       todayKcal: 1357,
       lastMealTime: "19:27",
@@ -166,8 +165,8 @@ test.describe("storing and loading data", () => {
   })
 
   test("load today kcal, different data set", async () => {
-    await storeMultipleKcalInput(dataStructure1.kcal)
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleKcalInput(dataStructure1.kcal, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure1, null, 2), resultStored)
@@ -178,7 +177,7 @@ test.describe("storing and loading data", () => {
       now: new Date(2024, 4, 28, 22, 22, 0, 0).getTime(),
     })
 
-    const resultLoaded = await loadTodayKcalSummary()
+    const resultLoaded = await loadTodayKcalSummary("test-user")
     const expectLoaded: KcalSummary = {
       todayKcal: 2100,
       lastMealTime: "19:04",
@@ -197,9 +196,9 @@ test.describe("storing and loading data", () => {
   })
 
   test("load today kcal, between months", async () => {
-    await storeMultipleKcalInput(dataStructure2.kcal)
-    await storeUserConfiguration(dataStructure2.user)
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleKcalInput(dataStructure2.kcal, "test-user")
+    await storeUserConfiguration(dataStructure2.user, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure2, null, 2), resultStored)
@@ -210,7 +209,7 @@ test.describe("storing and loading data", () => {
       now: new Date(2024, 5, 2, 22, 22, 0, 0).getTime(),
     })
 
-    const resultLoaded = await loadTodayKcalSummary()
+    const resultLoaded = await loadTodayKcalSummary("test-user")
     const expectLoaded: KcalSummary = {
       todayKcal: 1700,
       lastMealTime: "20:47",
@@ -228,8 +227,8 @@ test.describe("storing and loading data", () => {
   })
 
   test("load all unique kcal input", async () => {
-    await storeMultipleKcalInput(dataStructure5.kcal)
-    const resultLoaded = await loadUniqueKcalInput()
+    await storeMultipleKcalInput(dataStructure5.kcal, "test-user")
+    const resultLoaded = await loadUniqueKcalInput("test-user")
     const expectLoaded: ReducedKcalStructure[] = [
       { what: "test", kcal: "123" },
       { what: "test2", kcal: "1234" },
@@ -364,8 +363,8 @@ test.describe("storing and loading data", () => {
   })
 
   test("load weight summary", async () => {
-    await storeMultipleWeightInput(dataStructure6.weight)
-    const resultStored = await readFile(__dirname + "/../data/data.json", {
+    await storeMultipleWeightInput(dataStructure6.weight, "test-user")
+    const resultStored = await readFile(__dirname + "/../data/test-user.json", {
       encoding: "utf-8",
     })
     assert.deepEqual(JSON.stringify(dataStructure6, null, 2), resultStored)
@@ -376,7 +375,7 @@ test.describe("storing and loading data", () => {
       now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime(),
     })
 
-    const resultLoaded = await loadWeightTarget()
+    const resultLoaded = await loadWeightTarget("test-user")
     const expectLoaded: WeightTargetSummary = {
       weightTarget: 90,
       oneKiloPrediction: "02.2026",

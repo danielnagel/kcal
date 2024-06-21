@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { isDataStructure, isKcalStructure, isUserConfigStructure, isWeightStructure } from "./typeguards";
 
 const dataDirPath = `${__dirname}/data`;
@@ -16,32 +16,32 @@ const createDataDir = async () => {
     }
 }
 
-const writeJsonToFile = async (data: DataStructure) => {
+const writeJsonToFile = async (path: string, data: DataStructure) => {
     await createDataDir();
     try {
-        await writeFile(dataFilePath, JSON.stringify(data, null, 2));
+        await writeFile(path, JSON.stringify(data, null, 2));
     } catch (e: unknown) {
-        if (e instanceof Error) console.error(`(controller) Couldn't create file ${dataFilePath}. Message: ${e.message}`);
+        if (e instanceof Error) console.error(`(controller) Couldn't create file ${path}. Message: ${e.message}`);
     }
 }
 
-const storeKcalInput = async (reqBody: KcalStructure) => {
+const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
     if (!isKcalStructure(reqBody)) {
         console.error("(controller) Request does not contain a valid KcalStructure object, aborting.");
         return;
     }
-    const fileContent = await getStoredDataStructure();
+    const fileContent = await getStoredDataStructure(user);
     fileContent.kcal.push(reqBody);
-    await writeJsonToFile(fileContent);
+    await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 }
 
-const storeMultipleKcalInput = async (reqBody: KcalStructure[]) => {
+const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) => {
     if (!Array.isArray(reqBody)) {
         console.error("(controller) Request does not contain an array, aborting.");
         return;
     }
     for (const item of reqBody) {
-        await storeKcalInput(item);
+        await storeKcalInput(item, user);
     }
 }
 
@@ -101,31 +101,53 @@ const updateUserConfig = async (is: DataStructure, should: DataStructure): Promi
     }
 }
 
+// deprecated
 const createOrUpdateDataJson = async (): Promise<void> => {
     const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" } };
-    const jsonContent = await readFileContent();
+    const jsonContent = await readFileContent(dataFilePath);
 
     if (!jsonContent ||
         (typeof (jsonContent as DataStructure).kcal === "undefined" &&
         typeof (jsonContent as DataStructure).weight === "undefined")) {
         // possibly no file created yet or is no valid data structure
-        await writeJsonToFile(defaultJsonContent);
+        await writeJsonToFile(dataFilePath, defaultJsonContent);
     } else if (!isDataStructure(jsonContent)) {
         updateUserConfig((jsonContent as DataStructure), defaultJsonContent);
         // file now has correct format, write
         if (isDataStructure(jsonContent)) {
-            await writeJsonToFile(jsonContent);
+            await writeJsonToFile(dataFilePath, jsonContent);
         }
     } else if (isDataStructure(jsonContent)) {
         updateUserConfig(jsonContent, defaultJsonContent);
         // file now has correct format, write
-        await writeJsonToFile(jsonContent);
+        await writeJsonToFile(dataFilePath, jsonContent);
     }
 }
 
-const readFileContent = async (): Promise<unknown> => {
+const getFileContentForUser = async (user: string): Promise<unknown> => {
+    const userFilePath = `${dataDirPath}/${user}.json`;
+    const userContent = await readFileContent(`${dataDirPath}/${user}.json`);
+    if (userContent !== null) return userContent;
+
+    // there might be an old data.json in the system, move it to user.json
+    const dataContent = await readFileContent(dataFilePath);
+    if (isDataStructure(dataContent)) {
+        dataContent.user.user = user;
+        await writeJsonToFile(userFilePath, dataContent);
+        await rm(dataFilePath);
+        return dataContent;
+    }
+
+    // there is no user.json and no data.json, create user.json
+    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user } };
+    await writeJsonToFile(userFilePath, defaultJsonContent);
+    return defaultJsonContent;
+}
+
+const readFileContent = async (path: string): Promise<unknown> => {
+    // TODO: is there user.json?
     try {
-        const content = await readFile(dataFilePath, { encoding: 'utf-8' });
+        const content = await readFile(path, { encoding: 'utf-8' });
         const jsonContent = JSON.parse(content);
         return jsonContent;
     } catch (e: unknown) {
@@ -135,8 +157,8 @@ const readFileContent = async (): Promise<unknown> => {
 }
 
 
-const getStoredDataStructure = async (): Promise<DataStructure> => {
-    const jsonContent = await readFileContent();
+const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
+    const jsonContent = await getFileContentForUser(user);
     if (!isDataStructure(jsonContent)) {
         console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
         return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" } };
@@ -144,28 +166,28 @@ const getStoredDataStructure = async (): Promise<DataStructure> => {
     return jsonContent;
 }
 
-const sortedKcalData = async () => {
-    const data = await getStoredDataStructure();
+const sortedKcalData = async (user: string) => {
+    const data = await getStoredDataStructure(user);
     return data.kcal.sort(sortByDate);
 }
 
-const loadAllKcal = async (): Promise<ExtendedKcalStructure[]> => {
-    return splitDateTimeInData(await sortedKcalData());
+const loadAllKcal = async (user: string): Promise<ExtendedKcalStructure[]> => {
+    return splitDateTimeInData(await sortedKcalData(user));
 }
 
-const loadUserConfiguration = async () => {
-    const data = await getStoredDataStructure();
+const loadUserConfiguration = async (user: string) => {
+    const data = await getStoredDataStructure(user);
     return data.user;
 }
 
-const storeUserConfiguration = async (reqBody: UserConfigStructure) => {
+const storeUserConfiguration = async (reqBody: UserConfigStructure, user: string) => {
     if (!isUserConfigStructure(reqBody)) {
         console.error("(controller) Request does not contain a valid UserConfigStructure object, aborting.");
         return;
     }
-    const fileContent = await getStoredDataStructure();
+    const fileContent = await getStoredDataStructure(user);
     fileContent.user = reqBody;
-    await writeJsonToFile(fileContent);
+    await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 }
 
 const getSortedDataForDate = (date: Date, data: KcalStructure[]): KcalStructure[] => {
@@ -196,11 +218,11 @@ const getGermanTimeString = (date: Date) => {
     return date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
 }
 
-const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
+const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
     const result: KcalSummary = { todayKcal: 0, lastMealTime: "00:00", lastMealAgo: 0, dailyKcalTarget: 0, pastDailyKcal: [], actualKcalHistorySum: 0, expectedKcalHistorySum: 0, kcalHistorySumDifference: 0 };
-    const {dailyKcalTarget, kcalHistoryCount} = await loadUserConfiguration();
+    const {dailyKcalTarget, kcalHistoryCount} = await loadUserConfiguration(user);
     result.dailyKcalTarget = dailyKcalTarget;
-    const kcals = await sortedKcalData();
+    const kcals = await sortedKcalData(user);
     if (kcals.length === 0) return result;
     const today = new Date();
     const matchedKcals = getSortedDataForDate(today, kcals);
@@ -229,28 +251,28 @@ const loadTodayKcalSummary = async (): Promise<KcalSummary> => {
     return result;
 }
 
-const storeWeightInput = async (reqBody: WeightStructure) => {
+const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
     if (!isWeightStructure(reqBody)) {
         console.error("(controller) Request does not contain a valid WeightStructure object, aborting.");
         return;
     }
-    const fileContent = await getStoredDataStructure();
+    const fileContent = await getStoredDataStructure(user);
     fileContent.weight.push(reqBody);
-    await writeJsonToFile(fileContent);
+    await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 }
 
-const storeMultipleWeightInput = async (reqBody: WeightStructure[]) => {
+const storeMultipleWeightInput = async (reqBody: WeightStructure[], user: string) => {
   if (!Array.isArray(reqBody)) {
     console.error("(controller) Request does not contain an array, aborting.")
     return
   }
   for (const item of reqBody) {
-    await storeWeightInput(item)
+    await storeWeightInput(item, user);
   }
 }
 
-const loadAllWeight = async (): Promise<WeightStructure[]> => {
-    const data = await getStoredDataStructure();
+const loadAllWeight = async (user: string): Promise<WeightStructure[]> => {
+    const data = await getStoredDataStructure(user);
     const weights = data.weight.sort(sortByDate).map(item => {
         return {
             ...item,
@@ -260,8 +282,8 @@ const loadAllWeight = async (): Promise<WeightStructure[]> => {
     return weights;
 }
 
-const loadUniqueKcalInput = async (): Promise<ReducedKcalStructure[]> => {
-    const kcalData = await sortedKcalData();
+const loadUniqueKcalInput = async (user: string): Promise<ReducedKcalStructure[]> => {
+    const kcalData = await sortedKcalData(user);
     const what = kcalData.map(item => item.what);
     const reducedWhat = new Set(what);
     const reducedKcal: ReducedKcalStructure[] = Array.from(reducedWhat).sort().map(item => {
@@ -271,9 +293,9 @@ const loadUniqueKcalInput = async (): Promise<ReducedKcalStructure[]> => {
     return reducedKcal;
 }
 
-const loadWeightTarget = async (): Promise<WeightTargetSummary> => {
-    const userConfiguration = await loadUserConfiguration();
-    const weights = await loadAllWeight();
+const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
+    const userConfiguration = await loadUserConfiguration(user);
+    const weights = await loadAllWeight(user);
     const mostRecentWeight = weights[weights.length - 1];
     const difference = parseInt(mostRecentWeight.weight) - userConfiguration.weightTarget;
     const twoKiloPerMonth = Math.round(difference / 2);
