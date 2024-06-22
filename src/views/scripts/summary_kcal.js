@@ -24,7 +24,10 @@ const renderTable = (data) => {
 }
 
 (async () => {
-    const response = await fetch('/api/kcal');
-    renderTable(await response.json());
-    serviceWorkerOnMessageHandler(renderTable);
+    const user = promptUser();
+    if(user) {
+        const response = await fetch(`/api/kcal?user=${user}`);
+        renderTable(await response.json());
+        serviceWorkerOnMessageHandler(renderTable);
+    }
 })();

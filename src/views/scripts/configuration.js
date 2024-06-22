@@ -19,15 +19,21 @@ const updateConfiguration = (data) => {
   }
 }
 
-;(async () => {
-  const response = await fetch("/api/configuration")
-  updateConfiguration(await response.json())
-  serviceWorkerOnMessageHandler(updateConfiguration)
-
+const updateColor = () => {
   const userColorInput = document.getElementById("color");
   const r = document.querySelector(':root');
   userColorInput.oninput = (e) => {
     r.style.setProperty('--accent', e.target.value);
     if (localStorage) localStorage.setItem("color", e.target.value);
   }
+}
+
+;(async () => {
+  const user = promptUser();
+  if(user) {
+    const response = await fetch(`/api/configuration?user=${user}`)
+    updateConfiguration(await response.json())
+    serviceWorkerOnMessageHandler(updateConfiguration)
+    }
+  updateColor();
 })()

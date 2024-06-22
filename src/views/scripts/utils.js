@@ -56,6 +56,27 @@ const setColorFromStorage = () => {
     }
 }
 
+const promptUser = () => {
+    if (localStorage) {
+        const user = localStorage.getItem("user");
+        if(!user) {
+            const dialog = document.getElementById("user-prompt-modal");
+            dialog.showModal();
+            const form = document.getElementById("user-prompt-form");
+            form.onsubmit = e => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const newUser = formData.get("username");
+                if (newUser) {
+                    localStorage.setItem("user", newUser);
+                }
+                dialog.close();
+            }
+        }
+        return user;
+    }
+}
+
 const bootstrapApp = () => {
     installServiceWorker();
     persistData();

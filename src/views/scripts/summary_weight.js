@@ -49,9 +49,12 @@ const renderWeightTarget = async (data) => {
 }
 
 (async () => {
-    const response = await fetch('/api/weight');
-    renderChart(await response.json());
-    const targetResponse = await fetch('/api/weight?summary=true');
-    renderWeightTarget(await targetResponse.json())
-    serviceWorkerOnMessageHandler(renderChart);
+    const user = promptUser();
+    if(user) {
+        const response = await fetch(`/api/weight?user=${user}`);
+        renderChart(await response.json());
+        const targetResponse = await fetch(`/api/weight?summary=true&user=${user}`);
+        renderWeightTarget(await targetResponse.json())
+        serviceWorkerOnMessageHandler(renderChart);
+    }
 })();

@@ -67,7 +67,10 @@ const renderDailyCalories = (data) => {
 }
 
 (async () => {
-    const response = await fetch('/api/kcal?for=today');
-    renderDailyCalories(await response.json());
-    serviceWorkerOnMessageHandler(renderDailyCalories);
+    const user = promptUser();
+    if(user) {
+        const response = await fetch(`/api/kcal?for=today&user=${user}`);
+        renderDailyCalories(await response.json());
+        serviceWorkerOnMessageHandler(renderDailyCalories);
+    }
 })();

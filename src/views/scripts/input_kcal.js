@@ -51,9 +51,9 @@ const getParsedStoredData = () => {
     return result;
 }
 
-const sendDataList = async (dataList) => {
+const sendDataList = async (dataList, user) => {
     try {
-        const response = await fetch("/api/input_kcal", {
+        const response = await fetch(`/api/input_kcal?user=${user}`, {
             method: "POST",
             body: JSON.stringify(dataList),
             headers: {
@@ -67,14 +67,14 @@ const sendDataList = async (dataList) => {
     }
 }
 
-const formHandling = () => {
+const formHandling = (user) => {
     const form = document.getElementById('kcal-form');
     form.onsubmit = async (e) => {
         e.preventDefault();
-        await sendDataList([...getParsedStoredData(), getFormDataJson(form)]);
+        await sendDataList([...getParsedStoredData(), getFormDataJson(form)], user);
         form.reset();
         updateDateTimeInput();
-        renderOfflineInfo();
+        renderOfflineInfo(user);
     }
 }
 
@@ -88,7 +88,7 @@ const hideOfflineContainer = () => {
     if (!offlineContainer.classList.contains("hidden")) offlineContainer.classList.add("hidden");
 }
 
-const renderOfflineInfo = () => {
+const renderOfflineInfo = (user) => {
     if (localStorage) {
         const storedData = localStorage.getItem(storageItemKey);
         if (storedData) {
@@ -104,7 +104,7 @@ const renderOfflineInfo = () => {
             offlineMessage.innerText = `Data could not be send, ${data.length} stored items.`;
             copyButton.onclick = () => copyToClipboard(storedData);
             sendButton.onclick = async () => {
-                await sendDataList(getParsedStoredData())
+                await sendDataList(getParsedStoredData(), user)
                 if(localStorage && !localStorage.getItem(storageItemKey)) hideOfflineContainer();
             };
             showOfflineContainer();
@@ -117,10 +117,13 @@ const renderOfflineInfo = () => {
 (async () => {
     updateDateTimeInput()
 
-    formHandling();
-    renderOfflineInfo();
+    const user = promptUser();
+    if(user) {
+        formHandling(user);
+        renderOfflineInfo(user);
 
-    const response = await fetch('/api/kcal?by=what');
-    renderSuggestionList(await response.json());
-    serviceWorkerOnMessageHandler(renderSuggestionList);
+        const response = await fetch(`/api/kcal?by=what&user=${user}`);
+        renderSuggestionList(await response.json());
+        serviceWorkerOnMessageHandler(renderSuggestionList);
+    }
 })();
