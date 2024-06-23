@@ -1,4 +1,6 @@
-import {bootstrapApp, serviceWorkerOnMessageHandler, promptUser} from "./utils.js";
+import {
+	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
+} from "./utils.js";
 import "./chart.umd.js";
 
 let chartInstance = undefined;

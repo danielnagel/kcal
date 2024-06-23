@@ -1,4 +1,6 @@
-import {bootstrapApp, serviceWorkerOnMessageHandler, promptUser} from "./utils.js";
+import {
+	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
+} from "./utils.js";
 import "./tabulator.min.js";
 
 const renderTable = (data) => {
@@ -9,11 +11,29 @@ const renderTable = (data) => {
 		groupBy: "date",
 		layout: "fitColumns",
 		columns: [ //Define Table Columns
-			{ title: "what", field: "what" },
-			{ title: "date", field: "date", visible: false },
-			{ title: "time", field: "time" },
-			{ title: "kcal", field: "kcal" },
-			{ title: "comment", field: "comment", formatter: "textarea", print: false },
+			{
+				title: "what",
+				field: "what" 
+			},
+			{
+				title: "date",
+				field: "date",
+				visible: false 
+			},
+			{
+				title: "time",
+				field: "time" 
+			},
+			{
+				title: "kcal",
+				field: "kcal" 
+			},
+			{
+				title: "comment",
+				field: "comment",
+				formatter: "textarea",
+				print: false 
+			},
 		],
 	});
 

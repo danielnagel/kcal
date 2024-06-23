@@ -1,5 +1,9 @@
-import { mkdir, writeFile, readFile, rm } from "node:fs/promises";
-import { isDataStructure, isKcalStructure, isUserConfigStructure, isWeightStructure } from "./typeguards";
+import {
+	mkdir, writeFile, readFile, rm 
+} from "node:fs/promises";
+import {
+	isDataStructure, isKcalStructure, isUserConfigStructure, isWeightStructure 
+} from "./typeguards";
 
 const dataDirPath = `${__dirname}/data`;
 const dataFilePath = `${dataDirPath}/data.json`;
@@ -53,7 +57,11 @@ const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => 
 	return data.map<ExtendedKcalStructure>(d => {
 		const date = getGermanDateString(new Date(d.date));
 		const time = getGermanTimeString(new Date(d.date));
-		return { ...d, date, time };
+		return {
+			...d,
+			date,
+			time 
+		};
 	})
 }
 
@@ -78,7 +86,17 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 	}
 
 	// there is no user.json and no data.json, create user.json
-	const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user } };
+	const defaultJsonContent: DataStructure = {
+		kcal: [],
+		weight: [],
+		user: {
+			dailyKcalTarget: 2000,
+			weightTarget: 90,
+			color: "#5f9ea0",
+			kcalHistoryCount: 3,
+			user 
+		} 
+	};
 	await writeJsonToFile(userFilePath, defaultJsonContent);
 	return defaultJsonContent;
 }
@@ -86,7 +104,9 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 const readFileContent = async (path: string): Promise<unknown> => {
 	// TODO: is there user.json?
 	try {
-		const content = await readFile(path, { encoding: 'utf-8' });
+		const content = await readFile(path, {
+			encoding: 'utf-8' 
+		});
 		const jsonContent = JSON.parse(content);
 		return jsonContent;
 	} catch (e: unknown) {
@@ -101,7 +121,17 @@ const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 	if (!isDataStructure(jsonContent)) {
 		// TODO: test
 		console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-		return { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" } };
+		return {
+			kcal: [],
+			weight: [],
+			user: {
+				dailyKcalTarget: 2000,
+				weightTarget: 90,
+				color: "#5f9ea0",
+				kcalHistoryCount: 3,
+				user: "" 
+			} 
+		};
 	}
 	return jsonContent;
 }
@@ -145,7 +175,11 @@ const sumCalories = (data: KcalStructure[]) => {
 }
 
 const getGermanDateString = (date: Date) => {
-	return date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+	return date.toLocaleDateString("de-DE", {
+		day: "2-digit",
+		month: "2-digit",
+		year: "numeric" 
+	});
 }
 
 const getGermanMonthString = (date: Date) => {
@@ -156,11 +190,23 @@ const getGermanMonthString = (date: Date) => {
 }
 
 const getGermanTimeString = (date: Date) => {
-	return date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+	return date.toLocaleTimeString("de-DE", {
+		hour: "2-digit",
+		minute: "2-digit" 
+	});
 }
 
 const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
-	const result: KcalSummary = { todayKcal: 0, lastMealTime: "00:00", lastMealAgo: 0, dailyKcalTarget: 0, pastDailyKcal: [], actualKcalHistorySum: 0, expectedKcalHistorySum: 0, kcalHistorySumDifference: 0 };
+	const result: KcalSummary = {
+		todayKcal: 0,
+		lastMealTime: "00:00",
+		lastMealAgo: 0,
+		dailyKcalTarget: 0,
+		pastDailyKcal: [],
+		actualKcalHistorySum: 0,
+		expectedKcalHistorySum: 0,
+		kcalHistorySumDifference: 0 
+	};
 	const {dailyKcalTarget, kcalHistoryCount} = await loadUserConfiguration(user);
 	result.dailyKcalTarget = dailyKcalTarget;
 	const kcals = await sortedKcalData(user);
@@ -230,7 +276,10 @@ const loadUniqueKcalInput = async (user: string): Promise<ReducedKcalStructure[]
 	const reducedWhat = new Set(what);
 	const reducedKcal: ReducedKcalStructure[] = Array.from(reducedWhat).sort().map(item => {
 		const filteredKcal = kcalData.filter(d => d.what === item);
-		return { what: item, kcal: filteredKcal[filteredKcal.length - 1].kcal };
+		return {
+			what: item,
+			kcal: filteredKcal[filteredKcal.length - 1].kcal 
+		};
 	});
 	return reducedKcal;
 }
@@ -249,12 +298,13 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	oneKiloDate.setMonth(oneKiloDate.getMonth() + oneKiloPerMonth)
 	const oneKiloPrediction = getGermanMonthString(oneKiloDate);
 	return {
-		weightTarget: userConfiguration.weightTarget, twoKiloPrediction, oneKiloPrediction
+		weightTarget: userConfiguration.weightTarget,
+		twoKiloPrediction,
+		oneKiloPrediction
 	};
 }
 
-export {
-	storeKcalInput,
+export {storeKcalInput,
 	storeMultipleKcalInput,
 	loadTodayKcalSummary,
 	loadAllKcal,
@@ -264,5 +314,4 @@ export {
 	loadUniqueKcalInput,
 	loadUserConfiguration,
 	storeUserConfiguration,
-	loadWeightTarget
-};
+	loadWeightTarget};

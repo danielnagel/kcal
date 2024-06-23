@@ -1,4 +1,6 @@
-import { test } from "node:test"
+import {
+	test 
+} from "node:test"
 import assert from "assert/strict"
 import {
 	isDataStructure,
@@ -12,13 +14,21 @@ test.describe("typeguards", () => {
 		const expect: DataStructure = {
 			kcal: [],
 			weight: [],
-			user: { dailyKcalTarget: 0, weightTarget: 0, color: "", kcalHistoryCount: 0, user: "" },
+			user: {
+				dailyKcalTarget: 0,
+				weightTarget: 0,
+				color: "",
+				kcalHistoryCount: 0,
+				user: "" 
+			},
 		}
 		assert(isDataStructure(expect))
 	})
 
 	test("object is not DataStructure", async () => {
-		assert(!isDataStructure({ something: "else" }))
+		assert(!isDataStructure({
+			something: "else" 
+		}))
 	})
 
 	test("null is not DataStructure", async () => {
@@ -36,7 +46,9 @@ test.describe("typeguards", () => {
 	})
 
 	test("object is not KcalStructure", async () => {
-		assert(!isKcalStructure({ something: "else" }))
+		assert(!isKcalStructure({
+			something: "else" 
+		}))
 	})
 
 	test("null is not KcalStructure", async () => {
@@ -53,7 +65,9 @@ test.describe("typeguards", () => {
 	})
 
 	test("object is not WeightStructure", async () => {
-		assert(!isWeightStructure({ something: "else" }))
+		assert(!isWeightStructure({
+			something: "else" 
+		}))
 	})
 
 	test("null is not WeightStructure", async () => {
@@ -72,7 +86,9 @@ test.describe("typeguards", () => {
 	})
 
 	test("object is not UserConfigStructure", async () => {
-		assert(!isUserConfigStructure({ something: "else" }))
+		assert(!isUserConfigStructure({
+			something: "else" 
+		}))
 	})
 
 	test("null is not UserConfigStructure", async () => {

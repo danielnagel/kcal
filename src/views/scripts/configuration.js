@@ -1,4 +1,6 @@
-import {bootstrapApp, promptUser, serviceWorkerOnMessageHandler} from "./utils.js";
+import {
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler
+} from "./utils.js";
 
 const updateConfiguration = (data) => {
 	if (data.dailyKcalTarget !== undefined) {

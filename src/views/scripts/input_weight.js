@@ -1,4 +1,6 @@
-import {bootstrapApp} from "./utils.js";
+import {
+	bootstrapApp
+} from "./utils.js";
 
 (() => {
 	bootstrapApp();

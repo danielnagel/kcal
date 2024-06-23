@@ -98,7 +98,13 @@ export const dataStructure1: DataStructure = {
 		},
 	],
 	weight: [],
-	user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 3,
+		user: "test-user" 
+	},
 }
 
 export const dataStructure2: DataStructure = {
@@ -225,7 +231,13 @@ export const dataStructure2: DataStructure = {
 		},
 	],
 	weight: [],
-	user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 2, user: "test-user" },
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 2,
+		user: "test-user" 
+	},
 }
 
 export const dataStructure3: DataStructure = {
@@ -238,7 +250,13 @@ export const dataStructure3: DataStructure = {
 		},
 	],
 	weight: [],
-	user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 3,
+		user: "test-user" 
+	},
 }
 
 
@@ -258,22 +276,69 @@ export const dataStructure4: DataStructure = {
 		},
 	],
 	weight: [],
-	user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 3,
+		user: "test-user" 
+	},
 }
 
 
 export const dataStructure5: DataStructure = {
 	kcal: [
-		{ what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
-		{ what: "test3", kcal: "444", date: "2024-05-04T18:46", comment: "" },
-		{ what: "test2", kcal: "444", date: "2024-05-04T18:46", comment: "" },
-		{ what: "test4", kcal: "444", date: "2024-05-04T18:46", comment: "" },
-		{ what: "test", kcal: "200", date: "2024-05-04T18:46", comment: "" },
-		{ what: "test2", kcal: "444", date: "2024-05-14T18:46", comment: "" },
-		{ what: "test2", kcal: "1234", date: "2024-05-24T09:27", comment: "" },
+		{
+			what: "test",
+			kcal: "123",
+			date: "2024-05-24T19:27",
+			comment: "" 
+		},
+		{
+			what: "test3",
+			kcal: "444",
+			date: "2024-05-04T18:46",
+			comment: "" 
+		},
+		{
+			what: "test2",
+			kcal: "444",
+			date: "2024-05-04T18:46",
+			comment: "" 
+		},
+		{
+			what: "test4",
+			kcal: "444",
+			date: "2024-05-04T18:46",
+			comment: "" 
+		},
+		{
+			what: "test",
+			kcal: "200",
+			date: "2024-05-04T18:46",
+			comment: "" 
+		},
+		{
+			what: "test2",
+			kcal: "444",
+			date: "2024-05-14T18:46",
+			comment: "" 
+		},
+		{
+			what: "test2",
+			kcal: "1234",
+			date: "2024-05-24T09:27",
+			comment: "" 
+		},
 	],
 	weight: [],
-	user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 3,
+		user: "test-user" 
+	},
 }
 
 
@@ -306,5 +371,11 @@ export const dataStructure6: DataStructure = {
 			waist: "112",
 		},
 	],
-	user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "test-user" },
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 3,
+		user: "test-user" 
+	},
 }

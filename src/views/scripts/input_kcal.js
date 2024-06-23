@@ -1,10 +1,15 @@
-import {bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard} from "./utils.js";
+import {
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard
+} from "./utils.js";
 
 const storageItemKey = "unsendFormData";
 
 const updateDateTimeInput = () => {
 	const datetimeInput = document.querySelector("input[type=datetime-local]");
-	datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
+	datetimeInput.value = `${new Date().toISOString().split("T")[0]}T${new Date().toLocaleTimeString("de-DE", {
+		hour: "2-digit",
+		minute: "2-digit" 
+	})}`;
 }
 
 const renderSuggestionList = (data) => {
@@ -32,7 +37,8 @@ const renderSuggestionList = (data) => {
 
 const getFormDataJson = (form) => {
 	const formData = new FormData(form);
-	const data = {};
+	const data = {
+	};
 	formData.forEach((value, key) => {
 		data[key] = value;
 	});

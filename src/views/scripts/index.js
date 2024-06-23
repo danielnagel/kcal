@@ -1,4 +1,6 @@
-import {bootstrapApp, promptUser, serviceWorkerOnMessageHandler} from "./utils.js";
+import {
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler
+} from "./utils.js";
 
 const renderProgressBar = (is, goal) => {
 	const progressBar = document.createElement("div");
