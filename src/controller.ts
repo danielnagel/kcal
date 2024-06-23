@@ -13,7 +13,6 @@ const createDataDir = async () => {
 		await mkdir(dataDirPath);
 	} catch (e: unknown) {
 		if (e instanceof Error) {
-			// TODO: test
 			if (!e.message.startsWith('EEXIST')) {
 				console.error(`(controller) Couldn't create directory ${dataDirPath}. Message: ${e.message}`);
 			}
@@ -26,14 +25,12 @@ const writeJsonToFile = async (path: string, data: DataStructure) => {
 	try {
 		await writeFile(path, JSON.stringify(data, null, 2));
 	} catch (e: unknown) {
-		// TODO: test
 		if (e instanceof Error) console.error(`(controller) Couldn't create file ${path}. Message: ${e.message}`);
 	}
 }
 
 const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	if (!isKcalStructure(reqBody)) {
-		// TODO: test
 		console.error("(controller) Request does not contain a valid KcalStructure object, aborting.");
 		return;
 	}
@@ -44,7 +41,6 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 
 const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
-		// TODO: test
 		console.error("(controller) Request does not contain an array, aborting.");
 		return;
 	}
@@ -102,7 +98,6 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 }
 
 const readFileContent = async (path: string): Promise<unknown> => {
-	// TODO: is there user.json?
 	try {
 		const content = await readFile(path, {
 			encoding: 'utf-8' 
@@ -119,7 +114,6 @@ const readFileContent = async (path: string): Promise<unknown> => {
 const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 	const jsonContent = await getFileContentForUser(user);
 	if (!isDataStructure(jsonContent)) {
-		// TODO: test
 		console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
 		return {
 			kcal: [],
@@ -152,7 +146,6 @@ const loadUserConfiguration = async (user: string) => {
 
 const storeUserConfiguration = async (reqBody: UserConfigStructure, user: string) => {
 	if (!isUserConfigStructure(reqBody)) {
-		// TODO: test
 		console.error("(controller) Request does not contain a valid UserConfigStructure object, aborting.");
 		return;
 	}
@@ -250,7 +243,6 @@ const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 
 const storeMultipleWeightInput = async (reqBody: WeightStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
-		// TODO: test
 		console.error("(controller) Request does not contain an array, aborting.")
 		return
 	}
