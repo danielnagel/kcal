@@ -59,71 +59,6 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
     return 0;
 }
 
-const updateUserConfig = async (is: DataStructure, should: DataStructure): Promise<void> => {
-    if (typeof is.user === "undefined") {
-        is.user = should.user;
-    } else if (!isUserConfigStructure(is.user)) {
-      if (
-        typeof (is.user as UserConfigStructure).dailyKcalTarget ===
-        "undefined"
-      ) {
-        ;(is.user as UserConfigStructure).dailyKcalTarget =
-          should.user.dailyKcalTarget
-      }
-      if (
-        typeof (is.user as UserConfigStructure).weightTarget ===
-        "undefined"
-      ) {
-        ;(is.user as UserConfigStructure).weightTarget =
-          should.user.weightTarget
-      }
-      if (
-        typeof (is.user as UserConfigStructure).color ===
-        "undefined"
-      ) {
-        ;(is.user as UserConfigStructure).color =
-          should.user.color
-      }
-      if (
-        typeof (is.user as UserConfigStructure).kcalHistoryCount ===
-        "undefined"
-      ) {
-        ;(is.user as UserConfigStructure).kcalHistoryCount =
-          should.user.kcalHistoryCount
-      }
-      if (
-        typeof (is.user as UserConfigStructure).user ===
-        "undefined"
-      ) {
-        ;(is.user as UserConfigStructure).user =
-          should.user.user
-      }
-    }
-}
-
-// deprecated
-const createOrUpdateDataJson = async (): Promise<void> => {
-    const defaultJsonContent: DataStructure = { kcal: [], weight: [], user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" } };
-    const jsonContent = await readFileContent(dataFilePath);
-
-    if (!jsonContent ||
-        (typeof (jsonContent as DataStructure).kcal === "undefined" &&
-        typeof (jsonContent as DataStructure).weight === "undefined")) {
-        // possibly no file created yet or is no valid data structure
-        await writeJsonToFile(dataFilePath, defaultJsonContent);
-    } else if (!isDataStructure(jsonContent)) {
-        updateUserConfig((jsonContent as DataStructure), defaultJsonContent);
-        // file now has correct format, write
-        if (isDataStructure(jsonContent)) {
-            await writeJsonToFile(dataFilePath, jsonContent);
-        }
-    } else if (isDataStructure(jsonContent)) {
-        updateUserConfig(jsonContent, defaultJsonContent);
-        // file now has correct format, write
-        await writeJsonToFile(dataFilePath, jsonContent);
-    }
-}
-
 const getFileContentForUser = async (user: string): Promise<unknown> => {
     const userFilePath = `${dataDirPath}/${user}.json`;
     const userContent = await readFileContent(`${dataDirPath}/${user}.json`);
@@ -322,6 +257,5 @@ export {
     loadUniqueKcalInput,
     loadUserConfiguration,
     storeUserConfiguration,
-    createOrUpdateDataJson,
     loadWeightTarget
 };

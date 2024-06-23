@@ -10,7 +10,6 @@ import {
   loadUniqueKcalInput,
   storeUserConfiguration,
   loadUserConfiguration,
-  createOrUpdateDataJson,
   loadWeightTarget,
   storeMultipleWeightInput,
 } from "../controller"
@@ -236,130 +235,6 @@ test.describe("storing and loading data", () => {
       { what: "test4", kcal: "444" },
     ]
     assert.deepEqual(resultLoaded, expectLoaded)
-  })
-
-  test("create data.json, if not available", async () => {
-    let readFileResult = ""
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(readFileResult, "file not available")
-    await createOrUpdateDataJson()
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(JSON.parse(readFileResult), {
-      kcal: [],
-      weight: [],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
-    })
-  })
-
-  test("update data.json, if user variable is missing", async () => {
-    const expectedContent = JSON.stringify({
-      kcal: [
-        { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
-      ],
-      weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-    })
-    await mkdir(__dirname + "/../data")
-    await writeFile(__dirname + "/../data/data.json", expectedContent)
-    let readFileResult = ""
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(readFileResult, expectedContent)
-    await createOrUpdateDataJson()
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(JSON.parse(readFileResult), {
-      kcal: [
-        { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
-      ],
-      weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
-    })
-  })
-
-  test("create new data.json content, if data.json is available, but cannot be fixed", async () => {
-    const expectedContent = JSON.stringify({ something: "else" })
-    await mkdir(__dirname + "/../data")
-    await writeFile(__dirname + "/../data/data.json", expectedContent)
-    let readFileResult = ""
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(readFileResult, expectedContent)
-    await createOrUpdateDataJson()
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(JSON.parse(readFileResult), {
-      kcal: [],
-      weight: [],
-      user: { dailyKcalTarget: 2000, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
-    })
-  })
-
-  test("update user config, if user config is incomplete", async () => {
-    const expectedContent = JSON.stringify({
-      kcal: [
-        { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
-      ],
-      weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2100 },
-    })
-    await mkdir(__dirname + "/../data")
-    await writeFile(__dirname + "/../data/data.json", expectedContent)
-    let readFileResult = ""
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(readFileResult, expectedContent)
-    await createOrUpdateDataJson()
-    try {
-      readFileResult = await readFile(__dirname + "/../data/data.json", {
-        encoding: "utf-8",
-      })
-    } catch (e) {
-      readFileResult = "file not available"
-    }
-    assert.deepEqual(JSON.parse(readFileResult), {
-      kcal: [
-        { what: "test", kcal: "123", date: "2024-05-24T19:27", comment: "" },
-      ],
-      weight: [{ date: "2024-05-24", weight: "80", waist: "70" }],
-      user: { dailyKcalTarget: 2100, weightTarget: 90, color: "#5f9ea0", kcalHistoryCount: 3, user: "" },
-    })
   })
 
   test("load weight summary", async () => {
