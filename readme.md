@@ -116,3 +116,5 @@ But it [currently doesn't support arm32 architecture](https://github.com/denolan
 7. Using the local storage to persist data from the form,
    when page is offline, to prevent data loss.
 8. Web app manifest.
+9. Refreshed knowledge on eslint.
+10. Refreshed knowledge on github workflows.
