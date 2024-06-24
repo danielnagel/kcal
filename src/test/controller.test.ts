@@ -16,10 +16,13 @@ import {
 	loadWeightTarget,
 	storeMultipleWeightInput,
 	createUserJson,
+	updateUserJson,
 } from "../controller";
 import {
 	readFile,
 	rm,
+	writeFile,
+	mkdir
 } from "node:fs/promises";
 import {
 	existsSync 
@@ -406,5 +409,35 @@ test.describe("storing and loading data", () => {
 		assert.equal(existsSync(__dirname + "/../data/undefined.json"), false);
 		await createUserJson("");
 		assert.equal(existsSync(__dirname + "/../data/.json"), false);
+	});
+
+	test("update test-user.json to user-test.json", async () => {
+		await mkdir(`${__dirname}/../data`);
+		await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+		await updateUserJson("test-user", "user-test");
+		assert.equal(existsSync(`${__dirname}/../data/test-user.json`), false);
+		assert.equal(existsSync(`${__dirname}/../data/user-test.json`), true);
+		const storedFile = await readFile(__dirname + "/../data/user-test.json", {
+			encoding: "utf-8",
+		});
+		assert.deepEqual(JSON.stringify(defaultDataStructure, null, 2), storedFile);
+	});
+
+	test("not update test-user.json, when there is no test-user.json", async () => {
+		assert.equal(existsSync(`${__dirname}/../data/test-user.json`), false);
+		await updateUserJson("test-user", "user-test");
+		assert.equal(existsSync(`${__dirname}/../data/test-user.json`), false);
+		assert.equal(existsSync(`${__dirname}/../data/user-test.json`), false);
+	});
+
+	test("not update test-user.json, when newUser string is not valid", async () => {
+		await mkdir(`${__dirname}/../data`);
+		await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+		await updateUserJson("test-user", null as unknown as string);
+		assert.equal(existsSync(`${__dirname}/../data/null.json`), false);
+		await updateUserJson("test-user", undefined as unknown as string);
+		assert.equal(existsSync(`${__dirname}/../data/undefined.json`), false);
+		await updateUserJson("test-user", "");
+		assert.equal(existsSync(`${__dirname}/../data/.json`), false);
 	});
 });

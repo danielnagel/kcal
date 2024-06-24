@@ -73,6 +73,19 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
 	return 0;
 };
 
+const moveDataJsonToUserJson = async (user: string): Promise<DataStructure | null> => {
+	const userFilePath = `${dataDirPath}/${user}.json`;
+	const dataContent = await readFileContent(dataFilePath);
+	if (!isDataStructure(dataContent)) {
+		console.error(`There is no "data.json" will not update.`);
+		return null;
+	}
+	dataContent.user.user = user;
+	await writeJsonToFile(userFilePath, dataContent);
+	await rm(dataFilePath);
+	return dataContent;
+};
+
 const createUserJson = async (user: string): Promise<DataStructure | null> => {
 	if (user === null || user === undefined || user.length === 0) {
 		console.error(`Username has to be at least one character long, user.json creation aborted.`);
@@ -95,18 +108,12 @@ const createUserJson = async (user: string): Promise<DataStructure | null> => {
 };
 
 const getFileContentForUser = async (user: string): Promise<unknown> => {
-	const userFilePath = `${dataDirPath}/${user}.json`;
 	const userContent = await readFileContent(`${dataDirPath}/${user}.json`);
 	if (userContent !== null) return userContent;
 
 	// there might be an old data.json in the system, move it to user.json
-	const dataContent = await readFileContent(dataFilePath);
-	if (isDataStructure(dataContent)) {
-		dataContent.user.user = user;
-		await writeJsonToFile(userFilePath, dataContent);
-		await rm(dataFilePath);
-		return dataContent;
-	}
+	const updatedJson = await moveDataJsonToUserJson(user);
+	if(updatedJson) return updatedJson;
 
 	// there is no user.json and no data.json, create user.json
 	return createUserJson(user);
@@ -311,6 +318,24 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	};
 };
 
+const updateUserJson = async (user: string, newUser: string): Promise<DataStructure | null> => {
+	if (newUser === null || newUser === undefined || newUser.length === 0) {
+		console.error(`New username has to be at least one character long, new-user.json creation aborted.`);
+		return null;
+	}
+	const userFilePath = `${dataDirPath}/${user}.json`;
+	const newUserFilePath = `${dataDirPath}/${newUser}.json`;
+	const userContent = await readFileContent(userFilePath);
+	if (!isDataStructure(userContent)) {
+		console.error(`There is no "${user}.json" will not update.`);
+		return null;
+	}
+	userContent.user.user = user;
+	await writeJsonToFile(newUserFilePath, userContent);
+	await rm(userFilePath);
+	return userContent;
+};
+
 export {
 	storeKcalInput,
 	storeMultipleKcalInput,
@@ -323,5 +348,6 @@ export {
 	loadUserConfiguration,
 	storeUserConfiguration,
 	loadWeightTarget,
-	createUserJson
+	createUserJson,
+	updateUserJson
 };
