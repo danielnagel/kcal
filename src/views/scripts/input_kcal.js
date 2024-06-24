@@ -10,7 +10,7 @@ const updateDateTimeInput = () => {
 		hour: "2-digit",
 		minute: "2-digit" 
 	})}`;
-}
+};
 
 const renderSuggestionList = (data) => {
 	// build suggestion list
@@ -33,7 +33,7 @@ const renderSuggestionList = (data) => {
 			}
 		}
 	});
-}
+};
 
 const getFormDataJson = (form) => {
 	const formData = new FormData(form);
@@ -43,7 +43,7 @@ const getFormDataJson = (form) => {
 		data[key] = value;
 	});
 	return data;
-}
+};
 
 const getParsedStoredData = () => {
 	const result = [];
@@ -57,7 +57,7 @@ const getParsedStoredData = () => {
 		}
 	}
 	return result;
-}
+};
 
 const sendDataList = async (dataList, user) => {
 	try {
@@ -67,13 +67,13 @@ const sendDataList = async (dataList, user) => {
 			headers: {
 				"Content-Type": "application/json",
 			},
-		})
+		});
 		if (response.status == 200 && localStorage)
 			localStorage.removeItem(storageItemKey);
 	} catch (e) {
 		if (localStorage) localStorage.setItem(storageItemKey, JSON.stringify(dataList));
 	}
-}
+};
 
 const formHandling = (user) => {
 	const form = document.getElementById('kcal-form');
@@ -83,18 +83,18 @@ const formHandling = (user) => {
 		form.reset();
 		updateDateTimeInput();
 		renderOfflineInfo(user);
-	}
-}
+	};
+};
 
 const showOfflineContainer = () => {
 	const offlineContainer = document.getElementById("offline-container");
 	if (offlineContainer.classList.contains("hidden")) offlineContainer.classList.remove("hidden");
-}
+};
 
 const hideOfflineContainer = () => {
 	const offlineContainer = document.getElementById("offline-container");
 	if (!offlineContainer.classList.contains("hidden")) offlineContainer.classList.add("hidden");
-}
+};
 
 const renderOfflineInfo = (user) => {
 	if (localStorage) {
@@ -112,7 +112,7 @@ const renderOfflineInfo = (user) => {
 			offlineMessage.innerText = `Data could not be send, ${data.length} stored items.`;
 			copyButton.onclick = () => copyToClipboard(storedData);
 			sendButton.onclick = async () => {
-				await sendDataList(getParsedStoredData(), user)
+				await sendDataList(getParsedStoredData(), user);
 				if(localStorage && !localStorage.getItem(storageItemKey)) hideOfflineContainer();
 			};
 			showOfflineContainer();
@@ -120,12 +120,12 @@ const renderOfflineInfo = (user) => {
 		}
 	}
 	hideOfflineContainer();
-}
+};
 
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		updateDateTimeInput()
+		updateDateTimeInput();
 		const user = promptUser();
 		if(user) {
 			formHandling(user);
@@ -135,5 +135,5 @@ const renderOfflineInfo = (user) => {
 			renderSuggestionList(await response.json());
 			serviceWorkerOnMessageHandler(renderSuggestionList);
 		}
-	}
+	};
 })();

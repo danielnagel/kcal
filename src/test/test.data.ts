@@ -8,7 +8,7 @@ export const defaultDataStructure: DataStructure = {
 		kcalHistoryCount: 3,
 		user: "test-user" 
 	} 
-}
+};
 
 export const dataStructure1: DataStructure = {
 	kcal: [
@@ -117,7 +117,7 @@ export const dataStructure1: DataStructure = {
 		kcalHistoryCount: 3,
 		user: "test-user" 
 	},
-}
+};
 
 export const dataStructure2: DataStructure = {
 	kcal: [
@@ -250,7 +250,7 @@ export const dataStructure2: DataStructure = {
 		kcalHistoryCount: 2,
 		user: "test-user" 
 	},
-}
+};
 
 export const dataStructure3: DataStructure = {
 	kcal: [
@@ -269,7 +269,7 @@ export const dataStructure3: DataStructure = {
 		kcalHistoryCount: 3,
 		user: "test-user" 
 	},
-}
+};
 
 
 export const dataStructure4: DataStructure = {
@@ -295,7 +295,7 @@ export const dataStructure4: DataStructure = {
 		kcalHistoryCount: 3,
 		user: "test-user" 
 	},
-}
+};
 
 
 export const dataStructure5: DataStructure = {
@@ -351,7 +351,7 @@ export const dataStructure5: DataStructure = {
 		kcalHistoryCount: 3,
 		user: "test-user" 
 	},
-}
+};
 
 
 export const dataStructure6: DataStructure = {
@@ -390,4 +390,4 @@ export const dataStructure6: DataStructure = {
 		kcalHistoryCount: 3,
 		user: "test-user" 
 	},
-}
+};

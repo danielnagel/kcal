@@ -45,7 +45,7 @@ const renderTable = (data) => {
 	document.getElementById("print-table").addEventListener("click", function () {
 		table.print(true, true);
 	});
-}
+};
 
 (() => {
 	bootstrapApp();
@@ -56,5 +56,5 @@ const renderTable = (data) => {
 			renderTable(await response.json());
 			serviceWorkerOnMessageHandler(renderTable);
 		}
-	}
+	};
 })();

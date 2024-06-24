@@ -11,7 +11,7 @@ import {
 	loadWeightTarget,
 	storeUserConfiguration,
 	loadUserConfiguration,
-} from "./controller"
+} from "./controller";
 
 const staticPath = __dirname + "/public";
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
@@ -21,18 +21,18 @@ const postKcal = (req: Request, res: Response) => {
 		console.error(`Cannot postKcal, add user to query.`);
 		return;
 	}
-	storeMultipleKcalInput(req.body, req.query.user)
+	storeMultipleKcalInput(req.body, req.query.user);
 	res.redirect('/input_kcal');
-}
+};
 
 const postWeight = (req: Request, res: Response) => {
 	if(typeof req.query.user !== "string") {
 		console.error(`Cannot postWeight, add user to query.`);
 		return;
 	}
-	storeWeightInput(req.body, req.query.user)
+	storeWeightInput(req.body, req.query.user);
 	res.redirect('/input_weight');
-}
+};
 
 const getAllKcalData = async (req: Request, res: Response) => {
 	if(typeof req.query.user !== "string") {
@@ -46,7 +46,7 @@ const getAllKcalData = async (req: Request, res: Response) => {
 	} else {
 		res.json(await loadAllKcal(req.query.user));
 	}
-}
+};
 
 const getAllWeightData = async (req: Request, res: Response) => {
 	if(typeof req.query.user !== "string") {
@@ -58,7 +58,7 @@ const getAllWeightData = async (req: Request, res: Response) => {
 	} else {
 		res.json(await loadAllWeight(req.query.user));
 	}
-}
+};
 
 const getConfiguration = async (req: Request, res: Response) => {
 	if(typeof req.query.user !== "string") {
@@ -66,27 +66,27 @@ const getConfiguration = async (req: Request, res: Response) => {
 		return;
 	}
 	res.json(await loadUserConfiguration(req.query.user));
-}
+};
 
 const postConfiguration = (req: Request, res: Response) => {
 	if(typeof req.query.user !== "string") {
 		console.error(`Cannot postConfiguration, add user to query.`);
 		return;
 	}
-	storeUserConfiguration(req.body, req.query.user)
+	storeUserConfiguration(req.body, req.query.user);
 	res.redirect('/configuration');
-}
+};
 
 const router = Router();
 
 router.post('/api/input_kcal', postKcal);
-router.get('/input_kcal', sendHtml)
+router.get('/input_kcal', sendHtml);
 router.post('/api/input_weight', postWeight);
-router.get('/input_weight', sendHtml)
+router.get('/input_weight', sendHtml);
 router.get('/api/kcal', getAllKcalData);
-router.get('/summary_kcal', sendHtml)
+router.get('/summary_kcal', sendHtml);
 router.get('/api/weight', getAllWeightData);
-router.get('/summary_weight', sendHtml)
+router.get('/summary_weight', sendHtml);
 router.get('/configuration', sendHtml);
 router.get('/api/configuration', getConfiguration);
 router.post('/api/configuration', postConfiguration);

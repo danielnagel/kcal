@@ -5,9 +5,9 @@ export const serviceWorkerOnMessageHandler = (callback) => {
 			if (message && message.type.includes("/api/")) {
 				callback(message.data);
 			}
-		}
+		};
 	}
-}
+};
 
 const unsecuredCopyToClipboard = (text) => {
 	const textArea = document.createElement("textarea");
@@ -21,7 +21,7 @@ const unsecuredCopyToClipboard = (text) => {
 		console.error('Unable to copy to clipboard', err);
 	}
 	document.body.removeChild(textArea);
-}
+};
 
 export const copyToClipboard = (text) => {
 	if (navigator.clipboard) {
@@ -32,21 +32,21 @@ export const copyToClipboard = (text) => {
 		// https://stackoverflow.com/a/72239825
 		unsecuredCopyToClipboard(text);
 	}
-}
+};
 
 const installServiceWorker = () => {
 	if (navigator.serviceWorker) {
 		window.addEventListener('load', () => {
 			navigator.serviceWorker.register('/serviceworker.js');
-		})
+		});
 	}
-}
+};
 
 const persistData = async () => {
 	if (navigator.storage && navigator.storage.persist) {
 		await navigator.storage.persist();
 	}
-}
+};
 
 const setColorFromStorage = () => {
 	if (localStorage) {
@@ -54,7 +54,7 @@ const setColorFromStorage = () => {
 		const r = document.querySelector(':root');
 		r.style.setProperty('--accent', color);
 	}
-}
+};
 
 export const promptUser = () => {
 	if (localStorage) {
@@ -71,14 +71,14 @@ export const promptUser = () => {
 					localStorage.setItem("user", newUser);
 				}
 				dialog.close();
-			}
+			};
 		}
 		return user;
 	}
-}
+};
 
 export const bootstrapApp = () => {
 	installServiceWorker();
 	persistData();
 	setColorFromStorage();
-}
+};

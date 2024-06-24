@@ -9,7 +9,8 @@ export default [
   {rules: {
     "indent": ["error", "tab"],
     "object-curly-newline": ["error", { "ImportDeclaration": "always", "ExportDeclaration": "always", "ObjectExpression": "always", "ObjectPattern": "never" }],
-    "object-property-newline": "error"
+    "object-property-newline": "error",
+    "semi": ["error", "always"]
   }},
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,

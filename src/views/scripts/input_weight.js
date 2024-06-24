@@ -11,5 +11,5 @@ import {
 
 		const datetimeInput = document.querySelector("input[type=date]");
 		datetimeInput.value = normalizedNow;
-	}
+	};
 })();

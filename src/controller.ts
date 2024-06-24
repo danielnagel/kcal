@@ -24,7 +24,7 @@ const createDataDir = async () => {
 			}
 		}
 	}
-}
+};
 
 const writeJsonToFile = async (path: string, data: DataStructure) => {
 	await createDataDir();
@@ -33,7 +33,7 @@ const writeJsonToFile = async (path: string, data: DataStructure) => {
 	} catch (e: unknown) {
 		if (e instanceof Error) console.error(`(controller) Couldn't create file ${path}. Message: ${e.message}`);
 	}
-}
+};
 
 const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	if (!isKcalStructure(reqBody)) {
@@ -43,7 +43,7 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	const fileContent = await getStoredDataStructure(user);
 	fileContent.kcal.push(reqBody);
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
-}
+};
 
 const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
@@ -53,7 +53,7 @@ const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) =>
 	for (const item of reqBody) {
 		await storeKcalInput(item, user);
 	}
-}
+};
 
 const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
 	return data.map<ExtendedKcalStructure>(d => {
@@ -64,14 +64,14 @@ const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => 
 			date,
 			time 
 		};
-	})
-}
+	});
+};
 
 const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | WeightStructure) => {
 	if (a.date < b.date) return -1;
 	if (a.date > b.date) return 1;
 	return 0;
-}
+};
 
 const createUserJson = async (user: string): Promise<DataStructure | null> => {
 	if (user === null || user === undefined || user.length === 0) {
@@ -92,7 +92,7 @@ const createUserJson = async (user: string): Promise<DataStructure | null> => {
 	};
 	await writeJsonToFile(userFilePath, defaultJsonContent);
 	return defaultJsonContent;
-}
+};
 
 const getFileContentForUser = async (user: string): Promise<unknown> => {
 	const userFilePath = `${dataDirPath}/${user}.json`;
@@ -110,7 +110,7 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 
 	// there is no user.json and no data.json, create user.json
 	return createUserJson(user);
-}
+};
 
 const readFileContent = async (path: string): Promise<unknown> => {
 	try {
@@ -123,7 +123,7 @@ const readFileContent = async (path: string): Promise<unknown> => {
 		// file not found, or content is not json
 		return null;
 	}
-}
+};
 
 
 const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
@@ -143,21 +143,21 @@ const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 		};
 	}
 	return jsonContent;
-}
+};
 
 const sortedKcalData = async (user: string) => {
 	const data = await getStoredDataStructure(user);
 	return data.kcal.sort(sortByDate);
-}
+};
 
 const loadAllKcal = async (user: string): Promise<ExtendedKcalStructure[]> => {
 	return splitDateTimeInData(await sortedKcalData(user));
-}
+};
 
 const loadUserConfiguration = async (user: string) => {
 	const data = await getStoredDataStructure(user);
 	return data.user;
-}
+};
 
 const storeUserConfiguration = async (reqBody: UserConfigStructure, user: string) => {
 	if (!isUserConfigStructure(reqBody)) {
@@ -167,20 +167,20 @@ const storeUserConfiguration = async (reqBody: UserConfigStructure, user: string
 	const fileContent = await getStoredDataStructure(user);
 	fileContent.user = reqBody;
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
-}
+};
 
 const getSortedDataForDate = (date: Date, data: KcalStructure[]): KcalStructure[] => {
 	const result: KcalStructure[] = [];
 	const matchedData = data.filter(d => new Date(d.date).toDateString() === date.toDateString());
 	if (matchedData.length === 0) return result;
 	return matchedData.sort(sortByDate);
-}
+};
 
 const sumCalories = (data: KcalStructure[]) => {
 	let result = 0;
 	data.forEach(d => result += parseInt(d.kcal));
 	return result;
-}
+};
 
 const getGermanDateString = (date: Date) => {
 	return date.toLocaleDateString("de-DE", {
@@ -188,21 +188,21 @@ const getGermanDateString = (date: Date) => {
 		month: "2-digit",
 		year: "numeric" 
 	});
-}
+};
 
 const getGermanMonthString = (date: Date) => {
 	return date.toLocaleDateString("de-DE", {
 		month: "2-digit",
 		year: "numeric",
-	})
-}
+	});
+};
 
 const getGermanTimeString = (date: Date) => {
 	return date.toLocaleTimeString("de-DE", {
 		hour: "2-digit",
 		minute: "2-digit" 
 	});
-}
+};
 
 const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 	const result: KcalSummary = {
@@ -222,7 +222,7 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 	const today = new Date();
 	const matchedKcals = getSortedDataForDate(today, kcals);
 	if(matchedKcals.length) {
-		result.todayKcal = sumCalories(matchedKcals)
+		result.todayKcal = sumCalories(matchedKcals);
 		const lastDate = new Date(matchedKcals[matchedKcals.length - 1].date);
 		result.lastMealTime = getGermanTimeString(lastDate);
 		result.lastMealAgo = Math.floor((today.getTime() - lastDate.getTime()) / 1000 / 60 / 60);
@@ -244,7 +244,7 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 		result.kcalHistorySumDifference = result.actualKcalHistorySum - result.expectedKcalHistorySum;
 	}
 	return result;
-}
+};
 
 const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 	if (!isWeightStructure(reqBody)) {
@@ -254,17 +254,17 @@ const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 	const fileContent = await getStoredDataStructure(user);
 	fileContent.weight.push(reqBody);
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
-}
+};
 
 const storeMultipleWeightInput = async (reqBody: WeightStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
-		console.error("(controller) Request does not contain an array, aborting.")
-		return
+		console.error("(controller) Request does not contain an array, aborting.");
+		return;
 	}
 	for (const item of reqBody) {
 		await storeWeightInput(item, user);
 	}
-}
+};
 
 const loadAllWeight = async (user: string): Promise<WeightStructure[]> => {
 	const data = await getStoredDataStructure(user);
@@ -272,10 +272,10 @@ const loadAllWeight = async (user: string): Promise<WeightStructure[]> => {
 		return {
 			...item,
 			date: getGermanDateString(new Date(item.date))
-		}
+		};
 	});
 	return weights;
-}
+};
 
 const loadUniqueKcalInput = async (user: string): Promise<ReducedKcalStructure[]> => {
 	const kcalData = await sortedKcalData(user);
@@ -289,7 +289,7 @@ const loadUniqueKcalInput = async (user: string): Promise<ReducedKcalStructure[]
 		};
 	});
 	return reducedKcal;
-}
+};
 
 const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	const userConfiguration = await loadUserConfiguration(user);
@@ -301,15 +301,15 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	twoKiloDate.setMonth(twoKiloDate.getMonth() + twoKiloPerMonth);
 	const twoKiloPrediction = getGermanMonthString(twoKiloDate);
 	const oneKiloPerMonth = Math.round(difference);
-	const oneKiloDate = new Date()
-	oneKiloDate.setMonth(oneKiloDate.getMonth() + oneKiloPerMonth)
+	const oneKiloDate = new Date();
+	oneKiloDate.setMonth(oneKiloDate.getMonth() + oneKiloPerMonth);
 	const oneKiloPrediction = getGermanMonthString(oneKiloDate);
 	return {
 		weightTarget: userConfiguration.weightTarget,
 		twoKiloPrediction,
 		oneKiloPrediction
 	};
-}
+};
 
 export {
 	storeKcalInput,

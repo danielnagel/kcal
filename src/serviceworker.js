@@ -20,7 +20,7 @@ const urls_to_cache = [
 
 self.addEventListener('install', (e) => {
 	e.waitUntil(caches.open(cache_name).then((cache) => {
-		return cache.addAll(urls_to_cache)
+		return cache.addAll(urls_to_cache);
 	}));
 });
 
@@ -31,13 +31,13 @@ const putInCache = async (request, response) => {
 
 	const cache = await caches.open(cache_name);
 	await cache.put(request, response.clone());
-}
+};
 
 const update = async (request) => {
 	const response = await fetch(request.url);
 	await putInCache(request, response);
 	return Promise.resolve(response);
-}
+};
 
 const refresh = async (response) => {
 	const jsonResponse = await response.json();
@@ -52,7 +52,7 @@ const refresh = async (response) => {
 		});
 	});
 	return jsonResponse;
-}
+};
 
 const respondCacheOrFetch = (e) => {
 	e.respondWith(
@@ -62,7 +62,7 @@ const respondCacheOrFetch = (e) => {
 				return cached || fetch(e.request);
 			})
 	);
-}
+};
 
 self.addEventListener('fetch', (e) => {
 	if (e.request.url.includes("/api/")) {

@@ -4,17 +4,17 @@ import {
 
 const renderProgressBar = (is, goal) => {
 	const progressBar = document.createElement("div");
-	progressBar.classList.add("progress-bar")
+	progressBar.classList.add("progress-bar");
 	progressBar.style.width = calculateProgress(is, goal) + '%';
 	const container = document.createElement("div");
 	container.classList.add("progress-container");
 	container.appendChild(progressBar);
 	return container;
-}
+};
 
 const calculateProgress = (is, goal) => {
 	return Math.round(is / goal * 100);
-}
+};
 
 const renderProgressInfoContainer = (labelText, is, goal) => {
 	const container = document.createElement("div");
@@ -25,19 +25,19 @@ const renderProgressInfoContainer = (labelText, is, goal) => {
 	container.appendChild(label);
 	container.appendChild(renderProgressBar(is, goal));
 	document.getElementById("daily-info-container").appendChild(container);
-}
+};
 
 const removeProgressInfoContainer = () => {
 	document.querySelectorAll('.progress-info-container').forEach(e => e.remove());
 	document.querySelectorAll('.calories-summary-info').forEach(e => e.remove());
-}
+};
 
 const calculateColor = (difference) => {
-	if(difference >= 1500 || difference <= -1500) return "red"
-	if(difference >= 1000 || difference <= -1000) return "orangered"
+	if(difference >= 1500 || difference <= -1500) return "red";
+	if(difference >= 1000 || difference <= -1000) return "orangered";
 	if(difference >= 500 || difference <= -500) return "orange";
-	return "var(--secondary)"
-}
+	return "var(--secondary)";
+};
 
 const renderKcalHistorySummary = (actual, expected, difference, days, target) => {
 	const text = document.createElement("p");
@@ -45,7 +45,7 @@ const renderKcalHistorySummary = (actual, expected, difference, days, target) =>
 	text.innerHTML = `last <strong>${days} days</strong> difference is <strong style="color: ${calculateColor(difference)}">${difference} kcal</strong>`;
 	text.title = `Considering daily target of ${target} kcal, overall kcal consumption should be ${expected} kcal and is ${actual} kcal.`;
 	document.getElementById("daily-info-container").appendChild(text);
-}
+};
 
 const renderDailyCalories = (data) => {
 	removeProgressInfoContainer();
@@ -66,9 +66,9 @@ const renderDailyCalories = (data) => {
 			if (typeof d.date !== "undefined" && typeof d.kcal !== "undefined") {
 				renderProgressInfoContainer(d.date, d.kcal, data.dailyKcalTarget);
 			}
-		})
+		});
 	}
-}
+};
 
 (() => {
 	bootstrapApp();
@@ -79,5 +79,5 @@ const renderDailyCalories = (data) => {
 			renderDailyCalories(await response.json());
 			serviceWorkerOnMessageHandler(renderDailyCalories);
 		}
-	}
+	};
 })();
