@@ -1,3 +1,15 @@
+export const defaultDataStructure: DataStructure = {
+	kcal: [],
+	weight: [],
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: "#5f9ea0",
+		kcalHistoryCount: 3,
+		user: "test-user" 
+	} 
+}
+
 export const dataStructure1: DataStructure = {
 	kcal: [
 		{

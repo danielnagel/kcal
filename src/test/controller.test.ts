@@ -1,5 +1,6 @@
 import {
-	test, mock 
+	test,
+	mock 
 } from "node:test"
 import assert from "assert/strict"
 import {
@@ -14,15 +15,23 @@ import {
 	loadUserConfiguration,
 	loadWeightTarget,
 	storeMultipleWeightInput,
+	createUserJson,
 } from "../controller"
 import {
-	readFile, rm,
+	readFile,
+	rm,
 } from "node:fs/promises"
 import {
 	existsSync 
 } from "node:fs";
 import {
-	dataStructure1, dataStructure2, dataStructure3, dataStructure4, dataStructure5, dataStructure6 
+	dataStructure1,
+	dataStructure2,
+	dataStructure3,
+	dataStructure4,
+	dataStructure5,
+	dataStructure6, 
+	defaultDataStructure
 } from "./test.data"
 
 test.describe("storing and loading data", () => {
@@ -113,23 +122,12 @@ test.describe("storing and loading data", () => {
 	})
 
 	test("load default user configuration, when there is no data", async () => {
-		const expect: DataStructure = {
-			kcal: [],
-			weight: [],
-			user: {
-				dailyKcalTarget: 2000,
-				weightTarget: 90,
-				color: "#5f9ea0",
-				kcalHistoryCount: 3,
-				user: "test-user" 
-			} 
-		}
 		const resultLoaded = await loadUserConfiguration("test-user")
 		const storedFile = await readFile(__dirname + "/../data/test-user.json", {
 			encoding: "utf-8",
 		})
-		assert.deepEqual(JSON.stringify(expect, null, 2), storedFile)
-		assert.deepEqual(resultLoaded, expect.user)
+		assert.deepEqual(JSON.stringify(defaultDataStructure, null, 2), storedFile)
+		assert.deepEqual(resultLoaded, defaultDataStructure.user)
 	})
 
 	test("store weight", async () => {
@@ -388,5 +386,25 @@ test.describe("storing and loading data", () => {
 			twoKiloPrediction: "04.2025",
 		}
 		assert.deepEqual(resultLoaded, expectLoaded)
+	})
+
+	test("create test-user.json", async () => {
+		assert.equal(existsSync(__dirname + "/../data/test-user.json"), false);
+		const result = await createUserJson("test-user");
+		assert.deepEqual(defaultDataStructure, result);
+		assert.equal(existsSync(__dirname + "/../data/test-user.json"), true);
+		const storedFile = await readFile(__dirname + "/../data/test-user.json", {
+			encoding: "utf-8",
+		})
+		assert.deepEqual(JSON.stringify(defaultDataStructure, null, 2), storedFile)
+	});
+
+	test("not create test-user.json, when user string is not valid", async () => {
+		await createUserJson(null as unknown as string);
+		assert.equal(existsSync(__dirname + "/../data/null.json"), false);
+		await createUserJson(undefined as unknown as string);
+		assert.equal(existsSync(__dirname + "/../data/undefined.json"), false);
+		await createUserJson("");
+		assert.equal(existsSync(__dirname + "/../data/.json"), false);
 	})
 })

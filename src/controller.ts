@@ -1,8 +1,14 @@
 import {
-	mkdir, writeFile, readFile, rm 
+	mkdir,
+	writeFile,
+	readFile,
+	rm 
 } from "node:fs/promises";
 import {
-	isDataStructure, isKcalStructure, isUserConfigStructure, isWeightStructure 
+	isDataStructure,
+	isKcalStructure,
+	isUserConfigStructure,
+	isWeightStructure 
 } from "./typeguards";
 
 const dataDirPath = `${__dirname}/data`;
@@ -67,6 +73,27 @@ const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | Weigh
 	return 0;
 }
 
+const createUserJson = async (user: string): Promise<DataStructure | null> => {
+	if (user === null || user === undefined || user.length === 0) {
+		console.error(`Username has to be at least one character long, user.json creation aborted.`);
+		return null;
+	}
+	const userFilePath = `${dataDirPath}/${user}.json`;
+	const defaultJsonContent: DataStructure = {
+		kcal: [],
+		weight: [],
+		user: {
+			dailyKcalTarget: 2000,
+			weightTarget: 90,
+			color: "#5f9ea0",
+			kcalHistoryCount: 3,
+			user 
+		} 
+	};
+	await writeJsonToFile(userFilePath, defaultJsonContent);
+	return defaultJsonContent;
+}
+
 const getFileContentForUser = async (user: string): Promise<unknown> => {
 	const userFilePath = `${dataDirPath}/${user}.json`;
 	const userContent = await readFileContent(`${dataDirPath}/${user}.json`);
@@ -82,19 +109,7 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 	}
 
 	// there is no user.json and no data.json, create user.json
-	const defaultJsonContent: DataStructure = {
-		kcal: [],
-		weight: [],
-		user: {
-			dailyKcalTarget: 2000,
-			weightTarget: 90,
-			color: "#5f9ea0",
-			kcalHistoryCount: 3,
-			user 
-		} 
-	};
-	await writeJsonToFile(userFilePath, defaultJsonContent);
-	return defaultJsonContent;
+	return createUserJson(user);
 }
 
 const readFileContent = async (path: string): Promise<unknown> => {
@@ -307,5 +322,6 @@ export {
 	loadUniqueKcalInput,
 	loadUserConfiguration,
 	storeUserConfiguration,
-	loadWeightTarget
+	loadWeightTarget,
+	createUserJson
 };
