@@ -91,4 +91,6 @@ router.get('/configuration', sendHtml);
 router.get('/api/configuration', getConfiguration);
 router.post('/api/configuration', postConfiguration);
 
-export { router };
+export {
+	router 
+};

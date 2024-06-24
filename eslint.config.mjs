@@ -8,7 +8,7 @@ export default [
   {languageOptions: { globals: {...globals.browser, ...globals.node} }},
   {rules: {
     "indent": ["error", "tab"],
-    "object-curly-newline": ["error", { "ImportDeclaration": "always", "ExportDeclaration": "never", "ObjectExpression": "always", "ObjectPattern": "never" }],
+    "object-curly-newline": ["error", { "ImportDeclaration": "always", "ExportDeclaration": "always", "ObjectExpression": "always", "ObjectPattern": "never" }],
     "object-property-newline": "error"
   }},
   pluginJs.configs.recommended,

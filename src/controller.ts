@@ -296,7 +296,8 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	};
 }
 
-export {storeKcalInput,
+export {
+	storeKcalInput,
 	storeMultipleKcalInput,
 	loadTodayKcalSummary,
 	loadAllKcal,
@@ -306,4 +307,5 @@ export {storeKcalInput,
 	loadUniqueKcalInput,
 	loadUserConfiguration,
 	storeUserConfiguration,
-	loadWeightTarget};
+	loadWeightTarget
+};

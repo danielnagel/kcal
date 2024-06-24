@@ -18,7 +18,9 @@ import {
 import {
 	readFile, rm,
 } from "node:fs/promises"
-import { existsSync } from "node:fs";
+import {
+	existsSync 
+} from "node:fs";
 import {
 	dataStructure1, dataStructure2, dataStructure3, dataStructure4, dataStructure5, dataStructure6 
 } from "./test.data"
