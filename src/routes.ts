@@ -11,6 +11,8 @@ import {
 	loadWeightTarget,
 	storeUserConfiguration,
 	loadUserConfiguration,
+	createUserJson,
+	updateUserJson,
 } from "./controller";
 
 const staticPath = __dirname + "/public";
@@ -68,13 +70,23 @@ const getConfiguration = async (req: Request, res: Response) => {
 	res.json(await loadUserConfiguration(req.query.user));
 };
 
-const postConfiguration = (req: Request, res: Response) => {
+const postConfiguration = async (req: Request, res: Response) => {
 	if(typeof req.query.user !== "string") {
 		console.error(`Cannot postConfiguration, add user to query.`);
 		return;
 	}
-	storeUserConfiguration(req.body, req.query.user);
+	await storeUserConfiguration(req.body, req.query.user);
 	res.redirect('/configuration');
+};
+
+const postNewUserJson = async (req: Request, res: Response) => {
+	await createUserJson(req.body.user);
+	res.redirect('/user_configuration');
+};
+
+const postUpdateUserJson = async (req: Request, res: Response) => {
+	await updateUserJson(req.body.user, req.body.newUser);
+	res.redirect('/user_configuration');
 };
 
 const router = Router();
@@ -90,6 +102,8 @@ router.get('/summary_weight', sendHtml);
 router.get('/configuration', sendHtml);
 router.get('/api/configuration', getConfiguration);
 router.post('/api/configuration', postConfiguration);
+router.post('/api/user/new', postNewUserJson);
+router.post('/api/user/update', postUpdateUserJson);
 
 export {
 	router 
