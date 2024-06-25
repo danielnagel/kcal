@@ -391,6 +391,18 @@ test.describe("storing and loading data", () => {
 		assert.deepEqual(resultLoaded, expectLoaded);
 	});
 
+	test("default weight summary, when there are no weights", async () => {
+		await mkdir(`${__dirname}/../data`);
+		await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+		const resultLoaded = await loadWeightTarget("test-user");
+		const expectLoaded: WeightTargetSummary = {
+			weightTarget: 0,
+			oneKiloPrediction: "",
+			twoKiloPrediction: "",
+		};
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
 	test("create test-user.json", async () => {
 		assert.equal(existsSync(__dirname + "/../data/test-user.json"), false);
 		const result = await createUserJson("test-user");

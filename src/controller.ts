@@ -299,8 +299,14 @@ const loadUniqueKcalInput = async (user: string): Promise<ReducedKcalStructure[]
 };
 
 const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
+	const result: WeightTargetSummary = {
+		weightTarget: 0,
+		twoKiloPrediction: "",
+		oneKiloPrediction: ""
+	};
 	const userConfiguration = await loadUserConfiguration(user);
 	const weights = await loadAllWeight(user);
+	if(weights.length === 0) return result;
 	const mostRecentWeight = weights[weights.length - 1];
 	const difference = parseInt(mostRecentWeight.weight) - userConfiguration.weightTarget;
 	const twoKiloPerMonth = Math.round(difference / 2);
