@@ -102,6 +102,7 @@ router.get('/summary_weight', sendHtml);
 router.get('/configuration', sendHtml);
 router.get('/api/configuration', getConfiguration);
 router.post('/api/configuration', postConfiguration);
+router.get('/user_configuration', sendHtml);
 router.post('/api/user/new', postNewUserJson);
 router.post('/api/user/update', postUpdateUserJson);
 

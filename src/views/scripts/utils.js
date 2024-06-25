@@ -82,3 +82,13 @@ export const bootstrapApp = () => {
 	persistData();
 	setColorFromStorage();
 };
+
+export const getFormDataJson = (form) => {
+	const formData = new FormData(form);
+	const data = {
+	};
+	formData.forEach((value, key) => {
+		data[key] = value;
+	});
+	return data;
+};

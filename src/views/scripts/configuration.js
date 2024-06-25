@@ -14,6 +14,7 @@ const updateConfiguration = (data) => {
 	if (data.color !== undefined) {
 		const color = document.getElementById("color");
 		color.value = data.color;
+		updateColor(data.color);
 	}
 	if (data.kcalHistoryCount !== undefined) {
 		const kcalHistoryCount = document.getElementById("kcalHistoryCount");
@@ -21,12 +22,16 @@ const updateConfiguration = (data) => {
 	}
 };
 
-const updateColor = () => {
-	const userColorInput = document.getElementById("color");
+const updateColor = (color) => {
 	const r = document.querySelector(':root');
+	r.style.setProperty('--accent', color);
+	if (localStorage) localStorage.setItem("color", color);
+};
+
+const updateColorFromInput = () => {
+	const userColorInput = document.getElementById("color");
 	userColorInput.oninput = (e) => {
-		r.style.setProperty('--accent', e.target.value);
-		if (localStorage) localStorage.setItem("color", e.target.value);
+		updateColor(e.target.value);
 	};
 };
 
@@ -39,6 +44,6 @@ const updateColor = () => {
 			updateConfiguration(await response.json());
 			serviceWorkerOnMessageHandler(updateConfiguration);
 		}
-		updateColor();
+		updateColorFromInput();
 	};
 })();

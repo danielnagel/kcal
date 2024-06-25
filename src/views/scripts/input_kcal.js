@@ -1,5 +1,5 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard, getFormDataJson
 } from "./utils.js";
 
 const storageItemKey = "unsendFormData";
@@ -33,16 +33,6 @@ const renderSuggestionList = (data) => {
 			}
 		}
 	});
-};
-
-const getFormDataJson = (form) => {
-	const formData = new FormData(form);
-	const data = {
-	};
-	formData.forEach((value, key) => {
-		data[key] = value;
-	});
-	return data;
 };
 
 const getParsedStoredData = () => {

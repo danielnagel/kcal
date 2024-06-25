@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>kcal - user configuration</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="manifest.json" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="author" content="Daniel Nagel" />
+    <link href="/index.css" rel="stylesheet">
+    <script type="module" src="/user_configuration.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>+k</h1>
+        <ul>
+            <li><a href="/">home</a></li>
+            <li><a href="/input_kcal">+k</a></li>
+            <li><a href="/summary_kcal">ls k</a></li>
+            <li><a href="/input_weight">+w</a></li>
+            <li><a href="/summary_weight">ls w</a></li>
+            <li><a class="active" href="/configuration">conf</a></li>
+        </ul>
+    </header>
+    <main>
+        <form class="input-form" id="user-configuration-form">
+            <label for="user">user</label>
+            <input class="form-input" type="text" name="user" id="user" required list="suggestion-list"></input>
+            <datalist id="suggestion-list"></datalist>
+            <input class="form-submit" type="submit" value="update" />
+            <input class="form-submit" type="submit" value="change" />
+            <input class="form-submit" type="submit" value="new" />
+        </form>
+    </main>
+</body>
+
+</html>

@@ -48,6 +48,9 @@ header li {
 header li a {
     display: block;
     padding: 8px;
+}
+
+a {
     color: var(--secondary);
 }
 
@@ -55,7 +58,7 @@ header li a.active {
     color: var(--accent);
 }
 
-header li a:hover {
+a:hover {
     color: var(--accent);
 }
 
@@ -68,7 +71,7 @@ header li a:hover {
     transform: translate(-50%, -50%)
 }
 
-.daily-info {
+.info-container {
     width: 300px;
     text-align: center;
     margin: auto;
@@ -176,4 +179,10 @@ label {
 
 .tabulator-row {
     border-bottom: 1px solid #aaa;
+}
+
+/* configuration */
+
+.under-form-link {
+    padding: 8px;
 }

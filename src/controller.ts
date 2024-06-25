@@ -336,7 +336,7 @@ const updateUserJson = async (user: string, newUser: string): Promise<DataStruct
 		console.error(`There is no "${user}.json" will not update.`);
 		return null;
 	}
-	userContent.user.user = user;
+	userContent.user.user = newUser;
 	await writeJsonToFile(newUserFilePath, userContent);
 	await rm(userFilePath);
 	return userContent;
