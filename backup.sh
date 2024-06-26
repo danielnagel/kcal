@@ -9,7 +9,7 @@ if [ -f "$ENVIRONMENT_FILE" ]; then
     # Check if PROJECT_DIR is set and not empty
     if [ -n "$PROJECT_DIR" ] && [ -n "$BACKUP_DIR" ]; then
         # Variablen definieren
-        SOURCE_FILE="$PROJECT_DIR/dist/data/data.json"
+        SOURCE_FILE="$PROJECT_DIR/dist/data/*.json"
         TARGET_DIR="$BACKUP_DIR"
 
         # Heutiges Datum im Format YYYY-MM-DD
