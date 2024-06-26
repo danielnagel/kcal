@@ -10,7 +10,7 @@ const updateDateTimeInput = () => {
 	const datetimeInput = document.querySelector("input[type=date]");
 	datetimeInput.value = normalizedNow;
 
-}
+};
 
 const sendWeightInput = async (form, user) => {
 	return fetch(`/api/input_weight?user=${user}`, {
@@ -19,8 +19,8 @@ const sendWeightInput = async (form, user) => {
 		headers: {
 			"Content-Type": "application/json",
 		},
-	})
-}
+	});
+};
 
 const formHandling = (user) => {
 	const form = document.getElementById('weight-form');
