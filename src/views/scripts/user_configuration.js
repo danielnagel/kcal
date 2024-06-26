@@ -13,7 +13,7 @@ const updateUserColor = async (user) => {
 	if (data.color !== undefined) {
 		updateColor(data.color);
 	}
-}
+};
 
 const formHandling = () => {
 	const form = document.getElementById("user-configuration-form");
