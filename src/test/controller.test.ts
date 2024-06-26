@@ -432,6 +432,7 @@ test.describe("storing and loading data", () => {
 		const storedFile = await readFile(__dirname + "/../data/user-test.json", {
 			encoding: "utf-8",
 		});
+		defaultDataStructure.user.user = "user-test";
 		assert.deepEqual(JSON.stringify(defaultDataStructure, null, 2), storedFile);
 	});
 
