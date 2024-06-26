@@ -1,11 +1,19 @@
 import {
-	bootstrapApp, promptUser, getFormDataJson
+	bootstrapApp, promptUser, getFormDataJson, updateColor
 } from "./utils.js";
 
 const updateUserInput = (user) => {
 	const userInput = document.getElementById("user");
 	userInput.value = user;
 };
+
+const updateUserColor = async (user) => {
+	const response = await fetch(`/api/configuration?user=${user}`);
+	const data = await response.json();
+	if (data.color !== undefined) {
+		updateColor(data.color);
+	}
+}
 
 const formHandling = () => {
 	const form = document.getElementById("user-configuration-form");
@@ -42,9 +50,11 @@ const formHandling = () => {
 				},
 			});
 			localStorage.setItem("user", formData.user);
+			updateUserColor(formData.user);
 			break;
 		case "change":
 			localStorage.setItem("user", formData.user);
+			updateUserColor(formData.user);
 			break;
 		default:
 			console.error(`Unknown user configuration request: ${e.submitter.value}`);

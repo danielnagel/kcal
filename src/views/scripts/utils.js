@@ -92,3 +92,9 @@ export const getFormDataJson = (form) => {
 	});
 	return data;
 };
+
+export const updateColor = (color) => {
+	const r = document.querySelector(':root');
+	r.style.setProperty('--accent', color);
+	if (localStorage) localStorage.setItem("color", color);
+};

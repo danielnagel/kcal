@@ -1,5 +1,5 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, getFormDataJson
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, getFormDataJson, updateColor
 } from "./utils.js";
 
 const updateConfiguration = (data) => {
@@ -20,12 +20,6 @@ const updateConfiguration = (data) => {
 		const kcalHistoryCount = document.getElementById("kcalHistoryCount");
 		kcalHistoryCount.value = data.kcalHistoryCount;
 	}
-};
-
-const updateColor = (color) => {
-	const r = document.querySelector(':root');
-	r.style.setProperty('--accent', color);
-	if (localStorage) localStorage.setItem("color", color);
 };
 
 const updateColorFromInput = () => {
