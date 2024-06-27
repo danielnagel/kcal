@@ -70,13 +70,17 @@ const renderDailyCalories = (data) => {
 	}
 };
 
+const getAndRenderTodayCalories = async (user) => {
+	const response = await fetch(`/api/kcal?for=today&user=${user}`);
+	renderDailyCalories(await response.json());
+};
+
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		const user = promptUser();
+		const user = promptUser(getAndRenderTodayCalories);
 		if(user) {
-			const response = await fetch(`/api/kcal?for=today&user=${user}`);
-			renderDailyCalories(await response.json());
+			await getAndRenderTodayCalories(user);
 			serviceWorkerOnMessageHandler(renderDailyCalories);
 		}
 	};

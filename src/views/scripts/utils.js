@@ -56,7 +56,7 @@ const setColorFromStorage = () => {
 	}
 };
 
-export const promptUser = () => {
+export const promptUser = (callback) => {
 	if (localStorage) {
 		const user = localStorage.getItem("user");
 		if(!user) {
@@ -71,6 +71,7 @@ export const promptUser = () => {
 					localStorage.setItem("user", newUser);
 				}
 				dialog.close();
+				if(typeof callback === "function") callback(newUser);
 			};
 		}
 		return user;

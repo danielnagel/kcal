@@ -47,13 +47,17 @@ const formHandling = (user) => {
 	};
 };
 
+const getAndUpdateConfiguration = async (user) => {
+	const response = await fetch(`/api/configuration?user=${user}`);
+	updateConfiguration(await response.json());
+};
+
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		const user = promptUser();
+		const user = promptUser(getAndUpdateConfiguration);
 		if(user) {
-			const response = await fetch(`/api/configuration?user=${user}`);
-			updateConfiguration(await response.json());
+			await getAndUpdateConfiguration(user);
 			formHandling(user);
 			serviceWorkerOnMessageHandler(updateConfiguration);
 		}

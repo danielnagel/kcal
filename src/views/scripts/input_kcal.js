@@ -112,17 +112,20 @@ const renderOfflineInfo = (user) => {
 	hideOfflineContainer();
 };
 
+const getAndRenderSuggestionList = async (user) => {
+	const response = await fetch(`/api/kcal?by=what&user=${user}`);
+	renderSuggestionList(await response.json());
+};
+
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
 		updateDateTimeInput();
-		const user = promptUser();
+		const user = promptUser(getAndRenderSuggestionList);
 		if(user) {
+			await getAndRenderSuggestionList(user);
 			formHandling(user);
 			renderOfflineInfo(user);
-
-			const response = await fetch(`/api/kcal?by=what&user=${user}`);
-			renderSuggestionList(await response.json());
 			serviceWorkerOnMessageHandler(renderSuggestionList);
 		}
 	};

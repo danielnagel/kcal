@@ -47,13 +47,17 @@ const renderTable = (data) => {
 	});
 };
 
+const getDataAndRenderTable = async (user) => {
+	const response = await fetch(`/api/kcal?user=${user}`);
+	renderTable(await response.json());
+};
+
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		const user = promptUser();
+		const user = promptUser(getDataAndRenderTable);
 		if(user) {
-			const response = await fetch(`/api/kcal?user=${user}`);
-			renderTable(await response.json());
+			await getDataAndRenderTable(user);
 			serviceWorkerOnMessageHandler(renderTable);
 		}
 	};

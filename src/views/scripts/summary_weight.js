@@ -54,15 +54,19 @@ const renderWeightTarget = async (data) => {
 	container.appendChild(text3);
 };
 
+const getDataAndRender = async (user) => {
+	const response = await fetch(`/api/weight?user=${user}`);
+	renderChart(await response.json());
+	const targetResponse = await fetch(`/api/weight?summary=true&user=${user}`);
+	renderWeightTarget(await targetResponse.json());
+};
+
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		const user = promptUser();
+		const user = promptUser(getDataAndRender);
 		if(user) {
-			const response = await fetch(`/api/weight?user=${user}`);
-			renderChart(await response.json());
-			const targetResponse = await fetch(`/api/weight?summary=true&user=${user}`);
-			renderWeightTarget(await targetResponse.json());
+			await getDataAndRender(user);
 			serviceWorkerOnMessageHandler(renderChart);
 		}
 	};
