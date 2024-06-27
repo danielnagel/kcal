@@ -9,6 +9,10 @@
 With the kcal web server, daily nutrition can be tracked.
 Additionally, today's calorie intake is summarized on the homepage.
 Furthermore, the current weight and waist can be entered and tracked over time in a graph.
+The simple user management is file-based.
+The username is stored in the browser's localStorage.
+If there is no name in localStorage, it is requested through a dialog.
+The username is appended to each request to the server to load the data from the correct file.
 
 This project runs exclusively on a Debian-based Linux system.
 The project has been tested on a Raspberry Pi 3 with the operating system Raspbian GNU/Linux 12.
@@ -16,34 +20,63 @@ Node version 21 is required
 
 ## frontend
 
+When the browser visits the website for the first time,
+the user is prompted to provide a name, i.e., to sign in.
+
+<p align="center">
+    <img src="/docs/login-dialog.png" width="300"/>
+</p>
+
 The current calorie intake can be viewed on the home page.
 
 <p align="center">
-    <img src="/docs/kcal-home.png" width="300"/>
+    <img src="/docs/home.png" width="300"/>
 </p>
 
 Additional calories can be entered.
 
 <p align="center">
-    <img src="/docs/kcal-input-kcal.png" width="300"/>
+    <img src="/docs/calories-input.png" width="300"/>
 </p>
 
 All entered calories can be viewed.
 
 <p align="center">
-    <img src="/docs/kcal-summary-kcal.png" width="300"/>
+    <img src="/docs/calories-list.png" width="300"/>
 </p>
 
 Weight can be entered.
 
 <p align="center">
-    <img src="/docs/kcal-input-weight.png" width="300"/>
+    <img src="/docs/weight-input.png" width="300"/>
 </p>
 
 Weight can also be recorded and viewed in a graph.
 
 <p align="center">
-    <img src="/docs/kcal-summary-weight.png" width="300"/>
+    <img src="/docs/weight-list.png" width="300"/>
+</p>
+
+User preferences can be configured
+
+- daily calories target, seen on the home screen
+- weight target, takes effect on the weight chart view
+- user color, changes the accent color of the application
+- kcal history count, daily calories target history, seen on the home screen
+
+<p align="center">
+    <img src="/docs/configuration.png" width="300"/>
+</p>
+
+User configuration
+
+- can be reached when clicking on update user on the configuration page
+- update, the current user name
+- change, the user to another one, if the user exists
+- new, create a new user
+
+<p align="center">
+    <img src="/docs/user-configuration.png" width="300"/>
 </p>
 
 ## install
@@ -118,3 +151,5 @@ But it [currently doesn't support arm32 architecture](https://github.com/denolan
 8. Web app manifest.
 9. Refreshed knowledge on eslint.
 10. Refreshed knowledge on github workflows.
+11. Simple, file-based, user mangement.
+12. Working with the browsers local storage
