@@ -3,12 +3,21 @@ import {
 } from "./utils.js";
 import "./tabulator.min.js";
 
+const today = new Date().toLocaleDateString("de-DE", {
+	day: "2-digit",
+	month: "2-digit",
+	year: "numeric" 
+});
+
 const renderTable = (data) => {
 	//create Tabulator on DOM element with id "example-table"
 	// eslint-disable-next-line
 	var table = new Tabulator("#example-table", {
 		data: data, //assign data to table
 		groupBy: "date",
+		groupStartOpen: (value) => {
+			return value === today;
+		},
 		layout: "fitColumns",
 		columns: [ //Define Table Columns
 			{
@@ -48,7 +57,7 @@ const renderTable = (data) => {
 };
 
 const getDataAndRenderTable = async (user) => {
-	const response = await fetch(`/api/kcal?user=${user}`);
+	const response = await fetch(`/api/kcal?user=${user}&order=desc`);
 	renderTable(await response.json());
 };
 

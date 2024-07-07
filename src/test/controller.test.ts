@@ -98,6 +98,28 @@ test.describe("storing and loading data", () => {
 		assert.deepEqual(resultLoaded, expectLoaded);
 	});
 
+	test("load all kcal, desc", async () => {
+		await storeMultipleKcalInput(dataStructure4.kcal, "test-user");
+		const resultStored = await readFile(__dirname + "/../data/test-user.json", {
+			encoding: "utf-8",
+		});
+		assert.deepEqual(JSON.stringify(dataStructure4, null, 2), resultStored);
+		const resultLoaded = await loadAllKcal("test-user", "desc");
+		const expectLoaded: ExtendedKcalStructure[] = [
+			{
+				...dataStructure4.kcal[0],
+				date: "24.05.2024",
+				time: "19:27" 
+			},
+			{
+				...dataStructure4.kcal[1],
+				date: "24.05.2024",
+				time: "09:27" 
+			},
+		];
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
 	test("not store no user configuration", async () => {
 		await storeUserConfiguration("bad request body" as unknown as UserConfigStructure, "test-user");
 		assert.equal(existsSync(__dirname + "/../data/test-user.json"), false);

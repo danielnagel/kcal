@@ -46,7 +46,7 @@ const getAllKcalData = async (req: Request, res: Response) => {
 	} else if (req.query.by === "what") {
 		res.json(await loadUniqueKcalInput(req.query.user));
 	} else {
-		res.json(await loadAllKcal(req.query.user));
+		res.json(await loadAllKcal(req.query.user, req.query.order as string));
 	}
 };
 

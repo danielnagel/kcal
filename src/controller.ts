@@ -67,9 +67,15 @@ const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => 
 	});
 };
 
-const sortByDate = (a: KcalStructure | WeightStructure, b: KcalStructure | WeightStructure) => {
+const sortByDateAsc = (a: KcalStructure | WeightStructure, b: KcalStructure | WeightStructure) => {
 	if (a.date < b.date) return -1;
 	if (a.date > b.date) return 1;
+	return 0;
+};
+
+const sortByDateDesc = (a: KcalStructure | WeightStructure, b: KcalStructure | WeightStructure) => {
+	if (a.date < b.date) return 1;
+	if (a.date > b.date) return -1;
 	return 0;
 };
 
@@ -152,13 +158,14 @@ const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 	return jsonContent;
 };
 
-const sortedKcalData = async (user: string) => {
+const sortedKcalData = async (user: string, order = 'asc') => {
 	const data = await getStoredDataStructure(user);
-	return data.kcal.sort(sortByDate);
+	if(order === 'desc') return data.kcal.sort(sortByDateDesc);
+	return data.kcal.sort(sortByDateAsc);
 };
 
-const loadAllKcal = async (user: string): Promise<ExtendedKcalStructure[]> => {
-	return splitDateTimeInData(await sortedKcalData(user));
+const loadAllKcal = async (user: string, order = 'asc'): Promise<ExtendedKcalStructure[]> => {
+	return splitDateTimeInData(await sortedKcalData(user, order));
 };
 
 const loadUserConfiguration = async (user: string) => {
@@ -180,7 +187,7 @@ const getSortedDataForDate = (date: Date, data: KcalStructure[]): KcalStructure[
 	const result: KcalStructure[] = [];
 	const matchedData = data.filter(d => new Date(d.date).toDateString() === date.toDateString());
 	if (matchedData.length === 0) return result;
-	return matchedData.sort(sortByDate);
+	return matchedData.sort(sortByDateAsc);
 };
 
 const sumCalories = (data: KcalStructure[]) => {
@@ -275,7 +282,7 @@ const storeMultipleWeightInput = async (reqBody: WeightStructure[], user: string
 
 const loadAllWeight = async (user: string): Promise<WeightStructure[]> => {
 	const data = await getStoredDataStructure(user);
-	const weights = data.weight.sort(sortByDate).map(item => {
+	const weights = data.weight.sort(sortByDateAsc).map(item => {
 		return {
 			...item,
 			date: getGermanDateString(new Date(item.date))
