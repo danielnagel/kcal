@@ -39,7 +39,8 @@ Additional calories can be entered.
     <img src="/docs/calories-input.png" width="300"/>
 </p>
 
-All entered calories can be viewed.
+All entered calories can be viewed, in descending order.
+Only today's date shows a detailed view of the entered data.
 
 <p align="center">
     <img src="/docs/calories-list.png" width="300"/>
