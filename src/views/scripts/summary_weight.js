@@ -1,7 +1,7 @@
 import {
 	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
-} from "./utils.js";
-import "./chart.umd.js";
+} from './utils.js';
+import './chart.umd.js';
 
 let chartInstance = undefined;
 
@@ -42,12 +42,12 @@ const renderChart = (data) => {
 };
 
 const renderWeightTarget = async (data) => {
-	const container = document.getElementById("summary-weight-container");
-	const text = document.createElement("p");
+	const container = document.getElementById('summary-weight-container');
+	const text = document.createElement('p');
 	text.innerHTML = `Target is <strong>${data.weightTarget}kg</strong>.`;
-	const text2 = document.createElement("p");
+	const text2 = document.createElement('p');
 	text2.innerHTML = `When losing <strong>two kilos per Month</strong>, the goal is reached in <strong>${data.twoKiloPrediction}</strong>.`;
-	const text3 = document.createElement("p");
+	const text3 = document.createElement('p');
 	text3.innerHTML = `When losing <strong>one kilo per Month</strong>, the goal is reached in <strong>${data.oneKiloPrediction}</strong>.`;
 	container.appendChild(text);
 	container.appendChild(text2);
@@ -65,7 +65,7 @@ const getDataAndRender = async (user) => {
 	bootstrapApp();
 	window.onload = async () => {
 		const user = promptUser(getDataAndRender);
-		if(user) {
+		if (user) {
 			await getDataAndRender(user);
 			serviceWorkerOnMessageHandler(renderChart);
 		}

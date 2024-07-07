@@ -10,7 +10,10 @@ export default [
     "indent": ["error", "tab"],
     "object-curly-newline": ["error", { "ImportDeclaration": "always", "ExportDeclaration": "always", "ObjectExpression": "always", "ObjectPattern": "never" }],
     "object-property-newline": "error",
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "space-before-function-paren": ["error", "always"],
+    "quotes": ["error", "single"],
+    "keyword-spacing": "error"
   }},
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,

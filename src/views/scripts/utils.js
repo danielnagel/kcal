@@ -2,7 +2,7 @@ export const serviceWorkerOnMessageHandler = (callback) => {
 	if (navigator.serviceWorker) {
 		navigator.serviceWorker.onmessage = event => {
 			const message = JSON.parse(event.data);
-			if (message && message.type.includes("/api/")) {
+			if (message && message.type.includes('/api/')) {
 				callback(message.data);
 			}
 		};
@@ -10,7 +10,7 @@ export const serviceWorkerOnMessageHandler = (callback) => {
 };
 
 const unsecuredCopyToClipboard = (text) => {
-	const textArea = document.createElement("textarea");
+	const textArea = document.createElement('textarea');
 	textArea.value = text;
 	document.body.appendChild(textArea);
 	textArea.focus();
@@ -50,7 +50,7 @@ const persistData = async () => {
 
 const setColorFromStorage = () => {
 	if (localStorage) {
-		const color = localStorage.getItem("color");
+		const color = localStorage.getItem('color');
 		const r = document.querySelector(':root');
 		r.style.setProperty('--accent', color);
 	}
@@ -58,20 +58,20 @@ const setColorFromStorage = () => {
 
 export const promptUser = (callback) => {
 	if (localStorage) {
-		const user = localStorage.getItem("user");
-		if(!user) {
-			const dialog = document.getElementById("user-prompt-modal");
+		const user = localStorage.getItem('user');
+		if (!user) {
+			const dialog = document.getElementById('user-prompt-modal');
 			dialog.showModal();
-			const form = document.getElementById("user-prompt-form");
+			const form = document.getElementById('user-prompt-form');
 			form.onsubmit = e => {
 				e.preventDefault();
 				const formData = new FormData(form);
-				const newUser = formData.get("username");
+				const newUser = formData.get('username');
 				if (newUser) {
-					localStorage.setItem("user", newUser);
+					localStorage.setItem('user', newUser);
 				}
 				dialog.close();
-				if(typeof callback === "function") callback(newUser);
+				if (typeof callback === 'function') callback(newUser);
 			};
 		}
 		return user;
@@ -97,5 +97,5 @@ export const getFormDataJson = (form) => {
 export const updateColor = (color) => {
 	const r = document.querySelector(':root');
 	r.style.setProperty('--accent', color);
-	if (localStorage) localStorage.setItem("color", color);
+	if (localStorage) localStorage.setItem('color', color);
 };

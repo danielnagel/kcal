@@ -3,13 +3,13 @@ import {
 	writeFile,
 	readFile,
 	rm 
-} from "node:fs/promises";
+} from 'node:fs/promises';
 import {
 	isDataStructure,
 	isKcalStructure,
 	isUserConfigStructure,
 	isWeightStructure 
-} from "./typeguards";
+} from './typeguards';
 
 const dataDirPath = `${__dirname}/data`;
 const dataFilePath = `${dataDirPath}/data.json`;
@@ -37,7 +37,7 @@ const writeJsonToFile = async (path: string, data: DataStructure) => {
 
 const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	if (!isKcalStructure(reqBody)) {
-		console.error("(controller) Request does not contain a valid KcalStructure object, aborting.");
+		console.error('(controller) Request does not contain a valid KcalStructure object, aborting.');
 		return;
 	}
 	const fileContent = await getStoredDataStructure(user);
@@ -47,7 +47,7 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 
 const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
-		console.error("(controller) Request does not contain an array, aborting.");
+		console.error('(controller) Request does not contain an array, aborting.');
 		return;
 	}
 	for (const item of reqBody) {
@@ -83,7 +83,7 @@ const moveDataJsonToUserJson = async (user: string): Promise<DataStructure | nul
 	const userFilePath = `${dataDirPath}/${user}.json`;
 	const dataContent = await readFileContent(dataFilePath);
 	if (!isDataStructure(dataContent)) {
-		console.error(`There is no "data.json" will not update.`);
+		console.error('There is no "data.json" will not update.');
 		return null;
 	}
 	dataContent.user.user = user;
@@ -94,7 +94,7 @@ const moveDataJsonToUserJson = async (user: string): Promise<DataStructure | nul
 
 const createUserJson = async (user: string): Promise<DataStructure | null> => {
 	if (user === null || user === undefined || user.length === 0) {
-		console.error(`Username has to be at least one character long, user.json creation aborted.`);
+		console.error('Username has to be at least one character long, user.json creation aborted.');
 		return null;
 	}
 	const userFilePath = `${dataDirPath}/${user}.json`;
@@ -104,7 +104,7 @@ const createUserJson = async (user: string): Promise<DataStructure | null> => {
 		user: {
 			dailyKcalTarget: 2000,
 			weightTarget: 90,
-			color: "#5f9ea0",
+			color: '#5f9ea0',
 			kcalHistoryCount: 3,
 			user 
 		} 
@@ -119,7 +119,7 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 
 	// there might be an old data.json in the system, move it to user.json
 	const updatedJson = await moveDataJsonToUserJson(user);
-	if(updatedJson) return updatedJson;
+	if (updatedJson) return updatedJson;
 
 	// there is no user.json and no data.json, create user.json
 	return createUserJson(user);
@@ -149,9 +149,9 @@ const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 			user: {
 				dailyKcalTarget: 2000,
 				weightTarget: 90,
-				color: "#5f9ea0",
+				color: '#5f9ea0',
 				kcalHistoryCount: 3,
-				user: "" 
+				user: '' 
 			} 
 		};
 	}
@@ -160,7 +160,7 @@ const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 
 const sortedKcalData = async (user: string, order = 'asc') => {
 	const data = await getStoredDataStructure(user);
-	if(order === 'desc') return data.kcal.sort(sortByDateDesc);
+	if (order === 'desc') return data.kcal.sort(sortByDateDesc);
 	return data.kcal.sort(sortByDateAsc);
 };
 
@@ -175,7 +175,7 @@ const loadUserConfiguration = async (user: string) => {
 
 const storeUserConfiguration = async (reqBody: UserConfigStructure, user: string) => {
 	if (!isUserConfigStructure(reqBody)) {
-		console.error("(controller) Request does not contain a valid UserConfigStructure object, aborting.");
+		console.error('(controller) Request does not contain a valid UserConfigStructure object, aborting.');
 		return;
 	}
 	const fileContent = await getStoredDataStructure(user);
@@ -197,31 +197,31 @@ const sumCalories = (data: KcalStructure[]) => {
 };
 
 const getGermanDateString = (date: Date) => {
-	return date.toLocaleDateString("de-DE", {
-		day: "2-digit",
-		month: "2-digit",
-		year: "numeric" 
+	return date.toLocaleDateString('de-DE', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric' 
 	});
 };
 
 const getGermanMonthString = (date: Date) => {
-	return date.toLocaleDateString("de-DE", {
-		month: "2-digit",
-		year: "numeric",
+	return date.toLocaleDateString('de-DE', {
+		month: '2-digit',
+		year: 'numeric',
 	});
 };
 
 const getGermanTimeString = (date: Date) => {
-	return date.toLocaleTimeString("de-DE", {
-		hour: "2-digit",
-		minute: "2-digit" 
+	return date.toLocaleTimeString('de-DE', {
+		hour: '2-digit',
+		minute: '2-digit' 
 	});
 };
 
 const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 	const result: KcalSummary = {
 		todayKcal: 0,
-		lastMealTime: "00:00",
+		lastMealTime: '00:00',
 		lastMealAgo: 0,
 		dailyKcalTarget: 0,
 		pastDailyKcal: [],
@@ -235,7 +235,7 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 	if (kcals.length === 0) return result;
 	const today = new Date();
 	const matchedKcals = getSortedDataForDate(today, kcals);
-	if(matchedKcals.length) {
+	if (matchedKcals.length) {
 		result.todayKcal = sumCalories(matchedKcals);
 		const lastDate = new Date(matchedKcals[matchedKcals.length - 1].date);
 		result.lastMealTime = getGermanTimeString(lastDate);
@@ -245,7 +245,7 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 		const date = new Date();
 		date.setDate(date.getDate() - (i + 1));
 		const matchedKcals = getSortedDataForDate(date, kcals);
-		if(matchedKcals.length === 0) continue;
+		if (matchedKcals.length === 0) continue;
 		const summedCalories = sumCalories(matchedKcals);
 		result.pastDailyKcal.push({
 			date: getGermanDateString(date),
@@ -262,7 +262,7 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 
 const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 	if (!isWeightStructure(reqBody)) {
-		console.error("(controller) Request does not contain a valid WeightStructure object, aborting.");
+		console.error('(controller) Request does not contain a valid WeightStructure object, aborting.');
 		return;
 	}
 	const fileContent = await getStoredDataStructure(user);
@@ -272,7 +272,7 @@ const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 
 const storeMultipleWeightInput = async (reqBody: WeightStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
-		console.error("(controller) Request does not contain an array, aborting.");
+		console.error('(controller) Request does not contain an array, aborting.');
 		return;
 	}
 	for (const item of reqBody) {
@@ -308,12 +308,12 @@ const loadUniqueKcalInput = async (user: string): Promise<ReducedKcalStructure[]
 const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	const result: WeightTargetSummary = {
 		weightTarget: 0,
-		twoKiloPrediction: "",
-		oneKiloPrediction: ""
+		twoKiloPrediction: '',
+		oneKiloPrediction: ''
 	};
 	const userConfiguration = await loadUserConfiguration(user);
 	const weights = await loadAllWeight(user);
-	if(weights.length === 0) return result;
+	if (weights.length === 0) return result;
 	const mostRecentWeight = weights[weights.length - 1];
 	const difference = parseInt(mostRecentWeight.weight) - userConfiguration.weightTarget;
 	const twoKiloPerMonth = Math.round(difference / 2);
@@ -333,7 +333,7 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 
 const updateUserJson = async (user: string, newUser: string): Promise<DataStructure | null> => {
 	if (newUser === null || newUser === undefined || newUser.length === 0) {
-		console.error(`New username has to be at least one character long, new-user.json creation aborted.`);
+		console.error('New username has to be at least one character long, new-user.json creation aborted.');
 		return null;
 	}
 	const userFilePath = `${dataDirPath}/${user}.json`;

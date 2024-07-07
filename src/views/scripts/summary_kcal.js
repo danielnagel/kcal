@@ -1,12 +1,12 @@
 import {
 	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
-} from "./utils.js";
-import "./tabulator.min.js";
+} from './utils.js';
+import './tabulator.min.js';
 
-const today = new Date().toLocaleDateString("de-DE", {
-	day: "2-digit",
-	month: "2-digit",
-	year: "numeric" 
+const today = new Date().toLocaleDateString('de-DE', {
+	day: '2-digit',
+	month: '2-digit',
+	year: 'numeric' 
 });
 
 const renderTable = (data) => {
@@ -14,44 +14,44 @@ const renderTable = (data) => {
 	// eslint-disable-next-line
 	var table = new Tabulator("#example-table", {
 		data: data, //assign data to table
-		groupBy: "date",
+		groupBy: 'date',
 		groupStartOpen: (value) => {
 			return value === today;
 		},
-		layout: "fitColumns",
+		layout: 'fitColumns',
 		columns: [ //Define Table Columns
 			{
-				title: "what",
-				field: "what" 
+				title: 'what',
+				field: 'what' 
 			},
 			{
-				title: "date",
-				field: "date",
+				title: 'date',
+				field: 'date',
 				visible: false 
 			},
 			{
-				title: "time",
-				field: "time" 
+				title: 'time',
+				field: 'time' 
 			},
 			{
-				title: "kcal",
-				field: "kcal" 
+				title: 'kcal',
+				field: 'kcal' 
 			},
 			{
-				title: "comment",
-				field: "comment",
-				formatter: "textarea",
+				title: 'comment',
+				field: 'comment',
+				formatter: 'textarea',
 				print: false 
 			},
 		],
 	});
 
 	//trigger an alert message when the row is clicked
-	table.on("rowClick", function (e, row) {
-		alert("Row " + row.getData().id + " Clicked!!!!");
+	table.on('rowClick', function (e, row) {
+		alert('Row ' + row.getData().id + ' Clicked!!!!');
 	});
 
-	document.getElementById("print-table").addEventListener("click", function () {
+	document.getElementById('print-table').addEventListener('click', function () {
 		table.print(true, true);
 	});
 };
@@ -65,7 +65,7 @@ const getDataAndRenderTable = async (user) => {
 	bootstrapApp();
 	window.onload = async () => {
 		const user = promptUser(getDataAndRenderTable);
-		if(user) {
+		if (user) {
 			await getDataAndRenderTable(user);
 			serviceWorkerOnMessageHandler(renderTable);
 		}

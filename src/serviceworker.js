@@ -28,7 +28,7 @@ self.addEventListener('install', (e) => {
 });
 
 const putInCache = async (request, response) => {
-	if (response.type === "error" || response.type === "opaque") {
+	if (response.type === 'error' || response.type === 'opaque') {
 		return Promise.resolve(); // do not put in cache network errors
 	}
 
@@ -68,7 +68,7 @@ const respondCacheOrFetch = (e) => {
 };
 
 self.addEventListener('fetch', (e) => {
-	if (e.request.url.includes("/api/")) {
+	if (e.request.url.includes('/api/')) {
 		// response to API requests, Cache Update Refresh strategy
 		respondCacheOrFetch(e);
 		// https://pwa-workshop.js.org/4-api-cache/#implementation

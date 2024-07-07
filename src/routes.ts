@@ -1,6 +1,6 @@
 import {
 	Request, Response, Router 
-} from "express";
+} from 'express';
 import {
 	storeMultipleKcalInput,
 	loadAllKcal,
@@ -13,14 +13,14 @@ import {
 	loadUserConfiguration,
 	createUserJson,
 	updateUserJson,
-} from "./controller";
+} from './controller';
 
-const staticPath = __dirname + "/public";
+const staticPath = __dirname + '/public';
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
 
 const postKcal = (req: Request, res: Response) => {
-	if(typeof req.query.user !== "string") {
-		console.error(`Cannot postKcal, add user to query.`);
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot postKcal, add user to query.');
 		return;
 	}
 	storeMultipleKcalInput(req.body, req.query.user);
@@ -28,8 +28,8 @@ const postKcal = (req: Request, res: Response) => {
 };
 
 const postWeight = (req: Request, res: Response) => {
-	if(typeof req.query.user !== "string") {
-		console.error(`Cannot postWeight, add user to query.`);
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot postWeight, add user to query.');
 		return;
 	}
 	storeWeightInput(req.body, req.query.user);
@@ -37,13 +37,13 @@ const postWeight = (req: Request, res: Response) => {
 };
 
 const getAllKcalData = async (req: Request, res: Response) => {
-	if(typeof req.query.user !== "string") {
-		console.error(`Cannot getAllKcalData, add user to query.`);
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot getAllKcalData, add user to query.');
 		return;
 	}
-	if (req.query.for === "today") {
+	if (req.query.for === 'today') {
 		res.json(await loadTodayKcalSummary(req.query.user));
-	} else if (req.query.by === "what") {
+	} else if (req.query.by === 'what') {
 		res.json(await loadUniqueKcalInput(req.query.user));
 	} else {
 		res.json(await loadAllKcal(req.query.user, req.query.order as string));
@@ -51,11 +51,11 @@ const getAllKcalData = async (req: Request, res: Response) => {
 };
 
 const getAllWeightData = async (req: Request, res: Response) => {
-	if(typeof req.query.user !== "string") {
-		console.error(`Cannot getAllWeightData, add user to query.`);
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot getAllWeightData, add user to query.');
 		return;
 	}
-	if (req.query.summary === "true") {
+	if (req.query.summary === 'true') {
 		res.json(await loadWeightTarget(req.query.user));
 	} else {
 		res.json(await loadAllWeight(req.query.user));
@@ -63,16 +63,16 @@ const getAllWeightData = async (req: Request, res: Response) => {
 };
 
 const getConfiguration = async (req: Request, res: Response) => {
-	if(typeof req.query.user !== "string") {
-		console.error(`Cannot getConfiguration, add user to query.`);
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot getConfiguration, add user to query.');
 		return;
 	}
 	res.json(await loadUserConfiguration(req.query.user));
 };
 
 const postConfiguration = async (req: Request, res: Response) => {
-	if(typeof req.query.user !== "string") {
-		console.error(`Cannot postConfiguration, add user to query.`);
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot postConfiguration, add user to query.');
 		return;
 	}
 	await storeUserConfiguration(req.body, req.query.user);

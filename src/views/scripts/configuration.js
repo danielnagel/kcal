@@ -1,29 +1,29 @@
 import {
 	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, getFormDataJson, updateColor
-} from "./utils.js";
+} from './utils.js';
 
 const updateConfiguration = (data) => {
 	if (data.dailyKcalTarget !== undefined) {
-		const kcalTarget = document.getElementById("dailyKcalTarget");
+		const kcalTarget = document.getElementById('dailyKcalTarget');
 		kcalTarget.value = data.dailyKcalTarget;
 	}
 	if (data.weightTarget !== undefined) {
-		const weightTarget = document.getElementById("weightTarget");
+		const weightTarget = document.getElementById('weightTarget');
 		weightTarget.value = data.weightTarget;
 	}
 	if (data.color !== undefined) {
-		const color = document.getElementById("color");
+		const color = document.getElementById('color');
 		color.value = data.color;
 		updateColor(data.color);
 	}
 	if (data.kcalHistoryCount !== undefined) {
-		const kcalHistoryCount = document.getElementById("kcalHistoryCount");
+		const kcalHistoryCount = document.getElementById('kcalHistoryCount');
 		kcalHistoryCount.value = data.kcalHistoryCount;
 	}
 };
 
 const updateColorFromInput = () => {
-	const userColorInput = document.getElementById("color");
+	const userColorInput = document.getElementById('color');
 	userColorInput.oninput = (e) => {
 		updateColor(e.target.value);
 	};
@@ -31,10 +31,10 @@ const updateColorFromInput = () => {
 
 const sendConfiguration = (form, user) => {
 	return fetch(`/api/configuration?user=${user}`, {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(getFormDataJson(form)),
 		headers: {
-			"Content-Type": "application/json",
+			'Content-Type': 'application/json',
 		},
 	});
 };
@@ -56,7 +56,7 @@ const getAndUpdateConfiguration = async (user) => {
 	bootstrapApp();
 	window.onload = async () => {
 		const user = promptUser(getAndUpdateConfiguration);
-		if(user) {
+		if (user) {
 			await getAndUpdateConfiguration(user);
 			formHandling(user);
 			serviceWorkerOnMessageHandler(updateConfiguration);

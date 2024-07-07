@@ -1,12 +1,12 @@
-import express from "express";
-import bodyParser from "body-parser";
+import express from 'express';
+import bodyParser from 'body-parser';
 import {
 	router 
-} from "./routes";
+} from './routes';
 
 (async () => {
 	const port = 8080;
-	const staticPath = __dirname + "/public";
+	const staticPath = __dirname + '/public';
 
 	const app = express();
 
