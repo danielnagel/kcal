@@ -104,6 +104,7 @@ a:hover {
     margin-right: -50%;
     transform: translate(-50%, -50%)
 }
+
 form.input-form {
     margin: 0 auto;
     padding: 10px;
@@ -167,18 +168,32 @@ label {
 }
 
 .summary-table {
-    max-width: 1000px;
-    max-height: 500px;
-    margin: auto;
+    overflow: auto;
+    width: 100%;
+    max-height: 600px;
 }
 
-.summary-weight { 
+.summary-weight {
     background-color: var(--secondary);
     border: solid 1px var(--accent);
 }
 
-.tabulator-row {
-    border-bottom: 1px solid #aaa;
+.kcal-summary-table {
+    border-collapse: collapse;
+    width: 100%
+}
+
+.kcal-summary-table-cell-head {
+    position: sticky;
+    top: 0;
+    background-color: var(--accent);
+    color: var(--primary)
+}
+
+.kcal-summary-table-cell {
+    border-bottom: 1px solid var(--secondary);
+    text-align: left;
+    padding: 4px;
 }
 
 /* configuration */

@@ -134,6 +134,7 @@ const readFileContent = async (path: string): Promise<unknown> => {
 		return jsonContent;
 	} catch (e: unknown) {
 		// file not found, or content is not json
+		if (e instanceof Error) console.error(`Could not read file content of ${path}: ${e.message}`);
 		return null;
 	}
 };

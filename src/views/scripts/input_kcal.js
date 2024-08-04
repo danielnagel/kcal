@@ -42,6 +42,7 @@ const getParsedStoredData = () => {
 	if (storedData) {
 		try {
 			result.push(...JSON.parse(storedData));
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
 			console.error(`could not parse data from store. stored data: ${storedData}`);
 		}
@@ -60,6 +61,7 @@ const sendDataList = async (dataList, user) => {
 		});
 		if (response.status == 200 && localStorage)
 			localStorage.removeItem(storageItemKey);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (e) {
 		if (localStorage) localStorage.setItem(storageItemKey, JSON.stringify(dataList));
 	}
@@ -93,6 +95,7 @@ const renderOfflineInfo = (user) => {
 			const data = [];
 			try {
 				data.push(...JSON.parse(storedData));
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (e) {
 				console.error(`could not parse data from store. stored data: ${storedData}`);
 			}

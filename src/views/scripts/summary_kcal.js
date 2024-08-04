@@ -1,59 +1,42 @@
 import {
 	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
 } from './utils.js';
-import './tabulator.min.js';
-
-const today = new Date().toLocaleDateString('de-DE', {
-	day: '2-digit',
-	month: '2-digit',
-	year: 'numeric' 
-});
 
 const renderTable = (data) => {
-	//create Tabulator on DOM element with id "example-table"
-	// eslint-disable-next-line
-	var table = new Tabulator("#example-table", {
-		data: data, //assign data to table
-		groupBy: 'date',
-		groupStartOpen: (value) => {
-			return value === today;
-		},
-		layout: 'fitColumns',
-		columns: [ //Define Table Columns
-			{
-				title: 'what',
-				field: 'what' 
-			},
-			{
-				title: 'date',
-				field: 'date',
-				visible: false 
-			},
-			{
-				title: 'time',
-				field: 'time' 
-			},
-			{
-				title: 'kcal',
-				field: 'kcal' 
-			},
-			{
-				title: 'comment',
-				field: 'comment',
-				formatter: 'textarea',
-				print: false 
-			},
-		],
+	const table = document.createElement('table');
+	table.classList.add('kcal-summary-table');
+	const columns = ['what', 'date', 'time', 'kcal', 'comment'];
+	
+	const headers = columns.map(c => {
+		const th = document.createElement('th');
+		th.classList.add('kcal-summary-table-cell');
+		th.classList.add('kcal-summary-table-cell-head');
+		th.innerText = c;
+		return th;
 	});
+	const header = document.createElement('tr');
+	header.classList.add('kcal-summary-table-row');
+	header.append(...headers);
+	table.appendChild(header);
 
-	//trigger an alert message when the row is clicked
-	table.on('rowClick', function (e, row) {
-		alert('Row ' + row.getData().id + ' Clicked!!!!');
-	});
+	const body = data.map(d => {
+		const row = document.createElement('tr');
+		row.classList.add('kcal-summary-table-row');
+		
+		const cells = columns.map(c => {
+			const td = document.createElement('td');
+			td.classList.add('kcal-summary-table-cell');
+			td.classList.add(`kcal-summary-table-cell-${c}`);
+			td.innerText = d[c];
+			return td;
+		});
 
-	document.getElementById('print-table').addEventListener('click', function () {
-		table.print(true, true);
+		row.append(...cells);
+		return row;
 	});
+	table.append(...body);
+
+	document.getElementById('example-table').appendChild(table);
 };
 
 const getDataAndRenderTable = async (user) => {
