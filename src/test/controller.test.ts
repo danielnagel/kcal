@@ -34,6 +34,7 @@ import {
 	dataStructure4,
 	dataStructure5,
 	dataStructure6, 
+	dataStructure7, 
 	defaultDataStructure
 } from './test.data';
 
@@ -118,6 +119,47 @@ test.describe('storing and loading data', () => {
 			},
 		];
 		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
+	test('load all kcal, desc, with paging', async () => {
+		await storeMultipleKcalInput(dataStructure7.kcal, 'test-user');
+		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+			encoding: 'utf-8',
+		});
+		assert.deepEqual(JSON.stringify(dataStructure7, null, 2), resultStored);
+		const resultLoaded1 = await loadAllKcal('test-user', 'desc', 1, 3);
+		const expectLoaded1: ExtendedKcalStructure[] = [
+			{
+				...dataStructure7.kcal[4],
+				date: '18.07.2024',
+				time: '06:00' 
+			},
+			{
+				...dataStructure7.kcal[3],
+				date: '17.07.2024',
+				time: '19:07' 
+			},
+			{
+				...dataStructure7.kcal[2],
+				date: '17.07.2024',
+				time: '18:24' 
+			},
+		];
+		assert.deepEqual(resultLoaded1, expectLoaded1);
+		const resultLoaded2 = await loadAllKcal('test-user', 'desc', 2, 3);
+		const expectLoaded2: ExtendedKcalStructure[] = [
+			{
+				...dataStructure7.kcal[1],
+				date: '17.07.2024',
+				time: '13:00' 
+			},
+			{
+				...dataStructure7.kcal[0],
+				date: '17.07.2024',
+				time: '06:00' 
+			},
+		];
+		assert.deepEqual(resultLoaded2, expectLoaded2);
 	});
 
 	test('not store no user configuration', async () => {

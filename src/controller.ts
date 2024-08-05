@@ -139,7 +139,6 @@ const readFileContent = async (path: string): Promise<unknown> => {
 	}
 };
 
-
 const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 	const jsonContent = await getFileContentForUser(user);
 	if (!isDataStructure(jsonContent)) {
@@ -165,8 +164,13 @@ const sortedKcalData = async (user: string, order = 'asc') => {
 	return data.kcal.sort(sortByDateAsc);
 };
 
-const loadAllKcal = async (user: string, order = 'asc'): Promise<ExtendedKcalStructure[]> => {
-	return splitDateTimeInData(await sortedKcalData(user, order));
+const loadAllKcal = async (user: string, order = 'asc', page = 0, pageSize = 25): Promise<ExtendedKcalStructure[]> => {
+	const data = splitDateTimeInData(await sortedKcalData(user, order));
+	if (page === 0)
+		return data;
+	const end = page * pageSize;
+	const start = end - pageSize;
+	return data.slice(start, end);
 };
 
 const loadUserConfiguration = async (user: string) => {

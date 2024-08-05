@@ -46,7 +46,16 @@ const getAllKcalData = async (req: Request, res: Response) => {
 	} else if (req.query.by === 'what') {
 		res.json(await loadUniqueKcalInput(req.query.user));
 	} else {
-		res.json(await loadAllKcal(req.query.user, req.query.order as string));
+		let page = 0;
+		if (typeof req.query.page !== 'undefined') {
+			try {
+				page = parseInt(req.query.page as string);
+			} catch (e) {
+				if (e instanceof Error)
+					console.error(`Page ${req.query.page} is not a number. ${e.message}`);
+			}
+		}
+		res.json(await loadAllKcal(req.query.user, req.query.order as string, page));
 	}
 };
 

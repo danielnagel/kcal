@@ -2,7 +2,15 @@ import {
 	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
 } from './utils.js';
 
+let loadedData = [];
+let nextPage = 1;
+let user = '';
+
 const renderTable = (data) => {
+	loadedData = [...loadedData, ...data];
+	if (data.length < 25) {
+		document.getElementById('next-page-button').disabled = true;
+	}
 	const table = document.createElement('table');
 	table.classList.add('kcal-summary-table');
 	const columns = ['what', 'date', 'time', 'kcal', 'comment'];
@@ -19,7 +27,7 @@ const renderTable = (data) => {
 	header.append(...headers);
 	table.appendChild(header);
 
-	const body = data.map(d => {
+	const body = loadedData.map(d => {
 		const row = document.createElement('tr');
 		row.classList.add('kcal-summary-table-row');
 		
@@ -36,18 +44,21 @@ const renderTable = (data) => {
 	});
 	table.append(...body);
 
-	document.getElementById('example-table').appendChild(table);
+	const tableContainer = document.getElementById('example-table');
+	tableContainer.childNodes.forEach(c => c.remove());
+	tableContainer.appendChild(table);
 };
 
-const getDataAndRenderTable = async (user) => {
-	const response = await fetch(`/api/kcal?user=${user}&order=desc`);
+const getDataAndRenderTable = async () => {
+	const response = await fetch(`/api/kcal?user=${user}&order=desc&page=${nextPage++}`);
 	renderTable(await response.json());
 };
 
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		const user = promptUser(getDataAndRenderTable);
+		document.getElementById('next-page-button').onclick = getDataAndRenderTable;
+		user = promptUser(getDataAndRenderTable);
 		if (user) {
 			await getDataAndRenderTable(user);
 			serviceWorkerOnMessageHandler(renderTable);

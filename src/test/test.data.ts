@@ -391,3 +391,46 @@ export const dataStructure6: DataStructure = {
 		user: 'test-user' 
 	},
 };
+
+export const dataStructure7: DataStructure = {
+	kcal: [
+		{
+			'date': '2024-07-17T06:00',
+			'what': 'test',
+			'kcal': '450',
+			'comment': ''
+		  },
+		  {
+			'date': '2024-07-17T13:00',
+			'what': 'test',
+			'kcal': '700',
+			'comment': ''
+		  },
+		  {
+			'date': '2024-07-17T18:24',
+			'what': 'test',
+			'kcal': '700',
+			'comment': ''
+		  },
+		  {
+			'date': '2024-07-17T19:07',
+			'what': 'test',
+			'kcal': '120',
+			'comment': ''
+		  },
+		  {
+			'date': '2024-07-18T06:00',
+			'what': 'test',
+			'kcal': '450',
+			'comment': ''
+		  },
+	],
+	weight: [],
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: '#5f9ea0',
+		kcalHistoryCount: 3,
+		user: 'test-user' 
+	}
+};
