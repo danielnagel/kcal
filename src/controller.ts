@@ -41,7 +41,16 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 		return;
 	}
 	const fileContent = await getStoredDataStructure(user);
-	fileContent.kcal.push(reqBody);
+
+	const uniqueKcalStructure: UniqueKcalStructure = {
+		...reqBody,
+		id: 0
+	};
+	if (fileContent.kcal.length > 0) {
+		uniqueKcalStructure.id = fileContent.kcal[fileContent.kcal.length -1].id + 1;
+	}
+
+	fileContent.kcal.push(uniqueKcalStructure);
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 };
 
@@ -55,7 +64,7 @@ const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) =>
 	}
 };
 
-const splitDateTimeInData = (data: KcalStructure[]): ExtendedKcalStructure[] => {
+const splitDateTimeInData = (data: UniqueKcalStructure[]): ExtendedKcalStructure[] => {
 	return data.map<ExtendedKcalStructure>(d => {
 		const date = getGermanDateString(new Date(d.date));
 		const time = getGermanTimeString(new Date(d.date));
@@ -271,7 +280,16 @@ const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 		return;
 	}
 	const fileContent = await getStoredDataStructure(user);
-	fileContent.weight.push(reqBody);
+
+	const uniqueWeightStructure: UniqueWeightStructure = {
+		...reqBody,
+		id: 0
+	};
+	if (fileContent.weight.length > 0) {
+		uniqueWeightStructure.id = fileContent.weight[fileContent.weight.length -1].id + 1;
+	}
+
+	fileContent.weight.push(uniqueWeightStructure);
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 };
 

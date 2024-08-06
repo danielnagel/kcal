@@ -29,13 +29,25 @@ import {
 } from 'node:fs';
 import {
 	dataStructure1,
+	dataStructure10,
 	dataStructure2,
 	dataStructure3,
 	dataStructure4,
-	dataStructure5,
 	dataStructure6, 
 	dataStructure7, 
-	defaultDataStructure
+	dataStructure8, 
+	dataStructure9, 
+	defaultDataStructure,
+	kcalInput1,
+	kcalInput2,
+	kcalInput3,
+	kcalInput4,
+	kcalInput5,
+	kcalInput7,
+	kcalInput9,
+	weightInput10,
+	weightInput6,
+	weightInput8
 } from './test.data';
 
 test.describe('storing and loading data', () => {
@@ -49,7 +61,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('store kcal', async () => {
-		await storeKcalInput(dataStructure3.kcal[0], 'test-user');
+		await storeKcalInput(kcalInput3, 'test-user');
 		const result = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
@@ -65,7 +77,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('store multiple kcal', async () => {
-		await storeMultipleKcalInput(dataStructure1.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput1, 'test-user');
 		const result = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
@@ -78,7 +90,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load all kcal', async () => {
-		await storeMultipleKcalInput(dataStructure4.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput4, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
@@ -100,7 +112,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load all kcal, desc', async () => {
-		await storeMultipleKcalInput(dataStructure4.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput4, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
@@ -122,7 +134,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load all kcal, desc, with paging', async () => {
-		await storeMultipleKcalInput(dataStructure7.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput7, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
@@ -198,26 +210,11 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('store weight', async () => {
-		const expect: DataStructure = {
-			kcal: [],
-			weight: [{
-				date: '2024-05-24',
-				weight: '80',
-				waist: '70' 
-			}],
-			user: {
-				dailyKcalTarget: 2000,
-				weightTarget: 90,
-				color: '#5f9ea0',
-				kcalHistoryCount: 3,
-				user: 'test-user' 
-			},
-		};
-		await storeWeightInput(expect.weight[0], 'test-user');
+		await storeWeightInput(weightInput10, 'test-user');
 		const result = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
-		assert.deepEqual(JSON.stringify(expect, null, 2), result);
+		assert.deepEqual(JSON.stringify(dataStructure10, null, 2), result);
 	});
 
 	test('not store no weight', async () => {
@@ -234,41 +231,19 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load all weight', async () => {
-		const expect: DataStructure = {
-			kcal: [],
-			weight: [
-				{
-					date: '2024-05-24',
-					weight: '80',
-					waist: '70' 
-				},
-				{
-					date: '2024-05-04',
-					weight: '85',
-					waist: '75' 
-				},
-			],
-			user: {
-				dailyKcalTarget: 2000,
-				weightTarget: 90,
-				color: '#5f9ea0',
-				kcalHistoryCount: 3,
-				user: 'test-user' 
-			},
-		};
-		await storeMultipleWeightInput(expect.weight, 'test-user');
+		await storeMultipleWeightInput(weightInput8, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
-		assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
+		assert.deepEqual(JSON.stringify(dataStructure8, null, 2), resultStored);
 		const resultLoaded = await loadAllWeight('test-user');
 		const expectLoaded: WeightStructure[] = [
 			{
-				...expect.weight[1],
+				...dataStructure8.weight[1],
 				date: '04.05.2024' 
 			},
 			{
-				...expect.weight[0],
+				...dataStructure8.weight[0],
 				date: '24.05.2024' 
 			},
 		];
@@ -276,41 +251,11 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load today kcal', async () => {
-		const expect: DataStructure = {
-			kcal: [
-				{
-					what: 'test',
-					kcal: '123',
-					date: '2024-05-24T19:27',
-					comment: '' 
-				},
-				{
-					what: 'test3',
-					kcal: '444',
-					date: '2024-05-04T18:46',
-					comment: '' 
-				},
-				{
-					what: 'test2',
-					kcal: '1234',
-					date: '2024-05-24T09:27',
-					comment: '' 
-				},
-			],
-			weight: [],
-			user: {
-				dailyKcalTarget: 2000,
-				weightTarget: 90,
-				color: '#5f9ea0',
-				kcalHistoryCount: 3,
-				user: 'test-user' 
-			},
-		};
-		await storeMultipleKcalInput(expect.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput9, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
-		assert.deepEqual(JSON.stringify(expect, null, 2), resultStored);
+		assert.deepEqual(JSON.stringify(dataStructure9, null, 2), resultStored);
 
 		// mock date
 		mock.timers.enable({
@@ -333,7 +278,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load today kcal, different data set', async () => {
-		await storeMultipleKcalInput(dataStructure1.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput1, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});
@@ -373,7 +318,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load today kcal, between months', async () => {
-		await storeMultipleKcalInput(dataStructure2.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput2, 'test-user');
 		await storeUserConfiguration(dataStructure2.user, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
@@ -410,7 +355,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load all unique kcal input', async () => {
-		await storeMultipleKcalInput(dataStructure5.kcal, 'test-user');
+		await storeMultipleKcalInput(kcalInput5, 'test-user');
 		const resultLoaded = await loadUniqueKcalInput('test-user');
 		const expectLoaded: ReducedKcalStructure[] = [
 			{
@@ -434,7 +379,7 @@ test.describe('storing and loading data', () => {
 	});
 
 	test('load weight summary', async () => {
-		await storeMultipleWeightInput(dataStructure6.weight, 'test-user');
+		await storeMultipleWeightInput(weightInput6, 'test-user');
 		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
 			encoding: 'utf-8',
 		});

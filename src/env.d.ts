@@ -1,7 +1,9 @@
 type KcalStructure = { what: string, date: string, kcal: string, comment: string };
-type ExtendedKcalStructure = { what: string, date: string, time: string, kcal: string, comment: string };
+type UniqueKcalStructure = {id: number} & KcalStructure;
+type ExtendedKcalStructure = { id: number, what: string, date: string, time: string, kcal: string, comment: string };
 type WeightStructure = { weight: string, waist: string, date: string };
-type DataStructure = { kcal: KcalStructure[], weight: WeightStructure[], user: UserConfigStructure };
+type UniqueWeightStructure = {id: number} & WeightStructure;
+type DataStructure = { kcal: UniqueKcalStructure[], weight: UniqueWeightStructure[], user: UserConfigStructure };
 type KcalSummary = { todayKcal: number, lastMealTime: string, lastMealAgo: number, dailyKcalTarget: number,
     pastDailyKcal: DailyKcalAndTime[], expectedKcalHistorySum: number, actualKcalHistorySum: number, kcalHistorySumDifference: number };
 type ReducedKcalStructure = { what: string, kcal: string };
