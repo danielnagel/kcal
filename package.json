@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prebuild:production": "npm i --legacy-peer-deps",
+    "prebuild:production": "npm i",
     "build:production": "npm run build",
     "build": "tsc -p tsconfig.build.json",
     "postbuild:production": "./bundle.sh",
