@@ -13,7 +13,10 @@ const renderTable = (data) => {
 	}
 	const table = document.createElement('table');
 	table.classList.add('kcal-summary-table');
-	const columns = ['what', 'date', 'time', 'kcal', 'comment'];
+	const columns = ['what', 'date', 'time', 'kcal'];
+	if(window.innerWidth > 600) {
+		columns.push('comment');
+	}
 	
 	const headers = columns.map(c => {
 		const th = document.createElement('th');

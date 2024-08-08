@@ -6,7 +6,7 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="manifest" href="manifest.json" />
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="Daniel Nagel" />
     <link href="index.css" rel="stylesheet">
     <script type="module" src="/summary_kcal.js" ></script>
@@ -16,12 +16,11 @@
     <header>
         <h1>+k</h1>
         <dialog id="kcal-detail-modal" class="kcal-dialog">
-            <form method="dialog" class="input-form" id="kcal-detail-form">
+            <form method="dialog" class="input-form" id="kcal-detail-form" tabindex="0">
                 <label for="date">date</label>
                 <input class="form-input" type="datetime-local" name="date" id="date" required />
                 <label for="what">what</label>
-                <input class="form-input" type="text" name="what" id="what" required list="suggestion-list"></input>
-                <datalist id="suggestion-list"></datalist>
+                <input class="form-input" type="text" name="what" id="what" required></input>
                 <label for="kcal">calories</label>
                 <input class="form-input" type="number" name="kcal" id="kcal" required />
                 <label for="comment">comment</label>
