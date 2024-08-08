@@ -40,6 +40,8 @@ const renderTable = (data) => {
 		});
 
 		row.append(...cells);
+		row.setAttribute('data-kcal', JSON.stringify(d));
+		row.onclick = rowOnClickHandler;
 		return row;
 	});
 	table.append(...body);
@@ -54,10 +56,42 @@ const getDataAndRenderTable = async () => {
 	renderTable(await response.json());
 };
 
+const rowOnClickHandler = (event) =>  {
+	if (event.target instanceof HTMLTableCellElement) {
+		const cell = event.target;
+		const row = cell.parentElement;
+		if (row instanceof HTMLTableRowElement) {
+			const data = row.getAttribute('data-kcal');
+			let jsonData = null;
+			try {
+				jsonData = JSON.parse(data);
+			} catch (e) {
+				console.error(`Could not parse row data, reason: ${e.message}`);
+			}
+			const dialog = document.querySelector('#kcal-detail-modal');
+			const datetimeInput = dialog.querySelector('#date');
+			const parts = jsonData.date.split('.');
+			if (parts.length === 3) {
+				datetimeInput.value = `${parts[2]}-${parts[1]}-${parts[0]}T${jsonData.time}`;
+			}
+			const whatInput = dialog.querySelector('#what');
+			whatInput.value = jsonData.what;
+			const kcalInput = dialog.querySelector('#kcal');
+			kcalInput.value = jsonData.kcal;
+			const commentInput = dialog.querySelector('#comment');
+			commentInput.value = jsonData.comment;
+			dialog.showModal();
+		}
+	}
+};
+
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
 		document.getElementById('next-page-button').onclick = getDataAndRenderTable;
+		document.querySelector('#kcal-detail-form-cancel-button').onclick = () => {
+			document.querySelector('#kcal-detail-modal').close();
+		};
 		user = promptUser(getDataAndRenderTable);
 		if (user) {
 			await getDataAndRenderTable(user);

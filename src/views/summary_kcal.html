@@ -15,6 +15,22 @@
 <body>
     <header>
         <h1>+k</h1>
+        <dialog id="kcal-detail-modal" class="kcal-dialog">
+            <form method="dialog" class="input-form" id="kcal-detail-form">
+                <label for="date">date</label>
+                <input class="form-input" type="datetime-local" name="date" id="date" required />
+                <label for="what">what</label>
+                <input class="form-input" type="text" name="what" id="what" required list="suggestion-list"></input>
+                <datalist id="suggestion-list"></datalist>
+                <label for="kcal">calories</label>
+                <input class="form-input" type="number" name="kcal" id="kcal" required />
+                <label for="comment">comment</label>
+                <textarea class="form-textarea" name="comment" id="comment" rows="3"></textarea>
+                <input class="form-submit" type="submit" value="Submit" />
+                <input class="form-submit" type="submit" value="Delete" />
+                <input class="form-submit" type="button" id="kcal-detail-form-cancel-button" value="Cancel" />
+            </form>
+        </dialog>
         <ul>
             <li><a href="/">home</a></li>
             <li><a href="/input_kcal">+k</a></li>
@@ -26,7 +42,7 @@
     </header>
     <main class="summary-content">
         <div class="summary-table" id="example-table"></div>
-        <button id="next-page-button">load more data...</button>
+        <button id="next-page-button" class="form-submit">load more data...</button>
     </main>
     <dialog id="user-prompt-modal">
         <p>Username</p>
