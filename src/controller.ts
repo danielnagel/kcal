@@ -372,6 +372,30 @@ const updateUserJson = async (user: string, newUser: string): Promise<DataStruct
 	return userContent;
 };
 
+const deleteKcal = async (user: string, id: string) => {
+	const data = await getStoredDataStructure(user);
+	const kcal = data.kcal;
+	if (kcal.length === 0) {
+		throw Error('There is no data to delete.');
+	}
+
+	let idNumber: number;
+	try {
+		idNumber = parseInt(id);
+	} catch (e: unknown) {
+		let message = `Could not parse '${id}'`;
+		if (e instanceof Error) message += `, reason: ${e.message}`;
+		throw Error(message);
+	}
+
+	const updatedKcal = kcal.filter(k => k.id !== idNumber);
+	if (updatedKcal.length !== kcal.length - 1) {
+		throw Error('Deleted to much data, kcal list probably inconsistent. Aborted to prevent data loss.');
+	}
+	data.kcal = updatedKcal;
+	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
+};
+
 export {
 	storeKcalInput,
 	storeMultipleKcalInput,
@@ -385,5 +409,6 @@ export {
 	storeUserConfiguration,
 	loadWeightTarget,
 	createUserJson,
-	updateUserJson
+	updateUserJson,
+	deleteKcal
 };

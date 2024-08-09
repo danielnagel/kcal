@@ -17,6 +17,7 @@ import {
 	storeMultipleWeightInput,
 	createUserJson,
 	updateUserJson,
+	deleteKcal,
 } from '../controller';
 import {
 	readFile,
@@ -30,6 +31,7 @@ import {
 import {
 	dataStructure1,
 	dataStructure10,
+	dataStructure11,
 	dataStructure2,
 	dataStructure3,
 	dataStructure4,
@@ -50,7 +52,7 @@ import {
 	weightInput8
 } from './test.data';
 
-test.describe('storing and loading data', () => {
+test.describe('controller.ts', () => {
 	test.afterEach(async () => {
 		if (existsSync(__dirname + '/../data')) {
 			await rm(__dirname + '/../data', {
@@ -461,5 +463,49 @@ test.describe('storing and loading data', () => {
 		assert.equal(existsSync(`${__dirname}/../data/undefined.json`), false);
 		await updateUserJson('test-user', '');
 		assert.equal(existsSync(`${__dirname}/../data/.json`), false);
+	});
+
+	test.describe('delete data', () => {
+		test('throw error when there is no data to delete', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+			assert.rejects(async () => await deleteKcal('test-user', '0'), 'no data');
+		});
+		test('throw error when id is not a number', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
+			assert.rejects(async () => await deleteKcal('test-user', 'not a number'), 'not parse');
+		});
+		test('abort if data contains duplicates of the same id', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure11, null, 2));
+			assert.rejects(async () => await deleteKcal('test-user', '1'), 'inconsistent');
+		});
+		test('delete kcal at the end and add new kcal', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
+			await deleteKcal('test-user', '1');
+			const resultAfterDelete = await loadAllKcal('test-user');
+			assert.equal(resultAfterDelete.length, 1);
+			assert.equal(resultAfterDelete[0].id, 0);
+			await storeKcalInput(kcalInput3, 'test-user');
+			const resultAfterAdd = await loadAllKcal('test-user');
+			assert.equal(resultAfterAdd.length, 2);
+			assert.equal(resultAfterAdd[0].id, 0);
+			assert.equal(resultAfterAdd[1].id, 1);
+		});
+		test('delete kcal at the beginning and add new kcal', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
+			await deleteKcal('test-user', '0');
+			const resultAfterDelete = await loadAllKcal('test-user');
+			assert.equal(resultAfterDelete.length, 1);
+			assert.equal(resultAfterDelete[0].id, 1);
+			await storeKcalInput(kcalInput3, 'test-user');
+			const resultAfterAdd = await loadAllKcal('test-user');
+			assert.equal(resultAfterAdd.length, 2);
+			assert.equal(resultAfterAdd[0].id, 1);
+			assert.equal(resultAfterAdd[1].id, 2);
+		});
 	});
 });

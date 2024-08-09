@@ -895,3 +895,30 @@ export const weightInput10: WeightStructure = {
 		  weight: '80',
 		  'waist': '70',
 };
+
+export const dataStructure11: DataStructure = {
+	kcal: [
+		{
+			what: 'test',
+			kcal: '123',
+			date: '2024-05-24T19:27',
+			comment: 'test',
+			id: 1
+		},
+		{
+			what: 'test2',
+			kcal: '1234',
+			date: '2024-05-24T09:27',
+			comment: 'test2',
+			id: 1
+		}
+	],
+	weight: [],
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: '#5f9ea0',
+		kcalHistoryCount: 3,
+		user: 'test-user'
+	}
+};
