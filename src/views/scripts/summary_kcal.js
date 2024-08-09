@@ -83,6 +83,12 @@ const rowOnClickHandler = (event) =>  {
 			kcalInput.value = jsonData.kcal;
 			const commentInput = dialog.querySelector('#comment');
 			commentInput.value = jsonData.comment;
+			const deleteButton = dialog.querySelector('#kcal-detail-form-delete-button');
+			deleteButton.onclick = () => {
+				fetch(`/api/kcal?id=${jsonData.id}&user=${user}`, {
+					method: 'delete'
+				});
+			};
 			dialog.showModal();
 		}
 	}

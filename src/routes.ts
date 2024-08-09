@@ -13,6 +13,7 @@ import {
 	loadUserConfiguration,
 	createUserJson,
 	updateUserJson,
+	deleteKcal,
 } from './controller';
 
 const staticPath = __dirname + '/public';
@@ -21,6 +22,7 @@ const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${r
 const postKcal = (req: Request, res: Response) => {
 	if (typeof req.query.user !== 'string') {
 		console.error('Cannot postKcal, add user to query.');
+		res.status(422);
 		return;
 	}
 	storeMultipleKcalInput(req.body, req.query.user);
@@ -30,6 +32,7 @@ const postKcal = (req: Request, res: Response) => {
 const postWeight = (req: Request, res: Response) => {
 	if (typeof req.query.user !== 'string') {
 		console.error('Cannot postWeight, add user to query.');
+		res.status(422);
 		return;
 	}
 	storeWeightInput(req.body, req.query.user);
@@ -39,6 +42,7 @@ const postWeight = (req: Request, res: Response) => {
 const getAllKcalData = async (req: Request, res: Response) => {
 	if (typeof req.query.user !== 'string') {
 		console.error('Cannot getAllKcalData, add user to query.');
+		res.status(422);
 		return;
 	}
 	if (req.query.for === 'today') {
@@ -62,6 +66,7 @@ const getAllKcalData = async (req: Request, res: Response) => {
 const getAllWeightData = async (req: Request, res: Response) => {
 	if (typeof req.query.user !== 'string') {
 		console.error('Cannot getAllWeightData, add user to query.');
+		res.status(422);
 		return;
 	}
 	if (req.query.summary === 'true') {
@@ -74,6 +79,7 @@ const getAllWeightData = async (req: Request, res: Response) => {
 const getConfiguration = async (req: Request, res: Response) => {
 	if (typeof req.query.user !== 'string') {
 		console.error('Cannot getConfiguration, add user to query.');
+		res.status(422);
 		return;
 	}
 	res.json(await loadUserConfiguration(req.query.user));
@@ -82,6 +88,7 @@ const getConfiguration = async (req: Request, res: Response) => {
 const postConfiguration = async (req: Request, res: Response) => {
 	if (typeof req.query.user !== 'string') {
 		console.error('Cannot postConfiguration, add user to query.');
+		res.status(422);
 		return;
 	}
 	await storeUserConfiguration(req.body, req.query.user);
@@ -98,6 +105,28 @@ const postUpdateUserJson = async (req: Request, res: Response) => {
 	res.redirect('/user_configuration');
 };
 
+const deleteKcalHandler = async (req: Request, res: Response) => {
+	if (typeof req.query.user !== 'string') {
+		console.error('Cannot delete kcal, add user to query.');
+		res.status(422);
+		return;
+	}
+	if (typeof req.query.id !== 'string') {
+		console.error('Cannot delete kcal, add id to query.');
+		res.status(422);
+		return;
+	}
+	try {
+		await deleteKcal(req.query.user, req.query.id);
+		res.status(200);
+	} catch (e: unknown) {
+		let message = 'An error occured while deleting kcal.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.status(422);
+	}
+};
+
 const router = Router();
 
 router.post('/api/input_kcal', postKcal);
@@ -105,6 +134,7 @@ router.get('/input_kcal', sendHtml);
 router.post('/api/input_weight', postWeight);
 router.get('/input_weight', sendHtml);
 router.get('/api/kcal', getAllKcalData);
+router.delete('/api/kcal', deleteKcalHandler);
 router.get('/summary_kcal', sendHtml);
 router.get('/api/weight', getAllWeightData);
 router.get('/summary_weight', sendHtml);
