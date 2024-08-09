@@ -84,10 +84,15 @@ const rowOnClickHandler = (event) =>  {
 			const commentInput = dialog.querySelector('#comment');
 			commentInput.value = jsonData.comment;
 			const deleteButton = dialog.querySelector('#kcal-detail-form-delete-button');
-			deleteButton.onclick = () => {
-				fetch(`/api/kcal?id=${jsonData.id}&user=${user}`, {
+			deleteButton.onclick = async () => {
+				const response = await fetch(`/api/kcal?id=${jsonData.id}&user=${user}`, {
 					method: 'delete'
 				});
+				if (response.status === 200) {
+					loadedData = [];
+					nextPage = 1;
+					getDataAndRenderTable();
+				}
 			};
 			dialog.showModal();
 		}

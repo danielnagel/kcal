@@ -119,6 +119,9 @@ const deleteKcalHandler = async (req: Request, res: Response) => {
 	try {
 		await deleteKcal(req.query.user, req.query.id);
 		res.status(200);
+		res.json({
+			message: 'ok'
+		});
 	} catch (e: unknown) {
 		let message = 'An error occured while deleting kcal.';
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
