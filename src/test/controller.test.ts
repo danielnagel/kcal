@@ -18,6 +18,7 @@ import {
 	createUserJson,
 	updateUserJson,
 	deleteKcal,
+	updateKcal,
 } from '../controller';
 import {
 	readFile,
@@ -506,6 +507,58 @@ test.describe('controller.ts', () => {
 			assert.equal(resultAfterAdd.length, 2);
 			assert.equal(resultAfterAdd[0].id, 1);
 			assert.equal(resultAfterAdd[1].id, 2);
+		});
+	});
+
+	test.describe('update data', () => {
+		test('throw error when there is no data to update', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+			assert.rejects(async () => await updateKcal({
+				id: 0,
+				...kcalInput3
+			}, 'test-user'), 'no data');
+		});
+		test('throw error when body has not type UniqueKcalStructure', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
+			assert.rejects(async () => await updateKcal({
+				kcal: '300',
+				date: ''
+			} as UniqueKcalStructure, 'test-user'), 'UniqueKcalStructure');
+		});
+		test('throw error when body id was not found', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
+			const updatedKcal: UniqueKcalStructure = 
+			{
+				what: 'A very tasty test meal',
+				kcal: '556',
+				date: '2024-08-10T13:36',
+				comment: 'And an orange juice',
+				id: 5
+			};
+			assert.rejects(async () => await updateKcal(updatedKcal, 'test-user'), 'the id');
+		});
+		test('update kcal', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
+			const updatedKcal: UniqueKcalStructure = 
+			{
+				what: 'A very tasty test meal',
+				kcal: '556',
+				date: '2024-08-10T13:36',
+				comment: 'And an orange juice',
+				id: 1
+			};
+			await updateKcal(updatedKcal, 'test-user');
+			const resultAfterUpdate = await readFile(__dirname + '/../data/test-user.json', {
+				encoding: 'utf-8',
+			});
+			const expected = structuredClone(dataStructure4);
+			Object.assign(expected.kcal[1], updatedKcal);
+			assert.notStrictEqual(resultAfterUpdate, JSON.stringify(dataStructure4, null, 2));
+			assert.strictEqual(resultAfterUpdate, JSON.stringify(expected, null, 2));
 		});
 	});
 });

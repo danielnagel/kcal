@@ -7,6 +7,7 @@ import {
 import {
 	isDataStructure,
 	isKcalStructure,
+	isUniqueKcalStructure,
 	isUserConfigStructure,
 	isWeightStructure 
 } from './typeguards';
@@ -396,6 +397,26 @@ const deleteKcal = async (user: string, id: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
 };
 
+const updateKcal = async (reqBody: UniqueKcalStructure, user: string) => {
+	if (!isUniqueKcalStructure(reqBody)) {
+		throw Error('Request does not contain a valid UniqueKcalStructure object.');
+	}
+
+	const data = await getStoredDataStructure(user);
+	const kcal = data.kcal;
+	if (kcal.length === 0) {
+		throw Error('There is no data to update.');
+	}
+
+	const foundIndex = data.kcal.findIndex(k => k.id === reqBody.id);
+	if (foundIndex === -1) {
+		throw Error(`There is no kcal structure stored with the id '${reqBody.id}'.`);
+	}
+
+	Object.assign(data.kcal[foundIndex], reqBody);
+	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
+};
+
 export {
 	storeKcalInput,
 	storeMultipleKcalInput,
@@ -410,5 +431,6 @@ export {
 	loadWeightTarget,
 	createUserJson,
 	updateUserJson,
-	deleteKcal
+	deleteKcal,
+	updateKcal
 };
