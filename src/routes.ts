@@ -14,6 +14,7 @@ import {
 	createUserJson,
 	updateUserJson,
 	deleteKcal,
+	updateKcal,
 } from './controller';
 
 const staticPath = __dirname + '/public';
@@ -130,6 +131,25 @@ const deleteKcalHandler = async (req: Request, res: Response) => {
 	}
 };
 
+const updateKcalHandler = async (req: Request, res: Response) => {
+	if (typeof req.query.user !== 'string') {
+		const message = 'Cannot update kcal, add user to query.';
+		console.error(message);
+		res.status(422);
+		res.json({
+			message
+		});
+		return;
+	}
+
+	await updateKcal(req.body, req.query.user);
+	res.status(200);
+	res.json({
+		message: 'ok'
+	});
+};
+
+
 const router = Router();
 
 router.post('/api/input_kcal', postKcal);
@@ -138,6 +158,7 @@ router.post('/api/input_weight', postWeight);
 router.get('/input_weight', sendHtml);
 router.get('/api/kcal', getAllKcalData);
 router.delete('/api/kcal', deleteKcalHandler);
+router.put('/api/kcal', updateKcalHandler);
 router.get('/summary_kcal', sendHtml);
 router.get('/api/weight', getAllWeightData);
 router.get('/summary_weight', sendHtml);

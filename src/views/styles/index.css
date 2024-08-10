@@ -217,7 +217,15 @@ label {
     padding: 0;
 }
 
-.kcal-dialog::backdrop {
+dialog::backdrop {
     background-color: var(--primary, #000);
     opacity: 0.75;
+}
+
+.confirmation-dialog {
+    background-color: var(--primary, #000);
+    color: var(--secondary);
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--secondary);
 }

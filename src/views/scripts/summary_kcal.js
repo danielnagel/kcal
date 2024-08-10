@@ -59,6 +59,34 @@ const getDataAndRenderTable = async () => {
 	renderTable(await response.json());
 };
 
+const confirmationDialog = async (message) => {
+	return new Promise(resolve => {
+		const dialog = document.createElement('dialog');
+		dialog.classList.add('confirmation-dialog');
+		const messageContainer = document.createElement('p');
+		messageContainer.innerText = message;
+		const confirmButton = document.createElement('button');
+		confirmButton.innerText = 'ok';
+		confirmButton.classList.add('form-submit');
+		const cancelButton = document.createElement('button');
+		cancelButton.innerText = 'cancel';
+		cancelButton.classList.add('form-submit');
+		dialog.appendChild(messageContainer);
+		dialog.appendChild(confirmButton);
+		dialog.appendChild(cancelButton);
+		document.body.appendChild(dialog);
+		dialog.showModal();
+		confirmButton.onclick = () => {
+			dialog.close();
+			resolve(true);
+		};
+		cancelButton.onclick = () => {
+			dialog.close();
+			resolve(false);
+		};
+	});
+};
+
 const rowOnClickHandler = (event) =>  {
 	if (event.target instanceof HTMLTableCellElement) {
 		const cell = event.target;
@@ -83,11 +111,38 @@ const rowOnClickHandler = (event) =>  {
 			kcalInput.value = jsonData.kcal;
 			const commentInput = dialog.querySelector('#comment');
 			commentInput.value = jsonData.comment;
+
 			const deleteButton = dialog.querySelector('#kcal-detail-form-delete-button');
 			deleteButton.onclick = async () => {
+				if (!await confirmationDialog('Delete data?')) return;
 				const response = await fetch(`/api/kcal?id=${jsonData.id}&user=${user}`, {
 					method: 'delete'
 				});
+				if (response.status === 200) {
+					loadedData = [];
+					nextPage = 1;
+					getDataAndRenderTable();
+				}
+			};
+
+			const udpateButton = dialog.querySelector('#kcal-detail-form-update-button');
+			udpateButton.onclick = async () => {
+				if (!await confirmationDialog('Update data?')) return;
+				jsonData.what = whatInput.value;
+				jsonData.kcal = kcalInput.value;
+				jsonData.comment = commentInput.value;
+				jsonData.date = datetimeInput.value;
+				delete jsonData.time;
+
+				const response = await fetch(`/api/kcal?user=${user}`, {
+					method: 'put',
+					body: JSON.stringify(jsonData),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+
+
 				if (response.status === 200) {
 					loadedData = [];
 					nextPage = 1;
