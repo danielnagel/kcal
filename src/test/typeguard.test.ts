@@ -7,6 +7,7 @@ import {
 	isKcalStructure,
 	isWeightStructure,
 	isUserConfigStructure,
+	isUniqueKcalStructure,
 } from '../typeguards';
 
 test.describe('typeguards', () => {
@@ -93,5 +94,29 @@ test.describe('typeguards', () => {
 
 	test('null is not UserConfigStructure', async () => {
 		assert(!isUserConfigStructure(null));
+	});
+
+	test('object is UniqueKcalStructure', async () => {
+		const expect: UniqueKcalStructure = {
+			id: 0,
+			what: 'test',
+			kcal: '123',
+			date: '2024-05-24T19:27',
+			comment: 'test',
+		};
+		assert(isUniqueKcalStructure(expect));
+	});
+
+	test('object is not UniqueKcalStructure', async () => {
+		assert(!isUniqueKcalStructure({
+			what: 'test',
+			kcal: '123',
+			date: '2024-05-24T19:27',
+			comment: 'test',
+		}));
+	});
+
+	test('null is not UniqueKcalStructure', async () => {
+		assert(!isUniqueKcalStructure(null));
 	});
 });

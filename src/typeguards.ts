@@ -16,6 +16,13 @@ export const isKcalStructure = (data: unknown): data is KcalStructure => {
 	);
 };
 
+export const isUniqueKcalStructure = (data: unknown): data is UniqueKcalStructure => {
+	return (
+		data !== null && data !== undefined && isKcalStructure(data) &&
+    typeof (data as UniqueKcalStructure).id !== 'undefined'
+	);
+};
+
 export const isWeightStructure = (data: unknown): data is WeightStructure => {
 	return (
 		data !== null && data !== undefined &&
