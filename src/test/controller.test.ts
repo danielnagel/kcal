@@ -450,7 +450,7 @@ test.describe('controller.ts', () => {
 
 	test('not update test-user.json, when there is no test-user.json', async () => {
 		assert.equal(existsSync(`${__dirname}/../data/test-user.json`), false);
-		await updateUserJson('test-user', 'user-test');
+		assert.rejects(async () => await updateUserJson('test-user', 'user-test'), 'Could not get file');
 		assert.equal(existsSync(`${__dirname}/../data/test-user.json`), false);
 		assert.equal(existsSync(`${__dirname}/../data/user-test.json`), false);
 	});
@@ -458,11 +458,11 @@ test.describe('controller.ts', () => {
 	test('not update test-user.json, when newUser string is not valid', async () => {
 		await mkdir(`${__dirname}/../data`);
 		await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
-		await updateUserJson('test-user', null as unknown as string);
+		assert.rejects(async () => await updateUserJson('test-user', null as unknown as string), 'New username');
 		assert.equal(existsSync(`${__dirname}/../data/null.json`), false);
-		await updateUserJson('test-user', undefined as unknown as string);
+		assert.rejects(async () => await updateUserJson('test-user', undefined as unknown as string), 'New username');
 		assert.equal(existsSync(`${__dirname}/../data/undefined.json`), false);
-		await updateUserJson('test-user', '');
+		assert.rejects(async () => await updateUserJson('test-user', ''), 'New username');
 		assert.equal(existsSync(`${__dirname}/../data/.json`), false);
 	});
 

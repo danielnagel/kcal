@@ -11,6 +11,9 @@ import {
 	isUserConfigStructure,
 	isWeightStructure 
 } from './typeguards';
+import {
+	ParseError, ReadError 
+} from './customErrors';
 
 const dataDirPath = `${__dirname}/data`;
 const dataFilePath = `${dataDirPath}/data.json`;
@@ -32,7 +35,9 @@ const writeJsonToFile = async (path: string, data: DataStructure) => {
 	try {
 		await writeFile(path, JSON.stringify(data, null, 2));
 	} catch (e: unknown) {
-		if (e instanceof Error) console.error(`(controller) Couldn't create file ${path}. Message: ${e.message}`);
+		let message = `Couldn't create file ${path}.`;
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		throw Error(message);
 	}
 };
 
@@ -48,7 +53,7 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 		id: 0
 	};
 	if (fileContent.kcal.length > 0) {
-		uniqueKcalStructure.id = fileContent.kcal[fileContent.kcal.length -1].id + 1;
+		uniqueKcalStructure.id = fileContent.kcal[fileContent.kcal.length - 1].id + 1;
 	}
 
 	fileContent.kcal.push(uniqueKcalStructure);
@@ -89,19 +94,6 @@ const sortByDateDesc = (a: KcalStructure | WeightStructure, b: KcalStructure | W
 	return 0;
 };
 
-const moveDataJsonToUserJson = async (user: string): Promise<DataStructure | null> => {
-	const userFilePath = `${dataDirPath}/${user}.json`;
-	const dataContent = await readFileContent(dataFilePath);
-	if (!isDataStructure(dataContent)) {
-		console.error('There is no "data.json" will not update.');
-		return null;
-	}
-	dataContent.user.user = user;
-	await writeJsonToFile(userFilePath, dataContent);
-	await rm(dataFilePath);
-	return dataContent;
-};
-
 const createUserJson = async (user: string): Promise<DataStructure | null> => {
 	if (user === null || user === undefined || user.length === 0) {
 		console.error('Username has to be at least one character long, user.json creation aborted.');
@@ -124,48 +116,53 @@ const createUserJson = async (user: string): Promise<DataStructure | null> => {
 };
 
 const getFileContentForUser = async (user: string): Promise<unknown> => {
-	const userContent = await readFileContent(`${dataDirPath}/${user}.json`);
-	if (userContent !== null) return userContent;
-
-	// there might be an old data.json in the system, move it to user.json
-	const updatedJson = await moveDataJsonToUserJson(user);
-	if (updatedJson) return updatedJson;
-
-	// there is no user.json and no data.json, create user.json
+	try {
+		return await readFileContent(`${dataDirPath}/${user}.json`);
+	} catch (e: unknown) {
+		if (e instanceof ReadError) {
+			// there is no user.json, create user.json
 	return createUserJson(user);
+		}
+		let message = `Could not get file content for user '${user}'.`;
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		throw Error(message);
+	}
 };
 
 const readFileContent = async (path: string): Promise<unknown> => {
+	let content = null;
 	try {
-		const content = await readFile(path, {
+		content = await readFile(path, {
 			encoding: 'utf-8' 
 		});
+	} catch (e: unknown) {
+		let message = `Could not read file '${path}'.`;
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		throw new ReadError(message);
+	}
+
+	try {
 		const jsonContent = JSON.parse(content);
 		return jsonContent;
 	} catch (e: unknown) {
-		// file not found, or content is not json
-		if (e instanceof Error) console.error(`Could not read file content of ${path}: ${e.message}`);
-		return null;
+		let message = `Could not parse json '${path}'.`;
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		throw new ParseError(message);
 	}
 };
 
 const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
+	try {
 	const jsonContent = await getFileContentForUser(user);
 	if (!isDataStructure(jsonContent)) {
-		console.error(`(controller) File ${dataFilePath} has unexpected content. Aborting.`);
-		return {
-			kcal: [],
-			weight: [],
-			user: {
-				dailyKcalTarget: 2000,
-				weightTarget: 90,
-				color: '#5f9ea0',
-				kcalHistoryCount: 3,
-				user: '' 
-			} 
-		};
+			throw Error(`Content of file '${dataFilePath}' is not a DataStucture.`);
 	}
 	return jsonContent;
+	} catch (e: unknown) {
+		let message = 'Could not get stored data structure.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		throw Error(message);
+	}
 };
 
 const sortedKcalData = async (user: string, order = 'asc') => {
@@ -244,7 +241,7 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 		expectedKcalHistorySum: 0,
 		kcalHistorySumDifference: 0 
 	};
-	const {dailyKcalTarget, kcalHistoryCount} = await loadUserConfiguration(user);
+	const { dailyKcalTarget, kcalHistoryCount } = await loadUserConfiguration(user);
 	result.dailyKcalTarget = dailyKcalTarget;
 	const kcals = await sortedKcalData(user);
 	if (kcals.length === 0) return result;
@@ -287,7 +284,7 @@ const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 		id: 0
 	};
 	if (fileContent.weight.length > 0) {
-		uniqueWeightStructure.id = fileContent.weight[fileContent.weight.length -1].id + 1;
+		uniqueWeightStructure.id = fileContent.weight[fileContent.weight.length - 1].id + 1;
 	}
 
 	fileContent.weight.push(uniqueWeightStructure);
@@ -357,15 +354,21 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 
 const updateUserJson = async (user: string, newUser: string): Promise<DataStructure | null> => {
 	if (newUser === null || newUser === undefined || newUser.length === 0) {
-		console.error('New username has to be at least one character long, new-user.json creation aborted.');
-		return null;
+		throw Error('New username has to be at least one character long.');
 	}
 	const userFilePath = `${dataDirPath}/${user}.json`;
 	const newUserFilePath = `${dataDirPath}/${newUser}.json`;
-	const userContent = await readFileContent(userFilePath);
+	let userContent;
+	try {
+		userContent = await readFileContent(userFilePath);
+	} catch (e: unknown) {
+		let message = `Could not get file content for user '${user}'.`;
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		throw Error(message);
+	}
+
 	if (!isDataStructure(userContent)) {
-		console.error(`There is no "${user}.json" will not update.`);
-		return null;
+		throw Error(`There is no "${user}.json" to update.`);
 	}
 	userContent.user.user = newUser;
 	await writeJsonToFile(newUserFilePath, userContent);
