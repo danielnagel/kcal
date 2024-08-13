@@ -20,14 +20,19 @@ import {
 const staticPath = __dirname + '/public';
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
 
-const postKcal = (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot postKcal, add user to query.');
-		res.status(422);
-		return;
+const postKcal = async (req: Request, res: Response) => {
+	try {
+		await storeMultipleKcalInput(req.body, req.query.user as string);
+		res.redirect('/input_kcal');
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not store kcal.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
 	}
-	storeMultipleKcalInput(req.body, req.query.user);
-	res.redirect('/input_kcal');
 };
 
 const postWeight = (req: Request, res: Response) => {
@@ -128,6 +133,9 @@ const deleteKcalHandler = async (req: Request, res: Response) => {
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
 		console.error(message);
 		res.status(422);
+		res.json({
+			message
+		});
 	}
 };
 

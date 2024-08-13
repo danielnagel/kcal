@@ -72,11 +72,9 @@ test.describe('controller.ts', () => {
 	});
 
 	test('not store no kcal', async () => {
-		await storeKcalInput({
+		assert.rejects(async () => await storeKcalInput({
 			not: 'kcal' 
-		} as unknown as KcalStructure, 'test-user');
-		await storeKcalInput(null as unknown as KcalStructure, 'test-user');
-		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
+		} as unknown as KcalStructure, 'test-user'), 'not contain a valid KcalStructure');
 	});
 
 	test('store multiple kcal', async () => {
@@ -88,8 +86,7 @@ test.describe('controller.ts', () => {
 	});
 
 	test('not store multiple kcal, if no array', async () => {
-		await storeMultipleKcalInput('some bad requeste body' as unknown as KcalStructure[], 'test-user');
-		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
+		assert.rejects(async () => await storeMultipleKcalInput('some bad requeste body' as unknown as KcalStructure[], 'test-user'), 'does not contain an array');
 	});
 
 	test('load all kcal', async () => {

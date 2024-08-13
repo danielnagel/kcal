@@ -43,8 +43,10 @@ const writeJsonToFile = async (path: string, data: DataStructure) => {
 
 const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	if (!isKcalStructure(reqBody)) {
-		console.error('(controller) Request does not contain a valid KcalStructure object, aborting.');
-		return;
+		throw Error('Request does not contain a valid KcalStructure object.');
+	}
+	if (typeof user !== 'string') {
+		throw Error('Request must contain a valid user string.');
 	}
 	const fileContent = await getStoredDataStructure(user);
 
@@ -62,8 +64,7 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 
 const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) => {
 	if (!Array.isArray(reqBody)) {
-		console.error('(controller) Request does not contain an array, aborting.');
-		return;
+		throw Error('Request does not contain an array.');
 	}
 	for (const item of reqBody) {
 		await storeKcalInput(item, user);
