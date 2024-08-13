@@ -121,7 +121,7 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 	} catch (e: unknown) {
 		if (e instanceof ReadError) {
 			// there is no user.json, create user.json
-	return createUserJson(user);
+			return createUserJson(user);
 		}
 		let message = `Could not get file content for user '${user}'.`;
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
@@ -153,11 +153,11 @@ const readFileContent = async (path: string): Promise<unknown> => {
 
 const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 	try {
-	const jsonContent = await getFileContentForUser(user);
-	if (!isDataStructure(jsonContent)) {
+		const jsonContent = await getFileContentForUser(user);
+		if (!isDataStructure(jsonContent)) {
 			throw Error(`Content of file '${dataFilePath}' is not a DataStucture.`);
-	}
-	return jsonContent;
+		}
+		return jsonContent;
 	} catch (e: unknown) {
 		let message = 'Could not get stored data structure.';
 		if (e instanceof Error) message += ` Reason: ${e.message}`;

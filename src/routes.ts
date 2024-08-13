@@ -103,7 +103,7 @@ const postConfiguration = async (req: Request, res: Response) => {
 
 const postNewUserJson = async (req: Request, res: Response) => {
 	try {
-	await createUserJson(req.body.user);
+		await createUserJson(req.body.user);
 		res.redirect('/user_configuration');
 	} catch (e: unknown) {
 		res.status(500);
