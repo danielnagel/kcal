@@ -97,8 +97,7 @@ const sortByDateDesc = (a: KcalStructure | WeightStructure, b: KcalStructure | W
 
 const createUserJson = async (user: string): Promise<DataStructure | null> => {
 	if (user === null || user === undefined || user.length === 0) {
-		console.error('Username has to be at least one character long, user.json creation aborted.');
-		return null;
+		throw Error('Username has to be at least one character long.');
 	}
 	const userFilePath = `${dataDirPath}/${user}.json`;
 	const defaultJsonContent: DataStructure = {

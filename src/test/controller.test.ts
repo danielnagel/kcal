@@ -424,11 +424,11 @@ test.describe('controller.ts', () => {
 	});
 
 	test('not create test-user.json, when user string is not valid', async () => {
-		await createUserJson(null as unknown as string);
+		assert.rejects(async () => await createUserJson(null as unknown as string), 'at least one character');
 		assert.equal(existsSync(__dirname + '/../data/null.json'), false);
-		await createUserJson(undefined as unknown as string);
+		assert.rejects(async () => await createUserJson(undefined as unknown as string), 'at least one character');
 		assert.equal(existsSync(__dirname + '/../data/undefined.json'), false);
-		await createUserJson('');
+		assert.rejects(async () => await createUserJson(''), 'at least one character');
 		assert.equal(existsSync(__dirname + '/../data/.json'), false);
 	});
 

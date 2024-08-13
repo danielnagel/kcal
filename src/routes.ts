@@ -102,8 +102,18 @@ const postConfiguration = async (req: Request, res: Response) => {
 };
 
 const postNewUserJson = async (req: Request, res: Response) => {
+	try {
 	await createUserJson(req.body.user);
-	res.redirect('/user_configuration');
+		res.redirect('/user_configuration');
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not create new user json.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
+	}
 };
 
 const postUpdateUserJson = async (req: Request, res: Response) => {
