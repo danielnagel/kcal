@@ -197,7 +197,7 @@ label {
     position: sticky;
     top: 0;
     background-color: var(--accent);
-    color: var(--primary)
+    color: var(--secondary)
 }
 
 .kcal-summary-table-cell {
