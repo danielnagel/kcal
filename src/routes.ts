@@ -3,11 +3,8 @@ import {
 } from 'express';
 import {
 	storeMultipleKcalInput,
-	loadAllKcal,
-	loadTodayKcalSummary,
 	storeWeightInput,
 	loadAllWeight,
-	loadUniqueKcalInput,
 	loadWeightTarget,
 	storeUserConfiguration,
 	loadUserConfiguration,
@@ -15,6 +12,7 @@ import {
 	updateUserJson,
 	deleteKcal,
 	updateKcal,
+	handleGetAllKcalData,
 } from './controller';
 
 const staticPath = __dirname + '/public';
@@ -46,26 +44,22 @@ const postWeight = (req: Request, res: Response) => {
 };
 
 const getAllKcalData = async (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot getAllKcalData, add user to query.');
-		res.status(422);
-		return;
-	}
-	if (req.query.for === 'today') {
-		res.json(await loadTodayKcalSummary(req.query.user));
-	} else if (req.query.by === 'what') {
-		res.json(await loadUniqueKcalInput(req.query.user));
-	} else {
-		let page = 0;
-		if (typeof req.query.page !== 'undefined') {
-			try {
-				page = parseInt(req.query.page as string);
-			} catch (e) {
-				if (e instanceof Error)
-					console.error(`Page ${req.query.page} is not a number. ${e.message}`);
-			}
-		}
-		res.json(await loadAllKcal(req.query.user, req.query.order as string, page));
+	try {
+		res.json(await handleGetAllKcalData({
+			user: req.query.user as string,
+			range: req.query.for as string,
+			select: req.query.by as string,
+			page: req.query.page as string,
+			order: req.query.order as string
+		}));
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not get all kcal data.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
 	}
 };
 

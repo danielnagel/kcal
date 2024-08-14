@@ -19,6 +19,7 @@ import {
 	updateUserJson,
 	deleteKcal,
 	updateKcal,
+	handleGetAllKcalData,
 } from '../controller';
 import {
 	readFile,
@@ -117,7 +118,7 @@ test.describe('controller.ts', () => {
 			encoding: 'utf-8',
 		});
 		assert.deepEqual(JSON.stringify(dataStructure4, null, 2), resultStored);
-		const resultLoaded = await loadAllKcal('test-user', 'desc');
+		const resultLoaded = await loadAllKcal('test-user', undefined, 'desc');
 		const expectLoaded: ExtendedKcalStructure[] = [
 			{
 				...dataStructure4.kcal[0],
@@ -139,7 +140,7 @@ test.describe('controller.ts', () => {
 			encoding: 'utf-8',
 		});
 		assert.deepEqual(JSON.stringify(dataStructure7, null, 2), resultStored);
-		const resultLoaded1 = await loadAllKcal('test-user', 'desc', 1, 3);
+		const resultLoaded1 = await loadAllKcal('test-user', '1', 'desc', 3);
 		const expectLoaded1: ExtendedKcalStructure[] = [
 			{
 				...dataStructure7.kcal[4],
@@ -158,7 +159,7 @@ test.describe('controller.ts', () => {
 			},
 		];
 		assert.deepEqual(resultLoaded1, expectLoaded1);
-		const resultLoaded2 = await loadAllKcal('test-user', 'desc', 2, 3);
+		const resultLoaded2 = await loadAllKcal('test-user', '2', 'desc', 3);
 		const expectLoaded2: ExtendedKcalStructure[] = [
 			{
 				...dataStructure7.kcal[1],
@@ -172,6 +173,10 @@ test.describe('controller.ts', () => {
 			},
 		];
 		assert.deepEqual(resultLoaded2, expectLoaded2);
+	});
+
+	test('load all kcal, error when page is not a number', async () => {
+		assert.rejects(async () => await loadAllKcal('test-user', 'not a number'), 'page number');
 	});
 
 	test('not store no user configuration', async () => {
@@ -373,6 +378,93 @@ test.describe('controller.ts', () => {
 			{
 				what: 'test4',
 				kcal: '444' 
+			},
+		];
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
+	test('handleGetAllKcalData, throw error when user is not defined', async () => {
+		assert.rejects(async () => await handleGetAllKcalData({
+		}), 'user');
+	});
+
+	test('handleGetAllKcalData, get today summary', async () => {
+		await storeMultipleKcalInput(kcalInput9, 'test-user');
+		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+			encoding: 'utf-8',
+		});
+		assert.deepEqual(JSON.stringify(dataStructure9, null, 2), resultStored);
+
+		// mock date
+		mock.timers.enable({
+			apis: ['Date'],
+			now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime(),
+		});
+
+		const resultLoaded = await handleGetAllKcalData({
+			user: 'test-user',
+			range: 'today'
+		});
+		const expectLoaded: KcalSummary = {
+			todayKcal: 1357,
+			lastMealTime: '19:27',
+			lastMealAgo: 2,
+			dailyKcalTarget: 2000,
+			pastDailyKcal: [],
+			actualKcalHistorySum: 0,
+			expectedKcalHistorySum: 0,
+			kcalHistorySumDifference: 0
+		};
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
+	test('handleGetAllKcalData, get today summary', async () => {
+		await storeMultipleKcalInput(kcalInput9, 'test-user');
+		const resultLoaded = await handleGetAllKcalData({
+			user: 'test-user',
+			select: 'what'
+		});
+		const expectLoaded: ReducedKcalStructure[] = [
+			{
+				what: 'test',
+				kcal: '123' 
+			},
+			{
+				what: 'test2',
+				kcal: '1234' 
+			},
+			{
+				what: 'test3',
+				kcal: '444' 
+			},
+		];
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
+	test('handleGetAllKcalData, load all kcal', async () => {
+		await storeMultipleKcalInput(kcalInput9, 'test-user');
+		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+			encoding: 'utf-8',
+		});
+		assert.deepEqual(JSON.stringify(dataStructure9, null, 2), resultStored);
+		const resultLoaded = await handleGetAllKcalData({
+			user: 'test-user'
+		});
+		const expectLoaded: ExtendedKcalStructure[] = [
+			{
+				...dataStructure9.kcal[1],
+				date: '04.05.2024',
+				time: '18:46' 
+			},
+			{
+				...dataStructure9.kcal[2],
+				date: '24.05.2024',
+				time: '09:27' 
+			},
+			{
+				...dataStructure9.kcal[0],
+				date: '24.05.2024',
+				time: '19:27' 
 			},
 		];
 		assert.deepEqual(resultLoaded, expectLoaded);

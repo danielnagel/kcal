@@ -10,3 +10,4 @@ type ReducedKcalStructure = { what: string, kcal: string };
 type UserConfigStructure = { dailyKcalTarget: number, weightTarget: number, color: string, kcalHistoryCount: number, user: string };
 type DailyKcalAndTime = { kcal: number, date: string };
 type WeightTargetSummary = { weightTarget: number, twoKiloPrediction: string, oneKiloPrediction: string };
+type LoadKcalParameters = {user?: string, range?: string, select?: string, order?: string, page?: string};

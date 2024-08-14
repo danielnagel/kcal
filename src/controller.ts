@@ -171,13 +171,36 @@ const sortedKcalData = async (user: string, order = 'asc') => {
 	return data.kcal.sort(sortByDateAsc);
 };
 
-const loadAllKcal = async (user: string, order = 'asc', page = 0, pageSize = 25): Promise<ExtendedKcalStructure[]> => {
+const loadAllKcal = async (user: string, page?: string, order = 'asc', pageSize = 25): Promise<ExtendedKcalStructure[]> => {
+	let pageNumber = 0;
+	if (page !== undefined) {
+		pageNumber = parseInt(page);
+		if (isNaN(pageNumber)) {
+			const message = 'Could not parse page number.';
+			throw Error(message);
+		}
+	}
 	const data = splitDateTimeInData(await sortedKcalData(user, order));
-	if (page === 0)
+	if (pageNumber === 0)
 		return data;
-	const end = page * pageSize;
+	const end = pageNumber * pageSize;
 	const start = end - pageSize;
 	return data.slice(start, end);
+};
+
+const handleGetAllKcalData = async (query: LoadKcalParameters) => {
+	const { range, order, page, select, user } = query;
+
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
+
+	if (range === 'today') {
+		return loadTodayKcalSummary(user);
+	} else if (select === 'what') {
+		return loadUniqueKcalInput(user);
+	}
+	return loadAllKcal(user, page as string, order as string);
 };
 
 const loadUserConfiguration = async (user: string) => {
@@ -435,5 +458,6 @@ export {
 	createUserJson,
 	updateUserJson,
 	deleteKcal,
-	updateKcal
+	updateKcal,
+	handleGetAllKcalData
 };
