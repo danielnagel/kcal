@@ -86,6 +86,10 @@ test.describe('controller.ts', () => {
 		assert.deepEqual(JSON.stringify(dataStructure1, null, 2), result);
 	});
 
+	test('not store multiple kcal, if user undefined', async () => {
+		assert.rejects(async () => await storeMultipleKcalInput('some bad requeste body' as unknown as KcalStructure[]), 'user');
+	});
+
 	test('not store multiple kcal, if no array', async () => {
 		assert.rejects(async () => await storeMultipleKcalInput('some bad requeste body' as unknown as KcalStructure[], 'test-user'), 'does not contain an array');
 	});
@@ -222,16 +226,27 @@ test.describe('controller.ts', () => {
 		assert.deepEqual(JSON.stringify(dataStructure10, null, 2), result);
 	});
 
-	test('not store no weight', async () => {
-		await storeWeightInput({
+	test('throw and not store weight, user is undefined', async () => {
+		assert.rejects(async () => await storeWeightInput({
 			not: 'weight' 
-		} as unknown as WeightStructure, 'test-user');
-		await storeWeightInput(null as unknown as WeightStructure, 'test-user');
+		} as unknown as WeightStructure), 'user');
+		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
+	});
+
+	test('throw and not store weight, if its not a valid weight structure', async () => {
+		assert.rejects(async () => await storeWeightInput({
+			not: 'weight' 
+		} as unknown as WeightStructure, 'test-user'), 'weight');
+		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
+	});
+
+	test('not store multiple weight, if user undefined', async () => {
+		assert.rejects(async () => await storeMultipleWeightInput('some bad requeste body' as unknown as WeightStructure[]), 'user');
 		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
 	});
 
 	test('not store multiple weight, if no array', async () => {
-		await storeMultipleWeightInput('some bad requeste body' as unknown as WeightStructure[], 'test-user');
+		assert.rejects(async () => await storeMultipleWeightInput('some bad requeste body' as unknown as WeightStructure[], 'test-user'), 'array');
 		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
 	});
 

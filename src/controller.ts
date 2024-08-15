@@ -45,9 +45,6 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	if (!isKcalStructure(reqBody)) {
 		throw Error('Request does not contain a valid KcalStructure object.');
 	}
-	if (typeof user !== 'string') {
-		throw Error('Request must contain a valid user string.');
-	}
 	const fileContent = await getStoredDataStructure(user);
 
 	const uniqueKcalStructure: UniqueKcalStructure = {
@@ -62,7 +59,10 @@ const storeKcalInput = async (reqBody: KcalStructure, user: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 };
 
-const storeMultipleKcalInput = async (reqBody: KcalStructure[], user: string) => {
+const storeMultipleKcalInput = async (reqBody: KcalStructure[], user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
 	if (!Array.isArray(reqBody)) {
 		throw Error('Request does not contain an array.');
 	}
@@ -295,10 +295,12 @@ const loadTodayKcalSummary = async (user: string): Promise<KcalSummary> => {
 	return result;
 };
 
-const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
+const storeWeightInput = async (reqBody: WeightStructure, user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
 	if (!isWeightStructure(reqBody)) {
-		console.error('(controller) Request does not contain a valid WeightStructure object, aborting.');
-		return;
+		throw Error('Request does not contain a valid WeightStructure object.');
 	}
 	const fileContent = await getStoredDataStructure(user);
 
@@ -314,10 +316,12 @@ const storeWeightInput = async (reqBody: WeightStructure, user: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, fileContent);
 };
 
-const storeMultipleWeightInput = async (reqBody: WeightStructure[], user: string) => {
+const storeMultipleWeightInput = async (reqBody: WeightStructure[], user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
 	if (!Array.isArray(reqBody)) {
-		console.error('(controller) Request does not contain an array, aborting.');
-		return;
+		throw Error('Request does not contain an array.');
 	}
 	for (const item of reqBody) {
 		await storeWeightInput(item, user);

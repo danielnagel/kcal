@@ -33,14 +33,19 @@ const postKcal = async (req: Request, res: Response) => {
 	}
 };
 
-const postWeight = (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot postWeight, add user to query.');
-		res.status(422);
-		return;
+const postWeight = async (req: Request, res: Response) => {
+	try {
+		await storeWeightInput(req.body, req.query.user as string);
+		res.redirect('/input_weight');
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not store weight.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
 	}
-	storeWeightInput(req.body, req.query.user);
-	res.redirect('/input_weight');
 };
 
 const getAllKcalData = async (req: Request, res: Response) => {
