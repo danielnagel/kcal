@@ -403,7 +403,13 @@ const updateUserJson = async (user: string, newUser: string): Promise<DataStruct
 	return userContent;
 };
 
-const deleteKcal = async (user: string, id: string) => {
+const deleteKcal = async (user?: string, id?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
+	if (id === undefined) {
+		throw Error('Request must contain an id.');
+	}
 	const data = await getStoredDataStructure(user);
 	const kcal = data.kcal;
 	if (kcal.length === 0) {
@@ -427,7 +433,10 @@ const deleteKcal = async (user: string, id: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
 };
 
-const updateKcal = async (reqBody: UniqueKcalStructure, user: string) => {
+const updateKcal = async (reqBody: UniqueKcalStructure, user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
 	if (!isUniqueKcalStructure(reqBody)) {
 		throw Error('Request does not contain a valid UniqueKcalStructure object.');
 	}

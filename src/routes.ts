@@ -121,27 +121,17 @@ const postUpdateUserJson = async (req: Request, res: Response) => {
 };
 
 const deleteKcalHandler = async (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot delete kcal, add user to query.');
-		res.status(422);
-		return;
-	}
-	if (typeof req.query.id !== 'string') {
-		console.error('Cannot delete kcal, add id to query.');
-		res.status(422);
-		return;
-	}
 	try {
-		await deleteKcal(req.query.user, req.query.id);
+		await deleteKcal(req.query.user as string, req.query.id as string);
 		res.status(200);
 		res.json({
 			message: 'ok'
 		});
 	} catch (e: unknown) {
-		let message = 'An error occured while deleting kcal.';
+		let message = 'Could not delete kcal.';
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
 		console.error(message);
-		res.status(422);
+		res.status(500);
 		res.json({
 			message
 		});
@@ -149,21 +139,22 @@ const deleteKcalHandler = async (req: Request, res: Response) => {
 };
 
 const updateKcalHandler = async (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		const message = 'Cannot update kcal, add user to query.';
+	try {
+		await updateKcal(req.body, req.query.user as string);
+
+		res.status(200);
+		res.json({
+			message: 'ok'
+		});
+	} catch (e: unknown) {
+		let message = 'Could not update kcal.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
 		console.error(message);
-		res.status(422);
+		res.status(500);
 		res.json({
 			message
 		});
-		return;
 	}
-
-	await updateKcal(req.body, req.query.user);
-	res.status(200);
-	res.json({
-		message: 'ok'
-	});
 };
 
 
