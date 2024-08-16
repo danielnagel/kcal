@@ -24,15 +24,15 @@ const createDataDir = async () => {
 	} catch (e: unknown) {
 		if (e instanceof Error) {
 			if (!e.message.startsWith('EEXIST')) {
-				console.error(`(controller) Couldn't create directory ${dataDirPath}. Message: ${e.message}`);
+				throw Error(`Couldn't create directory ${dataDirPath}. Reason: ${e.message}`);
 			}
 		}
 	}
 };
 
 const writeJsonToFile = async (path: string, data: DataStructure) => {
-	await createDataDir();
 	try {
+		await createDataDir();
 		await writeFile(path, JSON.stringify(data, null, 2));
 	} catch (e: unknown) {
 		let message = `Couldn't create file ${path}.`;
