@@ -4,8 +4,6 @@ import {
 import {
 	storeMultipleKcalInput,
 	storeWeightInput,
-	loadAllWeight,
-	loadWeightTarget,
 	storeUserConfiguration,
 	loadUserConfiguration,
 	createUserJson,
@@ -13,6 +11,7 @@ import {
 	deleteKcal,
 	updateKcal,
 	handleGetAllKcalData,
+	handleGetAllWeightData,
 } from './controller';
 
 const staticPath = __dirname + '/public';
@@ -69,15 +68,19 @@ const getAllKcalData = async (req: Request, res: Response) => {
 };
 
 const getAllWeightData = async (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot getAllWeightData, add user to query.');
-		res.status(422);
-		return;
-	}
-	if (req.query.summary === 'true') {
-		res.json(await loadWeightTarget(req.query.user));
-	} else {
-		res.json(await loadAllWeight(req.query.user));
+	try {
+		res.json(await handleGetAllWeightData({
+			user: req.query.user as string,
+			summary: req.query.summary as string,
+		}));
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not get all weight data.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
 	}
 };
 

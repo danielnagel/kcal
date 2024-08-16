@@ -379,6 +379,17 @@ const loadWeightTarget = async (user: string): Promise<WeightTargetSummary> => {
 	};
 };
 
+const handleGetAllWeightData = async (query: LoadWeightParameters) => {
+	const { user, summary } = query;
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
+	if (summary === 'true') {
+		return loadWeightTarget(user);
+	}
+	return loadAllWeight(user);
+};
+
 const updateUserJson = async (user: string, newUser: string): Promise<DataStructure | null> => {
 	if (newUser === null || newUser === undefined || newUser.length === 0) {
 		throw Error('New username has to be at least one character long.');
@@ -472,5 +483,6 @@ export {
 	updateUserJson,
 	deleteKcal,
 	updateKcal,
-	handleGetAllKcalData
+	handleGetAllKcalData,
+	handleGetAllWeightData
 };

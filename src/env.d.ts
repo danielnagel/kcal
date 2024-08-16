@@ -11,3 +11,4 @@ type UserConfigStructure = { dailyKcalTarget: number, weightTarget: number, colo
 type DailyKcalAndTime = { kcal: number, date: string };
 type WeightTargetSummary = { weightTarget: number, twoKiloPrediction: string, oneKiloPrediction: string };
 type LoadKcalParameters = {user?: string, range?: string, select?: string, order?: string, page?: string};
+type LoadWeightParameters = {user?: string, summary?: string};

@@ -20,6 +20,7 @@ import {
 	deleteKcal,
 	updateKcal,
 	handleGetAllKcalData,
+	handleGetAllWeightData,
 } from '../controller';
 import {
 	readFile,
@@ -518,6 +519,59 @@ test.describe('controller.ts', () => {
 		};
 		assert.deepEqual(resultLoaded, expectLoaded);
 	});
+
+	test('handleGetAllWeightData, throw error when user is not defined', async () => {
+		assert.rejects(async () => await handleGetAllWeightData({
+		}), 'user');
+	});
+
+	test('handleGetAllWeightData, load all weight', async () => {
+		await storeMultipleWeightInput(weightInput8, 'test-user');
+		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+			encoding: 'utf-8',
+		});
+		assert.deepEqual(JSON.stringify(dataStructure8, null, 2), resultStored);
+		const resultLoaded = await await handleGetAllWeightData({
+			user: 'test-user'
+		});
+		const expectLoaded: WeightStructure[] = [
+			{
+				...dataStructure8.weight[1],
+				date: '04.05.2024' 
+			},
+			{
+				...dataStructure8.weight[0],
+				date: '24.05.2024' 
+			},
+		];
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
+	test('handleGetAllWeightData, load weight summary', async () => {
+		await storeMultipleWeightInput(weightInput6, 'test-user');
+		const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+			encoding: 'utf-8',
+		});
+		assert.deepEqual(JSON.stringify(dataStructure6, null, 2), resultStored);
+
+		// mock date
+		mock.timers.enable({
+			apis: ['Date'],
+			now: new Date(2024, 4, 24, 22, 22, 0, 0).getTime(),
+		});
+
+		const resultLoaded = await handleGetAllWeightData({
+			user: 'test-user',
+			summary: 'true'
+		});
+		const expectLoaded: WeightTargetSummary = {
+			weightTarget: 90,
+			oneKiloPrediction: '02.2026',
+			twoKiloPrediction: '04.2025',
+		};
+		assert.deepEqual(resultLoaded, expectLoaded);
+	});
+
 
 	test('create test-user.json', async () => {
 		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
