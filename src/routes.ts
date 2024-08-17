@@ -85,22 +85,32 @@ const getAllWeightData = async (req: Request, res: Response) => {
 };
 
 const getConfiguration = async (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot getConfiguration, add user to query.');
-		res.status(422);
-		return;
+	try {
+		res.json(await loadUserConfiguration(req.query.user as string));
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not get configuration.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
 	}
-	res.json(await loadUserConfiguration(req.query.user));
 };
 
 const postConfiguration = async (req: Request, res: Response) => {
-	if (typeof req.query.user !== 'string') {
-		console.error('Cannot postConfiguration, add user to query.');
-		res.status(422);
-		return;
+	try {
+		await storeUserConfiguration(req.body, req.query.user as string);
+		res.redirect('/configuration');
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not store configuration.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
 	}
-	await storeUserConfiguration(req.body, req.query.user);
-	res.redirect('/configuration');
 };
 
 const postNewUserJson = async (req: Request, res: Response) => {
@@ -119,8 +129,18 @@ const postNewUserJson = async (req: Request, res: Response) => {
 };
 
 const postUpdateUserJson = async (req: Request, res: Response) => {
-	await updateUserJson(req.body.user, req.body.newUser);
-	res.redirect('/user_configuration');
+	try {
+		await updateUserJson(req.body.user, req.body.newUser);
+		res.redirect('/user_configuration');
+	} catch (e: unknown) {
+		res.status(500);
+		let message = 'Could not update user json.';
+		if (e instanceof Error) message += ` Reason: ${e.message}`;
+		console.error(message);
+		res.json({
+			message
+		});
+	}
 };
 
 const deleteKcalHandler = async (req: Request, res: Response) => {

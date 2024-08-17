@@ -184,9 +184,16 @@ test.describe('controller.ts', () => {
 		assert.rejects(async () => await loadAllKcal('test-user', 'not a number'), 'page number');
 	});
 
-	test('not store no user configuration', async () => {
-		await storeUserConfiguration('bad request body' as unknown as UserConfigStructure, 'test-user');
-		assert.equal(existsSync(__dirname + '/../data/test-user.json'), false);
+	test('not store no user configuration, when user is undefined', async () => {
+		assert.rejects(async () => await storeUserConfiguration('bad request body' as unknown as UserConfigStructure), 'user');
+	});
+
+	test('not store no user configuration, when the body is not a UserConfigStructure', async () => {
+		assert.rejects(async () => await storeUserConfiguration('bad request body' as unknown as UserConfigStructure, 'test-user'), 'UserConfigStructure');
+	});
+
+	test('not load no user configuration, when user is undefined', async () => {
+		assert.rejects(async () => await loadUserConfiguration(), 'user');
 	});
 
 	test('load user configuration', async () => {

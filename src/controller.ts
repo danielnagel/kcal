@@ -203,15 +203,20 @@ const handleGetAllKcalData = async (query: LoadKcalParameters) => {
 	return loadAllKcal(user, page as string, order as string);
 };
 
-const loadUserConfiguration = async (user: string) => {
+const loadUserConfiguration = async (user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
 	const data = await getStoredDataStructure(user);
 	return data.user;
 };
 
-const storeUserConfiguration = async (reqBody: UserConfigStructure, user: string) => {
+const storeUserConfiguration = async (reqBody: UserConfigStructure, user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
 	if (!isUserConfigStructure(reqBody)) {
-		console.error('(controller) Request does not contain a valid UserConfigStructure object, aborting.');
-		return;
+		throw Error('Request does not contain a valid UserConfigStructure object.');
 	}
 	const fileContent = await getStoredDataStructure(user);
 	fileContent.user = reqBody;
