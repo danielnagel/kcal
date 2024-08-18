@@ -419,6 +419,15 @@ const updateUserJson = async (user: string, newUser: string): Promise<DataStruct
 	return userContent;
 };
 
+/**
+ * Deletes kcal entry which matches the given id.
+ * 
+ * Throws an error, when user is undefined,
+ * id is undefined, no data is available or to much is deleted.
+ * 
+ * @param user string to match the users data json.
+ * @param id for the entry to delete
+ */
 const deleteKcal = async (user?: string, id?: string) => {
 	if (user === undefined) {
 		throw Error('Request must contain a valid user string.');
@@ -449,6 +458,15 @@ const deleteKcal = async (user?: string, id?: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
 };
 
+/**
+ * Updates kcal entry which matches the given id.
+ * 
+ * Throws an error, when user is undefined,
+ * updated structure is no UniqueKcalStructure, no data is available or id was not found.
+ * 
+ * @param user string to match the users data json.
+ * @param id for the entry to delete
+ */
 const updateKcal = async (reqBody: UniqueKcalStructure, user?: string) => {
 	if (user === undefined) {
 		throw Error('Request must contain a valid user string.');

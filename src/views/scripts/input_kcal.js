@@ -59,8 +59,14 @@ const sendDataList = async (dataList, user) => {
 				'Content-Type': 'application/json',
 			},
 		});
-		if (response.status == 200 && localStorage)
-			localStorage.removeItem(storageItemKey);
+		if (response.status == 200) {
+			if (localStorage)
+				localStorage.removeItem(storageItemKey);
+
+			const form = document.getElementById('kcal-form');
+			form.reset();
+			updateDateTimeInput();
+		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (e) {
 		if (localStorage) localStorage.setItem(storageItemKey, JSON.stringify(dataList));

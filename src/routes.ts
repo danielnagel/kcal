@@ -30,7 +30,9 @@ const handleError = async (res: Response, errMessage: string, error: unknown) =>
 const postKcal = async (req: Request, res: Response) => {
 	try {
 		await storeMultipleKcalInput(req.body, req.query.user as string);
-		res.redirect('/input_kcal');
+		res.json({
+			message: 'ok'
+		});
 	} catch (e: unknown) {
 		handleError(res, 'Could not store kcal.', e);
 	}
@@ -39,7 +41,9 @@ const postKcal = async (req: Request, res: Response) => {
 const postWeight = async (req: Request, res: Response) => {
 	try {
 		await storeWeightInput(req.body, req.query.user as string);
-		res.redirect('/input_weight');
+		res.json({
+			message: 'ok'
+		});
 	} catch (e: unknown) {
 		handleError(res, 'Could not store weight.', e);
 	}
@@ -81,7 +85,9 @@ const getConfiguration = async (req: Request, res: Response) => {
 const postConfiguration = async (req: Request, res: Response) => {
 	try {
 		await storeUserConfiguration(req.body, req.query.user as string);
-		res.redirect('/configuration');
+		res.json({
+			message: 'ok'
+		});
 	} catch (e: unknown) {
 		handleError(res, 'Could not store configuration.', e);
 	}
@@ -90,7 +96,9 @@ const postConfiguration = async (req: Request, res: Response) => {
 const postNewUserJson = async (req: Request, res: Response) => {
 	try {
 		await createUserJson(req.body.user);
-		res.redirect('/user_configuration');
+		res.json({
+			message: 'ok'
+		});
 	} catch (e: unknown) {
 		handleError(res, 'Could not create new user json.', e);
 	}
@@ -99,7 +107,9 @@ const postNewUserJson = async (req: Request, res: Response) => {
 const postUpdateUserJson = async (req: Request, res: Response) => {
 	try {
 		await updateUserJson(req.body.user, req.body.newUser);
-		res.redirect('/user_configuration');
+		res.json({
+			message: 'ok'
+		});
 	} catch (e: unknown) {
 		handleError(res, 'Could not update user json.', e);
 	}
@@ -108,7 +118,6 @@ const postUpdateUserJson = async (req: Request, res: Response) => {
 const deleteKcalHandler = async (req: Request, res: Response) => {
 	try {
 		await deleteKcal(req.query.user as string, req.query.id as string);
-		res.status(200);
 		res.json({
 			message: 'ok'
 		});
@@ -120,8 +129,6 @@ const deleteKcalHandler = async (req: Request, res: Response) => {
 const updateKcalHandler = async (req: Request, res: Response) => {
 	try {
 		await updateKcal(req.body, req.query.user as string);
-
-		res.status(200);
 		res.json({
 			message: 'ok'
 		});
