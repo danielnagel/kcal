@@ -17,18 +17,22 @@ import {
 const staticPath = __dirname + '/public';
 const sendHtml = (req: Request, res: Response) => res.sendFile(`${staticPath}${req.url}.html`);
 
+const handleError = async (res: Response, errMessage: string, error: unknown) => {
+	res.status(500);
+	let message = errMessage;
+	if (error instanceof Error) message += ` Reason: ${error.message}`;
+	console.error(message);
+	res.json({
+		message
+	});
+};
+
 const postKcal = async (req: Request, res: Response) => {
 	try {
 		await storeMultipleKcalInput(req.body, req.query.user as string);
 		res.redirect('/input_kcal');
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not store kcal.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not store kcal.', e);
 	}
 };
 
@@ -37,13 +41,7 @@ const postWeight = async (req: Request, res: Response) => {
 		await storeWeightInput(req.body, req.query.user as string);
 		res.redirect('/input_weight');
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not store weight.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not store weight.', e);
 	}
 };
 
@@ -57,13 +55,7 @@ const getAllKcalData = async (req: Request, res: Response) => {
 			order: req.query.order as string
 		}));
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not get all kcal data.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not get all kcal data.', e);
 	}
 };
 
@@ -74,13 +66,7 @@ const getAllWeightData = async (req: Request, res: Response) => {
 			summary: req.query.summary as string,
 		}));
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not get all weight data.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not get all weight data.', e);
 	}
 };
 
@@ -88,13 +74,7 @@ const getConfiguration = async (req: Request, res: Response) => {
 	try {
 		res.json(await loadUserConfiguration(req.query.user as string));
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not get configuration.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not get configuration.', e);
 	}
 };
 
@@ -103,13 +83,7 @@ const postConfiguration = async (req: Request, res: Response) => {
 		await storeUserConfiguration(req.body, req.query.user as string);
 		res.redirect('/configuration');
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not store configuration.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not store configuration.', e);
 	}
 };
 
@@ -118,13 +92,7 @@ const postNewUserJson = async (req: Request, res: Response) => {
 		await createUserJson(req.body.user);
 		res.redirect('/user_configuration');
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not create new user json.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not create new user json.', e);
 	}
 };
 
@@ -133,13 +101,7 @@ const postUpdateUserJson = async (req: Request, res: Response) => {
 		await updateUserJson(req.body.user, req.body.newUser);
 		res.redirect('/user_configuration');
 	} catch (e: unknown) {
-		res.status(500);
-		let message = 'Could not update user json.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not update user json.', e);
 	}
 };
 
@@ -151,13 +113,7 @@ const deleteKcalHandler = async (req: Request, res: Response) => {
 			message: 'ok'
 		});
 	} catch (e: unknown) {
-		let message = 'Could not delete kcal.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.status(500);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not delete kcal.', e);
 	}
 };
 
@@ -170,13 +126,7 @@ const updateKcalHandler = async (req: Request, res: Response) => {
 			message: 'ok'
 		});
 	} catch (e: unknown) {
-		let message = 'Could not update kcal.';
-		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		console.error(message);
-		res.status(500);
-		res.json({
-			message
-		});
+		handleError(res, 'Could not update kcal.', e);
 	}
 };
 
