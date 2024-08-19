@@ -1,5 +1,7 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard, getFormDataJson
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard, getFormDataJson,
+	infoAlert,
+	errorAlert
 } from './utils.js';
 
 const storageItemKey = 'unsendFormData';
@@ -51,25 +53,27 @@ const getParsedStoredData = () => {
 };
 
 const sendDataList = async (dataList, user) => {
-	try {
-		const response = await fetch(`/api/input_kcal?user=${user}`, {
-			method: 'POST',
-			body: JSON.stringify(dataList),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		if (response.status == 200) {
-			if (localStorage)
-				localStorage.removeItem(storageItemKey);
-
-			const form = document.getElementById('kcal-form');
-			form.reset();
-			updateDateTimeInput();
-		}
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	} catch (e) {
+	const response = await fetch(`/api/input_kcal?user=${user}`, {
+		method: 'POST',
+		body: JSON.stringify(dataList),
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	if (response.status == 404) {
 		if (localStorage) localStorage.setItem(storageItemKey, JSON.stringify(dataList));
+		errorAlert('There is no connection to the server.');
+		renderOfflineInfo(user);
+	} else if (response.status === 500) {
+		const data = await response.json();
+		errorAlert(data.message);
+	} else {
+		if (localStorage)
+			localStorage.removeItem(storageItemKey);
+		const form = document.getElementById('kcal-form');
+		form.reset();
+		updateDateTimeInput();
+		infoAlert('Data send successfully.');
 	}
 };
 
@@ -77,10 +81,7 @@ const formHandling = (user) => {
 	const form = document.getElementById('kcal-form');
 	form.onsubmit = async (e) => {
 		e.preventDefault();
-		await sendDataList([...getParsedStoredData(), getFormDataJson(form)], user);
-		form.reset();
-		updateDateTimeInput();
-		renderOfflineInfo(user);
+		sendDataList([...getParsedStoredData(), getFormDataJson(form)], user);
 	};
 };
 
@@ -123,7 +124,12 @@ const renderOfflineInfo = (user) => {
 
 const getAndRenderSuggestionList = async (user) => {
 	const response = await fetch(`/api/kcal?by=what&user=${user}`);
-	renderSuggestionList(await response.json());
+	const data = await response.json();
+	if (response.status === 500) {
+		errorAlert(data.message);
+	} else {
+		renderSuggestionList(data);
+	}
 };
 
 (() => {

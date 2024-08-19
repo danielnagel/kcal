@@ -1,5 +1,6 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler,
+	errorAlert
 } from './utils.js';
 
 const renderProgressBar = (is, goal) => {
@@ -72,7 +73,12 @@ const renderDailyCalories = (data) => {
 
 const getAndRenderTodayCalories = async (user) => {
 	const response = await fetch(`/api/kcal?for=today&user=${user}`);
-	renderDailyCalories(await response.json());
+	const data = await response.json();
+	if (response.status === 500) {
+		errorAlert(data.message);
+	} else {
+		renderDailyCalories(data);
+	}
 };
 
 (() => {

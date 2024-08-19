@@ -1,5 +1,5 @@
 import {
-	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
+	bootstrapApp, serviceWorkerOnMessageHandler, promptUser, errorAlert
 } from './utils.js';
 import './chart.umd.js';
 
@@ -56,9 +56,19 @@ const renderWeightTarget = async (data) => {
 
 const getDataAndRender = async (user) => {
 	const response = await fetch(`/api/weight?user=${user}`);
-	renderChart(await response.json());
+	const data = await response.json();
+	if (response.status === 500) {
+		errorAlert(data.message);
+	} else {
+		renderChart(data);
+	}
 	const targetResponse = await fetch(`/api/weight?summary=true&user=${user}`);
-	renderWeightTarget(await targetResponse.json());
+	const targetData = await targetResponse.json();
+	if (targetResponse.status === 500) {
+		errorAlert(targetData.message);
+	} else {
+		renderWeightTarget(targetData);
+	}
 };
 
 (() => {

@@ -1,5 +1,7 @@
 import {
-	bootstrapApp, serviceWorkerOnMessageHandler, promptUser
+	bootstrapApp, serviceWorkerOnMessageHandler, promptUser,
+	infoAlert,
+	errorAlert
 } from './utils.js';
 
 let loadedData = [];
@@ -56,7 +58,12 @@ const renderTable = (data) => {
 
 const getDataAndRenderTable = async () => {
 	const response = await fetch(`/api/kcal?user=${user}&order=desc&page=${nextPage++}`);
-	renderTable(await response.json());
+	const data = await response.json();
+	if (response.status === 500) {
+		errorAlert(data.message);
+	} else {
+		renderTable(data);
+	}
 };
 
 const confirmationDialog = async (message) => {
@@ -118,10 +125,16 @@ const rowOnClickHandler = (event) =>  {
 				const response = await fetch(`/api/kcal?id=${jsonData.id}&user=${user}`, {
 					method: 'delete'
 				});
-				if (response.status === 200) {
+				if (response.status == 404) {
+					errorAlert('There is no connection to the server.');
+				} else if (response.status === 500) {
+					const data = await response.json();
+					errorAlert(data.message);
+				} else {
 					loadedData = [];
 					nextPage = 1;
 					getDataAndRenderTable();
+					infoAlert('Deleted data successfully.');
 				}
 			};
 
@@ -141,12 +154,16 @@ const rowOnClickHandler = (event) =>  {
 						'Content-Type': 'application/json',
 					},
 				});
-
-
-				if (response.status === 200) {
+				if (response.status == 404) {
+					errorAlert('There is no connection to the server.');
+				} else if (response.status === 500) {
+					const data = await response.json();
+					errorAlert(data.message);
+				} else {
 					loadedData = [];
 					nextPage = 1;
 					getDataAndRenderTable();
+					infoAlert('Updated data successfully.');
 				}
 			};
 			dialog.showModal();

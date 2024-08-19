@@ -1,5 +1,5 @@
 import {
-	bootstrapApp, promptUser, getFormDataJson
+	bootstrapApp, promptUser, getFormDataJson, errorAlert, infoAlert
 } from './utils.js';
 
 const updateDateTimeInput = () => {
@@ -13,22 +13,31 @@ const updateDateTimeInput = () => {
 };
 
 const sendWeightInput = async (form, user) => {
-	return fetch(`/api/input_weight?user=${user}`, {
+	const response = await fetch(`/api/input_weight?user=${user}`, {
 		method: 'POST',
 		body: JSON.stringify(getFormDataJson(form)),
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
+
+	if (response.status == 404) {
+		errorAlert('There is no connection to the server.');
+	} else if (response.status === 500) {
+		const data = await response.json();
+		errorAlert(data.message);
+	} else {
+		form.reset();
+		updateDateTimeInput();
+		infoAlert('Data send successfully.');
+	}
 };
 
 const formHandling = (user) => {
 	const form = document.getElementById('weight-form');
 	form.onsubmit = async (e) => {
 		e.preventDefault();
-		await sendWeightInput(form, user);
-		form.reset();
-		updateDateTimeInput();
+		sendWeightInput(form, user);
 	};
 };
 

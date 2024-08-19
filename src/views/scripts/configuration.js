@@ -1,5 +1,7 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, getFormDataJson, updateColor
+	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, getFormDataJson, updateColor,
+	errorAlert,
+	infoAlert
 } from './utils.js';
 
 const updateConfiguration = (data) => {
@@ -29,14 +31,20 @@ const updateColorFromInput = () => {
 	};
 };
 
-const sendConfiguration = (form, user) => {
-	return fetch(`/api/configuration?user=${user}`, {
+const sendConfiguration = async (form, user) => {
+	const response = await fetch(`/api/configuration?user=${user}`, {
 		method: 'POST',
 		body: JSON.stringify(getFormDataJson(form)),
 		headers: {
 			'Content-Type': 'application/json',
 		},
 	});
+	if (response.status === 500) {
+		const data = await response.json();
+		errorAlert(data.message);
+	} else {
+		infoAlert('Configuration updated successfully.');
+	}
 };
 
 const formHandling = (user) => {
@@ -49,7 +57,12 @@ const formHandling = (user) => {
 
 const getAndUpdateConfiguration = async (user) => {
 	const response = await fetch(`/api/configuration?user=${user}`);
-	updateConfiguration(await response.json());
+	const data = await response.json();
+	if (response.status === 500) {
+		errorAlert(data.message);
+	} else {
+		updateConfiguration(data);
+	}
 };
 
 (() => {
