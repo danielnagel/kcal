@@ -99,3 +99,34 @@ export const updateColor = (color) => {
 	r.style.setProperty('--accent', color);
 	if (localStorage) localStorage.setItem('color', color);
 };
+
+const alert = (header, message, error) => {
+	const alertContainer = document.createElement('div');
+	alertContainer.classList.add('alert');
+	if (error) alertContainer.classList.add('error-alert');
+	const removeAlertContainer = () => {
+		alertContainer.classList.add('hide-opacity');
+		setTimeout(() => alertContainer.remove(), 1000);
+	};
+	alertContainer.onclick = removeAlertContainer;
+	const headerElement = document.createElement('strong');
+	headerElement.innerText = header;
+
+	const messageElement = document.createElement('p');
+	messageElement.innerText = message;
+
+	alertContainer.appendChild(headerElement);
+	alertContainer.appendChild(messageElement);
+	document.body.appendChild(alertContainer);
+	setTimeout(() => {
+		removeAlertContainer();
+	}, 5000);
+};
+
+export const infoAlert = (message) => {
+	alert('Info', message);
+};
+
+export const errorAlert = (message) => {
+	alert('Error', message, true);
+};
