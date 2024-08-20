@@ -123,7 +123,7 @@ const renderOfflineInfo = (user) => {
 };
 
 const getAndRenderSuggestionList = async (user) => {
-	const response = await fetch(`/api/kcal?by=what&user=${user}`);
+	const response = await fetch(`/api/kcal?select=what&user=${user}`);
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);

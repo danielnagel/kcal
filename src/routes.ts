@@ -53,8 +53,8 @@ const getAllKcalData = async (req: Request, res: Response) => {
 	try {
 		res.json(await handleGetAllKcalData({
 			user: req.query.user as string,
-			range: req.query.for as string,
-			select: req.query.by as string,
+			range: req.query.range as string,
+			select: req.query.select as string,
 			page: req.query.page as string,
 			order: req.query.order as string
 		}));

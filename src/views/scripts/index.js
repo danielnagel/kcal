@@ -72,7 +72,7 @@ const renderDailyCalories = (data) => {
 };
 
 const getAndRenderTodayCalories = async (user) => {
-	const response = await fetch(`/api/kcal?for=today&user=${user}`);
+	const response = await fetch(`/api/kcal?range=today&user=${user}`);
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
