@@ -189,7 +189,7 @@ const loadAllKcal = async (user: string, page?: string, order = 'asc', pageSize 
 };
 
 const handleGetAllKcalData = async (query: LoadKcalParameters) => {
-	const { range, order, page, select, user } = query;
+	const { range, order, page, select, user, group } = query;
 
 	if (user === undefined) {
 		throw Error('Request must contain a valid user string.');
@@ -199,8 +199,24 @@ const handleGetAllKcalData = async (query: LoadKcalParameters) => {
 		return loadTodayKcalSummary(user);
 	} else if (select === 'what') {
 		return loadUniqueKcalInput(user);
+	} else if (group === 'date') {
+		return loadKcalGroupedByDate(user, page as string, order as string);
 	}
 	return loadAllKcal(user, page as string, order as string);
+};
+
+const loadKcalGroupedByDate = async (user: string, page: string, order: string) => {
+	const data = await loadAllKcal(user, page, order, 50);
+	const uniqueDates = new Set(data.map(item => item.date));
+	const groupedData: GroupedKcalStructure = {
+	};
+
+	uniqueDates.forEach(date => {
+		const matchingData = data.filter(item => item.date === date);
+		groupedData[date] = matchingData;
+	});
+
+	return groupedData;
 };
 
 const loadUserConfiguration = async (user?: string) => {
@@ -507,5 +523,6 @@ export {
 	deleteKcal,
 	updateKcal,
 	handleGetAllKcalData,
-	handleGetAllWeightData
+	handleGetAllWeightData,
+	loadKcalGroupedByDate
 };

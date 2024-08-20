@@ -234,6 +234,146 @@ export const kcalInput1: KcalStructure[] = [
 	}
 ];
 
+export const groupedDataStructure1: GroupedKcalStructure = {
+	'25.05.2024': [
+	  {
+			date: '25.05.2024',
+			what: 'test',
+			kcal: '500',
+			comment: '',
+			id: 0,
+			time: '11:00'
+	  },
+	  {
+			date: '25.05.2024',
+			what: 'test',
+			kcal: '150',
+			comment: '',
+			id: 1,
+			time: '16:48'
+	  },
+	  {
+			date: '25.05.2024',
+			what: 'test',
+			kcal: '1500',
+			comment: '',
+			id: 2,
+			time: '19:00'
+	  }
+	],
+	'26.05.2024': [
+	  {
+			date: '26.05.2024',
+			what: 'test',
+			kcal: '500',
+			comment: '',
+			id: 3,
+			time: '12:00'
+	  },
+	  {
+			date: '26.05.2024',
+			what: 'test',
+			kcal: '100',
+			comment: '',
+			id: 4,
+			time: '14:53'
+	  },
+	  {
+			date: '26.05.2024',
+			what: 'test',
+			kcal: '700',
+			comment: '',
+			id: 5,
+			time: '17:14'
+	  },
+	  {
+			date: '26.05.2024',
+			what: 'test',
+			kcal: '360',
+			comment: '',
+			id: 6,
+			time: '18:04'
+	  },
+	  {
+			date: '26.05.2024',
+			what: 'test',
+			kcal: '600',
+			comment: '',
+			id: 7,
+			time: '21:00'
+	  }
+	],
+	'27.05.2024': [
+	  {
+			date: '27.05.2024',
+			what: 'test',
+			kcal: '550',
+			comment: '',
+			id: 8,
+			time: '09:48'
+	  },
+	  {
+			date: '27.05.2024',
+			what: 'test',
+			kcal: '600',
+			comment: '',
+			id: 9,
+			time: '13:45'
+	  },
+	  {
+			date: '27.05.2024',
+			what: 'test',
+			kcal: '600',
+			comment: '',
+			id: 10,
+			time: '17:30'
+	  },
+	  {
+			date: '27.05.2024',
+			what: 'test',
+			kcal: '180',
+			comment: '',
+			id: 11,
+			time: '18:19'
+	  }
+	],
+	'28.05.2024': [
+	  {
+			date: '28.05.2024',
+			what: 'test',
+			kcal: '500',
+			comment: '',
+			id: 12,
+			time: '10:00'
+	  },
+	  {
+			date: '28.05.2024',
+			what: 'test',
+			kcal: '700',
+			comment: '',
+			id: 13,
+			time: '14:45'
+	  },
+	  {
+			date: '28.05.2024',
+			what: 'test',
+			kcal: '100',
+			comment: '',
+			id: 14,
+			time: '14:48'
+	  },
+	  {
+			date: '28.05.2024',
+			what: 'test',
+			kcal: '800',
+			comment: '',
+			id: 15,
+			time: '19:04'
+	  }
+	]
+};
+
+
 export const dataStructure2: DataStructure = {
 	kcal: [
 		{

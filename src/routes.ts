@@ -56,7 +56,8 @@ const getAllKcalData = async (req: Request, res: Response) => {
 			range: req.query.range as string,
 			select: req.query.select as string,
 			page: req.query.page as string,
-			order: req.query.order as string
+			order: req.query.order as string,
+			group: req.query.group as string
 		}));
 	} catch (e: unknown) {
 		handleError(res, 'Could not get all kcal data.', e);

@@ -21,6 +21,7 @@ import {
 	updateKcal,
 	handleGetAllKcalData,
 	handleGetAllWeightData,
+	loadKcalGroupedByDate,
 } from '../controller';
 import {
 	readFile,
@@ -43,6 +44,7 @@ import {
 	dataStructure8,
 	dataStructure9,
 	defaultDataStructure,
+	groupedDataStructure1,
 	kcalInput1,
 	kcalInput2,
 	kcalInput3,
@@ -142,7 +144,6 @@ test.describe('controller.ts', () => {
 			assert.equal(existsSync(__dirname + '/../data/.json'), false);
 		});
 	});
-
 	test.describe('load data', () => {
 		test('load all kcal', async () => {
 			await storeMultipleKcalInput(kcalInput4, 'test-user');
@@ -568,14 +569,28 @@ test.describe('controller.ts', () => {
 			};
 			assert.deepEqual(resultLoaded, expectLoaded);
 		});
+		test('load all kcal grouped by date', async () => {
+			await storeMultipleKcalInput(kcalInput1, 'test-user');
+			const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+				encoding: 'utf-8',
+			});
+			assert.deepEqual(JSON.stringify(dataStructure1, null, 2), resultStored);
+			const resultLoaded = await loadKcalGroupedByDate('test-user', '1', '');
+			assert.deepEqual(resultLoaded, groupedDataStructure1);
+		});
+		test('handleGetAllKcalData, load all kcal grouped by date', async () => {
+			await storeMultipleKcalInput(kcalInput1, 'test-user');
+			const resultStored = await readFile(__dirname + '/../data/test-user.json', {
+				encoding: 'utf-8',
+			});
+			assert.deepEqual(JSON.stringify(dataStructure1, null, 2), resultStored);
+			const resultLoaded = await handleGetAllKcalData({
+				user: 'test-user',
+				group: 'date' 
+			});
+			assert.deepEqual(resultLoaded, groupedDataStructure1);
+		});
 	});
-
-
-
-
-
-
-
 	test.describe('delete data', () => {
 		test('throw error when there is no data to delete', async () => {
 			await mkdir(`${__dirname}/../data`);
@@ -619,7 +634,6 @@ test.describe('controller.ts', () => {
 			assert.equal(resultAfterAdd[1].id, 2);
 		});
 	});
-
 	test.describe('update data', () => {
 		test('throw error when there is no data to update', async () => {
 			await mkdir(`${__dirname}/../data`);
@@ -670,7 +684,6 @@ test.describe('controller.ts', () => {
 			assert.notStrictEqual(resultAfterUpdate, JSON.stringify(dataStructure4, null, 2));
 			assert.strictEqual(resultAfterUpdate, JSON.stringify(expected, null, 2));
 		});
-
 		test('update test-user.json to user-test.json', async () => {
 			await mkdir(`${__dirname}/../data`);
 			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
