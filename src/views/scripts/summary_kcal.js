@@ -4,21 +4,22 @@ import {
 	errorAlert
 } from './utils.js';
 
-let loadedData = [];
+let loadedData =  {
+};
 let nextPage = 1;
 let user = '';
 
 const renderTable = (data) => {
-	loadedData = [...loadedData, ...data];
-	if (data.length < 25) {
+	loadedData = {
+		...loadedData,
+		...data
+	};
+	if (data.length === 0) {
 		document.getElementById('next-page-button').disabled = true;
 	}
 	const table = document.createElement('table');
 	table.classList.add('kcal-summary-table');
-	const columns = ['what', 'date', 'time', 'kcal'];
-	if (window.innerWidth > 600) {
-		columns.push('comment');
-	}
+	const columns = ['what', 'time', 'kcal', 'comment'];
 	
 	const headers = columns.map(c => {
 		const th = document.createElement('th');
@@ -32,23 +33,57 @@ const renderTable = (data) => {
 	header.append(...headers);
 	table.appendChild(header);
 
-	const body = loadedData.map(d => {
-		const row = document.createElement('tr');
-		row.classList.add('kcal-summary-table-row');
-		
-		const cells = columns.map(c => {
-			const td = document.createElement('td');
-			td.classList.add('kcal-summary-table-cell');
-			td.classList.add(`kcal-summary-table-cell-${c}`);
-			td.innerText = d[c];
-			return td;
-		});
+	const body = Object.entries(loadedData).map(entry => {
+		const [key, value] = entry;
 
-		row.append(...cells);
-		row.setAttribute('data-kcal', JSON.stringify(d));
-		row.onclick = rowOnClickHandler;
-		return row;
+		const group = document.createElement('tbody');
+		group.classList.add('kcal-summary-table-group');
+
+		const groupRow = document.createElement('tr');
+		groupRow.classList.add('kcal-summary-table-group-row');
+		const groupHeaderCell = document.createElement('td');
+		groupHeaderCell.setAttribute('colspan', 4);
+		groupHeaderCell.classList.add('kcal-summary-table-group-header-cell');
+		const groupHeaderCellMainText = document.createElement('strong');
+		groupHeaderCellMainText.innerText = key;
+		const groupHeaderCellSubText = document.createElement('span');
+		groupHeaderCellSubText.classList.add('kcal-summary-table-group-header-cell-sub-text');
+		groupHeaderCell.append(groupHeaderCellMainText, groupHeaderCellSubText);
+		groupRow.append(groupHeaderCell);
+		group.append(groupRow);
+
+		let kcalSummary = 0;
+		group.append(...value.map(item => {
+			const row = document.createElement('tr');
+			row.classList.add('kcal-summary-table-row');
+			
+			const cells = columns.map(c => {
+				const td = document.createElement('td');
+				td.classList.add('kcal-summary-table-cell');
+				td.classList.add(`kcal-summary-table-cell-${c}`);
+				const value = item[c];
+				if (c === 'kcal') {
+					const numberValue = parseInt(value);
+					if (!isNaN(numberValue)) {
+						kcalSummary += numberValue;
+					}
+				}
+				td.innerText = value;
+				return td;
+			});
+
+			row.append(...cells);
+			row.setAttribute('data-kcal', JSON.stringify(item));
+			row.onclick = rowOnClickHandler;
+			return row;
+		}));
+
+		groupHeaderCellSubText.innerText = `(${value.length} ${value.length <= 1 ? 'item' : 'items'}, ${kcalSummary} kcal)`;
+
+		return group;
 	});
+
+
 	table.append(...body);
 
 	const tableContainer = document.getElementById('example-table');
@@ -57,7 +92,7 @@ const renderTable = (data) => {
 };
 
 const getDataAndRenderTable = async () => {
-	const response = await fetch(`/api/kcal?user=${user}&order=desc&page=${nextPage++}`);
+	const response = await fetch(`/api/kcal?user=${user}&order=desc&page=${nextPage++}&group=date`);
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);

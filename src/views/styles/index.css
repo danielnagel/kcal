@@ -206,6 +206,18 @@ label {
     padding: 4px;
 }
 
+.kcal-summary-table-group-header-cell {
+    border-bottom: 1px solid var(--secondary);
+    text-align: left;
+    padding: 4px;
+    background-color: var(--accent);
+    color: var(--secondary);
+}
+
+.kcal-summary-table-group-header-cell-sub-text {
+    margin-left: 10px;
+}
+
 /* configuration */
 
 .under-form-link {
@@ -233,7 +245,7 @@ dialog::backdrop {
 .alert {
     padding: 10px;
     background-color: var(--accent);
-    color: var(--primary);
+    color: var(--secondary);
     width: 80%;
     position: absolute;
     bottom: 10%;
