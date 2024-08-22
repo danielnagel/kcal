@@ -206,7 +206,7 @@ const handleGetAllKcalData = async (query: LoadKcalParameters) => {
 };
 
 const loadKcalGroupedByDate = async (user: string, page: string, order: string) => {
-	const data = await loadAllKcal(user, page, order, 50);
+	const data = await loadAllKcal(user, page, order, 100);
 	const uniqueDates = new Set(data.map(item => item.date));
 	const groupedData: GroupedKcalStructure = {
 	};

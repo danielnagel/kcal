@@ -214,6 +214,10 @@ label {
     color: var(--secondary);
 }
 
+.kcal-summary-table-group-header-cell-main-text {
+    font-weight: bold;
+}
+
 .kcal-summary-table-group-header-cell-sub-text {
     margin-left: 10px;
 }

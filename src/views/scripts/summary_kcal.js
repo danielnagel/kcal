@@ -33,18 +33,21 @@ const renderTable = (data) => {
 	header.append(...headers);
 	table.appendChild(header);
 
-	const body = Object.entries(loadedData).map(entry => {
+	const body = Object.entries(loadedData).map((entry, index) => {
 		const [key, value] = entry;
 
 		const group = document.createElement('tbody');
 		group.classList.add('kcal-summary-table-group');
+		if (index !== 0) group.classList.add('hidden-rows');
 
 		const groupRow = document.createElement('tr');
 		groupRow.classList.add('kcal-summary-table-group-row');
+		groupRow.onclick = groupHeaderRowOnClickHandler;
 		const groupHeaderCell = document.createElement('td');
 		groupHeaderCell.setAttribute('colspan', 4);
 		groupHeaderCell.classList.add('kcal-summary-table-group-header-cell');
-		const groupHeaderCellMainText = document.createElement('strong');
+		const groupHeaderCellMainText = document.createElement('span');
+		groupHeaderCellMainText.classList.add('kcal-summary-table-group-header-cell-main-text');
 		groupHeaderCellMainText.innerText = key;
 		const groupHeaderCellSubText = document.createElement('span');
 		groupHeaderCellSubText.classList.add('kcal-summary-table-group-header-cell-sub-text');
@@ -75,6 +78,7 @@ const renderTable = (data) => {
 			row.append(...cells);
 			row.setAttribute('data-kcal', JSON.stringify(item));
 			row.onclick = rowOnClickHandler;
+			if (index !== 0) row.classList.add('hidden');
 			return row;
 		}));
 
@@ -203,6 +207,24 @@ const rowOnClickHandler = (event) =>  {
 			};
 			dialog.showModal();
 		}
+	}
+};
+
+const groupHeaderRowOnClickHandler = (event) => {
+	if (!(event.target instanceof HTMLTableCellElement || event.target instanceof HTMLSpanElement)) return;
+	let cellChild = null;
+	if (event.target instanceof HTMLSpanElement) cellChild = event.target;
+	const cell = cellChild ? cellChild.parentElement : event.target;
+	const row = cell.parentElement;
+	if (!(row instanceof HTMLTableRowElement)) return;
+	const group = row.parentElement;
+	if (!group) return;
+	if (group.classList.contains('hidden-rows')) {
+		group.classList.remove('hidden-rows');
+		group.querySelectorAll('tr[data-kcal]').forEach(item => item.classList.remove('hidden'));
+	} else {
+		group.classList.add('hidden-rows');
+		group.querySelectorAll('tr[data-kcal]').forEach(item => item.classList.add('hidden'));
 	}
 };
 
