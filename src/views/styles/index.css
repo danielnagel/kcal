@@ -43,6 +43,7 @@ header ul {
 
 header li {
     display: inline;
+    border-bottom: solid 1px var(--secondary);
 }
 
 header li a {
@@ -52,9 +53,14 @@ header li a {
 
 a {
     color: var(--secondary);
+    text-decoration: none;
 }
 
-header li a.active {
+header li.active {
+    border-bottom: solid 1px var(--accent);
+}
+
+header li.active a {
     color: var(--accent);
 }
 
@@ -106,7 +112,7 @@ a:hover {
 }
 
 form.input-form {
-    margin: 0 auto;
+    margin: 5px auto;
     padding: 10px;
     border: solid 1px var(--secondary);
     width: 290px;
@@ -123,7 +129,7 @@ textarea {
 }
 
 label {
-    color: var(--accent);
+    color: var(--secondary);
     font-weight: bold;
     margin-left: 5%;
 }
@@ -152,7 +158,6 @@ label {
     width: 90%;
     margin: 10px auto 0px auto;
     background-color: var(--accent);
-    border: 1px solid var(--secondary);
     color: var(--secondary);
     padding: 6px;
     text-decoration: none;
@@ -271,21 +276,6 @@ dialog::backdrop {
 
 .error-alert {
     background-color: red;
-}
-
-.closebtn {
-    margin-left: 15px;
-    color: var(--primary);
-    font-weight: bold;
-    float: right;
-    font-size: 22px;
-    line-height: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.closebtn:hover {
-    color: var(--secondary);
 }
 
 @media screen and (max-width: 500px) {
