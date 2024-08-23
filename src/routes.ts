@@ -13,6 +13,7 @@ import {
 	handleGetAllKcalData,
 	handleGetAllWeightData,
 	deleteWeight,
+	updateWeight,
 } from './controller';
 
 const staticPath = __dirname + '/public';
@@ -150,6 +151,17 @@ const updateKcalHandler = async (req: Request, res: Response) => {
 	}
 };
 
+const updateWeightHandler = async (req: Request, res: Response) => {
+	try {
+		await updateWeight(req.body, req.query.user as string);
+		res.json({
+			message: 'ok'
+		});
+	} catch (e: unknown) {
+		handleError(res, 'Could not update weight.', e);
+	}
+};
+
 
 const router = Router();
 
@@ -163,6 +175,7 @@ router.put('/api/kcal', updateKcalHandler);
 router.get('/summary_kcal', sendHtml);
 router.get('/api/weight', getAllWeightData);
 router.delete('/api/weight', deleteWeightHandler);
+router.put('/api/weight', updateWeightHandler);
 router.get('/summary_weight', sendHtml);
 router.get('/configuration', sendHtml);
 router.get('/api/configuration', getConfiguration);

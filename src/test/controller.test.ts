@@ -23,6 +23,7 @@ import {
 	handleGetAllWeightData,
 	loadKcalGroupedByDate,
 	deleteWeight,
+	updateWeight,
 } from '../controller';
 import {
 	readFile,
@@ -678,7 +679,7 @@ test.describe('controller.ts', () => {
 		});
 	});
 	test.describe('update data', () => {
-		test('throw error when there is no data to update', async () => {
+		test('throw error when there is no kcal data to update', async () => {
 			await mkdir(`${__dirname}/../data`);
 			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
 			assert.rejects(async () => await updateKcal({
@@ -694,7 +695,7 @@ test.describe('controller.ts', () => {
 				date: ''
 			} as UniqueKcalStructure, 'test-user'), 'UniqueKcalStructure');
 		});
-		test('throw error when body id was not found', async () => {
+		test('throw error when kcal body id was not found', async () => {
 			await mkdir(`${__dirname}/../data`);
 			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
 			const updatedKcal: UniqueKcalStructure =
@@ -725,6 +726,50 @@ test.describe('controller.ts', () => {
 			const expected = structuredClone(dataStructure4);
 			Object.assign(expected.kcal[1], updatedKcal);
 			assert.notStrictEqual(resultAfterUpdate, JSON.stringify(dataStructure4, null, 2));
+			assert.strictEqual(resultAfterUpdate, JSON.stringify(expected, null, 2));
+		});
+		test('throw error when there is no weight data to update', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+			assert.rejects(async () => await updateWeight(dataStructure12.weight[0], 'test-user'), 'no data');
+		});
+		test('throw error when body has not type UniqueWeightStructure', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure12, null, 2));
+			assert.rejects(async () => await updateWeight({
+				weight: '300',
+				date: ''
+			} as UniqueWeightStructure, 'test-user'), 'UniqueWeightStructure');
+		});
+		test('throw error when weight body id was not found', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure12, null, 2));
+			const updatedWeight: UniqueWeightStructure =
+			{
+				weight: '123',
+				waist: '123',
+				date: '2024-05-30',
+				id: 3
+			};
+			assert.rejects(async () => await updateWeight(updatedWeight, 'test-user'), 'the id');
+		});
+		test('update weight', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure12, null, 2));
+			const updatedWeight: UniqueWeightStructure =
+			{
+				weight: '123',
+				waist: '123',
+				date: '2024-05-30',
+				id: 1
+			};
+			await updateWeight(updatedWeight, 'test-user');
+			const resultAfterUpdate = await readFile(__dirname + '/../data/test-user.json', {
+				encoding: 'utf-8',
+			});
+			const expected = structuredClone(dataStructure12);
+			Object.assign(expected.weight[1], updatedWeight);
+			assert.notStrictEqual(resultAfterUpdate, JSON.stringify(dataStructure12, null, 2));
 			assert.strictEqual(resultAfterUpdate, JSON.stringify(expected, null, 2));
 		});
 		test('update test-user.json to user-test.json', async () => {

@@ -32,6 +32,13 @@ export const isWeightStructure = (data: unknown): data is WeightStructure => {
 	);
 };
 
+export const isUniqueWeightStructure = (data: unknown): data is UniqueWeightStructure => {
+	return (
+		data !== null && data !== undefined && isWeightStructure(data) &&
+    typeof (data as UniqueWeightStructure).id !== 'undefined'
+	);
+};
+
 export const isUserConfigStructure = (
 	data: unknown
 ): data is UserConfigStructure => {

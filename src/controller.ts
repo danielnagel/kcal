@@ -8,6 +8,7 @@ import {
 	isDataStructure,
 	isKcalStructure,
 	isUniqueKcalStructure,
+	isUniqueWeightStructure,
 	isUserConfigStructure,
 	isWeightStructure 
 } from './typeguards';
@@ -545,6 +546,39 @@ const deleteWeight = async (user?: string, id?: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
 };
 
+
+/**
+ * Updates weight entry which matches the given id.
+ * 
+ * Throws an error, when user is undefined,
+ * updated structure is no UniqueKcalStructure, no data is available or id was not found.
+ * 
+ * @param user string to match the users data json.
+ * @param id for the entry to delete
+ */
+const updateWeight = async (reqBody: UniqueWeightStructure, user?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
+	if (!isUniqueWeightStructure(reqBody)) {
+		throw Error('Request does not contain a valid UniqueWeightStructure object.');
+	}
+
+	const data = await getStoredDataStructure(user);
+	const weight = data.weight;
+	if (weight.length === 0) {
+		throw Error('There is no data to update.');
+	}
+
+	const foundIndex = data.weight.findIndex(k => k.id === reqBody.id);
+	if (foundIndex === -1) {
+		throw Error(`There is no weight structure stored with the id '${reqBody.id}'.`);
+	}
+
+	Object.assign(data.weight[foundIndex], reqBody);
+	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
+};
+
 export {
 	storeKcalInput,
 	storeMultipleKcalInput,
@@ -564,5 +598,6 @@ export {
 	handleGetAllKcalData,
 	handleGetAllWeightData,
 	loadKcalGroupedByDate,
-	deleteWeight
+	deleteWeight,
+	updateWeight
 };

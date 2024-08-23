@@ -8,6 +8,7 @@ import {
 	isWeightStructure,
 	isUserConfigStructure,
 	isUniqueKcalStructure,
+	isUniqueWeightStructure,
 } from '../typeguards';
 
 test.describe('typeguards', () => {
@@ -118,5 +119,27 @@ test.describe('typeguards', () => {
 
 	test('null is not UniqueKcalStructure', async () => {
 		assert(!isUniqueKcalStructure(null));
+	});
+
+	test('object is UniqueWeightStructure', async () => {
+		const expect: UniqueWeightStructure = {
+			id: 0,
+			weight: '123',
+			waist: '123',
+			date: '2024-05-24',
+		};
+		assert(isUniqueWeightStructure(expect));
+	});
+
+	test('object is not UniqueWeightStructure', async () => {
+		assert(!isUniqueWeightStructure({
+			weight: '123',
+			waist: '123',
+			date: '2024-05-24',
+		}));
+	});
+
+	test('null is not UniqueWeightStructure', async () => {
+		assert(!isUniqueWeightStructure(null));
 	});
 });
