@@ -349,7 +349,7 @@ const storeMultipleWeightInput = async (reqBody: WeightStructure[], user?: strin
 	}
 };
 
-const loadAllWeight = async (user: string): Promise<WeightStructure[]> => {
+const loadAllWeight = async (user: string): Promise<UniqueWeightStructure[]> => {
 	const data = await getStoredDataStructure(user);
 	const weights = data.weight.sort(sortByDateAsc).map(item => {
 		return {
@@ -506,6 +506,45 @@ const updateKcal = async (reqBody: UniqueKcalStructure, user?: string) => {
 	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
 };
 
+/**
+ * Deletes weight entry which matches the given id.
+ * 
+ * Throws an error, when user is undefined,
+ * id is undefined, no data is available or to much is deleted.
+ * 
+ * @param user string to match the users data json.
+ * @param id for the entry to delete
+ */
+const deleteWeight = async (user?: string, id?: string) => {
+	if (user === undefined) {
+		throw Error('Request must contain a valid user string.');
+	}
+	if (id === undefined) {
+		throw Error('Request must contain an id.');
+	}
+	const data = await getStoredDataStructure(user);
+	const weight = data.weight;
+	if (weight.length === 0) {
+		throw Error('There is no data to delete.');
+	}
+
+	let idNumber: number;
+	try {
+		idNumber = parseInt(id);
+	} catch (e: unknown) {
+		let message = `Could not parse '${id}'`;
+		if (e instanceof Error) message += `, reason: ${e.message}`;
+		throw Error(message);
+	}
+
+	const updatedWeight = weight.filter(k => k.id !== idNumber);
+	if (updatedWeight.length !== weight.length - 1) {
+		throw Error('Deleted to much data, weight list probably inconsistent. Aborted to prevent data loss.');
+	}
+	data.weight = updatedWeight;
+	await writeJsonToFile(`${dataDirPath}/${user}.json`, data);
+};
+
 export {
 	storeKcalInput,
 	storeMultipleKcalInput,
@@ -524,5 +563,6 @@ export {
 	updateKcal,
 	handleGetAllKcalData,
 	handleGetAllWeightData,
-	loadKcalGroupedByDate
+	loadKcalGroupedByDate,
+	deleteWeight
 };

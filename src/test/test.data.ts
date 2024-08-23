@@ -1015,7 +1015,7 @@ export const dataStructure10: DataStructure = {
 	kcal: [],
 	weight: [
 	  {
-			date: '2024-05-24',
+			date: '2024-05-29',
 			weight: '80',
 			'waist': '70',
 			id: 0
@@ -1031,7 +1031,7 @@ export const dataStructure10: DataStructure = {
 };
 
 export const weightInput10: WeightStructure = {
-		  date: '2024-05-24',
+		  date: '2024-05-29',
 		  weight: '80',
 		  'waist': '70',
 };
@@ -1053,7 +1053,20 @@ export const dataStructure11: DataStructure = {
 			id: 1
 		}
 	],
-	weight: [],
+	weight: [
+		{
+			date: '2024-05-24',
+			weight: '80',
+			waist: '70',
+			id: 1
+		},
+		{
+			date: '2024-05-25',
+			weight: '81',
+			waist: '71',
+			id: 1
+		}
+	],
 	user: {
 		dailyKcalTarget: 2000,
 		weightTarget: 90,
@@ -1062,3 +1075,29 @@ export const dataStructure11: DataStructure = {
 		user: 'test-user'
 	}
 };
+
+export const dataStructure12: DataStructure = {
+	kcal: [],
+	weight: [
+
+		{
+			date: '2024-05-24',
+			weight: '80',
+			waist: '70',
+			id: 0
+		},
+		{
+			date: '2024-05-28',
+			weight: '81',
+			waist: '71',
+			id: 1
+		},
+	],
+	user: {
+		dailyKcalTarget: 2000,
+		weightTarget: 90,
+		color: '#5f9ea0',
+		kcalHistoryCount: 3,
+		user: 'test-user'
+	}
+}; 

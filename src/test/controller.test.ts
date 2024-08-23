@@ -22,6 +22,7 @@ import {
 	handleGetAllKcalData,
 	handleGetAllWeightData,
 	loadKcalGroupedByDate,
+	deleteWeight,
 } from '../controller';
 import {
 	readFile,
@@ -36,6 +37,7 @@ import {
 	dataStructure1,
 	dataStructure10,
 	dataStructure11,
+	dataStructure12,
 	dataStructure2,
 	dataStructure3,
 	dataStructure4,
@@ -592,17 +594,17 @@ test.describe('controller.ts', () => {
 		});
 	});
 	test.describe('delete data', () => {
-		test('throw error when there is no data to delete', async () => {
+		test('throw error when there is no kcal data to delete', async () => {
 			await mkdir(`${__dirname}/../data`);
 			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
 			assert.rejects(async () => await deleteKcal('test-user', '0'), 'no data');
 		});
-		test('throw error when id is not a number', async () => {
+		test('throw error when kcal id is not a number', async () => {
 			await mkdir(`${__dirname}/../data`);
 			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure4, null, 2));
 			assert.rejects(async () => await deleteKcal('test-user', 'not a number'), 'not parse');
 		});
-		test('abort if data contains duplicates of the same id', async () => {
+		test('abort if data contains duplicates of the same kcal id', async () => {
 			await mkdir(`${__dirname}/../data`);
 			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure11, null, 2));
 			assert.rejects(async () => await deleteKcal('test-user', '1'), 'inconsistent');
@@ -629,6 +631,47 @@ test.describe('controller.ts', () => {
 			assert.equal(resultAfterDelete[0].id, 1);
 			await storeKcalInput(kcalInput3, 'test-user');
 			const resultAfterAdd = await loadAllKcal('test-user');
+			assert.equal(resultAfterAdd.length, 2);
+			assert.equal(resultAfterAdd[0].id, 1);
+			assert.equal(resultAfterAdd[1].id, 2);
+		});
+		test('throw error when there is no weight data to delete', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(defaultDataStructure, null, 2));
+			assert.rejects(async () => await deleteWeight('test-user', '0'), 'no data');
+		});
+		test('throw error when weight id is not a number', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure12, null, 2));
+			assert.rejects(async () => await deleteWeight('test-user', 'not a number'), 'not parse');
+		});
+		test('abort if data contains duplicates of the same weight id', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure11, null, 2));
+			assert.rejects(async () => await deleteWeight('test-user', '1'), 'inconsistent');
+		});
+		test('delete weight at the end and add new weight', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure12, null, 2));
+			await deleteWeight('test-user', '1');
+			const resultAfterDelete = await loadAllWeight('test-user');
+			assert.equal(resultAfterDelete.length, 1);
+			assert.equal(resultAfterDelete[0].id, 0);
+			await storeWeightInput(weightInput10, 'test-user');
+			const resultAfterAdd = await loadAllWeight('test-user');
+			assert.equal(resultAfterAdd.length, 2);
+			assert.equal(resultAfterAdd[0].id, 0);
+			assert.equal(resultAfterAdd[1].id, 1);
+		});
+		test('delete kcal at the beginning and add new kcal', async () => {
+			await mkdir(`${__dirname}/../data`);
+			await writeFile(`${__dirname}/../data/test-user.json`, JSON.stringify(dataStructure12, null, 2));
+			await deleteWeight('test-user', '0');
+			const resultAfterDelete = await loadAllWeight('test-user');
+			assert.equal(resultAfterDelete.length, 1);
+			assert.equal(resultAfterDelete[0].id, 1);
+			await storeWeightInput(weightInput10, 'test-user');
+			const resultAfterAdd = await loadAllWeight('test-user');
 			assert.equal(resultAfterAdd.length, 2);
 			assert.equal(resultAfterAdd[0].id, 1);
 			assert.equal(resultAfterAdd[1].id, 2);
