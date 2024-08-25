@@ -227,6 +227,10 @@ label {
     margin-left: 10px;
 }
 
+#weight-table {
+    margin-bottom: 20px;
+}
+
 /* configuration */
 
 .under-form-link {

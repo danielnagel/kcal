@@ -42,7 +42,7 @@ const renderChart = (data) => {
 };
 
 const renderWeightTarget = async (data) => {
-	const container = document.getElementById('summary-weight-container');
+	const container = document.getElementById('target-summary-container');
 	const text = document.createElement('p');
 	text.innerHTML = `Target is <strong>${data.weightTarget}kg</strong>.`;
 	const text2 = document.createElement('p');
@@ -54,6 +54,48 @@ const renderWeightTarget = async (data) => {
 	container.appendChild(text3);
 };
 
+const renderTable = (data) => {
+	const table = document.createElement('table');
+	table.classList.add('kcal-summary-table');
+	const columns = ['date', 'weight', 'waist'];
+	
+	const headers = columns.map(c => {
+		const th = document.createElement('th');
+		th.classList.add('kcal-summary-table-cell');
+		th.classList.add('kcal-summary-table-cell-head');
+		th.innerText = c;
+		return th;
+	});
+	const header = document.createElement('tr');
+	header.classList.add('kcal-summary-table-row');
+	header.append(...headers);
+	table.appendChild(header);
+
+	const body = data.map(item => {
+		const row = document.createElement('tr');
+		row.classList.add('kcal-summary-table-row');
+		
+		const cells = columns.map(c => {
+			const td = document.createElement('td');
+			td.classList.add('kcal-summary-table-cell');
+			td.classList.add(`kcal-summary-table-cell-${c}`);
+			td.innerText = item[c];
+			return td;
+		});
+
+		row.append(...cells);
+		row.setAttribute('data-kcal', JSON.stringify(item));
+		return row;
+	});
+
+	table.append(...body);
+
+	const tableContainer = document.getElementById('weight-table');
+	tableContainer.childNodes.forEach(c => c.remove());
+	tableContainer.appendChild(table);
+};
+
+
 const getDataAndRender = async (user) => {
 	const response = await fetch(`/api/weight?user=${user}`);
 	const data = await response.json();
@@ -61,6 +103,7 @@ const getDataAndRender = async (user) => {
 		errorAlert(data.message);
 	} else {
 		renderChart(data);
+		renderTable(data);
 	}
 	const targetResponse = await fetch(`/api/weight?summary=true&user=${user}`);
 	const targetData = await targetResponse.json();

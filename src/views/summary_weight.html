@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="author" content="Daniel Nagel" />
     <link href="index.css" rel="stylesheet">
-    <script type="module" src="/summary_weight.js" ></script>
+    <script type="module" src="/summary_weight.js"></script>
 </head>
 
 <body>
@@ -24,10 +24,12 @@
             <li><a href="/configuration">conf</a></li>
         </ul>
     </header>
-    <main class="summary-content" id="summary-weight-container">
+    <main class="summary-content">
         <div class="summary-weight">
             <canvas id="summary-weight"></canvas>
         </div>
+        <div id="target-summary-container"></div>
+        <div class="summary-table" id="weight-table"></div>
     </main>
     <dialog id="user-prompt-modal">
         <p>Username</p>
