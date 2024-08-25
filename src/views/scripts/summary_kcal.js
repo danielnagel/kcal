@@ -1,7 +1,7 @@
 import {
 	bootstrapApp, serviceWorkerOnMessageHandler, promptUser,
 	infoAlert,
-	errorAlert
+	errorAlert, confirmationDialog
 } from './utils.js';
 
 let loadedData =  {
@@ -103,34 +103,6 @@ const getDataAndRenderTable = async () => {
 	} else {
 		renderTable(data);
 	}
-};
-
-const confirmationDialog = async (message) => {
-	return new Promise(resolve => {
-		const dialog = document.createElement('dialog');
-		dialog.classList.add('confirmation-dialog');
-		const messageContainer = document.createElement('p');
-		messageContainer.innerText = message;
-		const confirmButton = document.createElement('button');
-		confirmButton.innerText = 'ok';
-		confirmButton.classList.add('form-submit');
-		const cancelButton = document.createElement('button');
-		cancelButton.innerText = 'cancel';
-		cancelButton.classList.add('form-submit');
-		dialog.appendChild(messageContainer);
-		dialog.appendChild(confirmButton);
-		dialog.appendChild(cancelButton);
-		document.body.appendChild(dialog);
-		dialog.showModal();
-		confirmButton.onclick = () => {
-			dialog.close();
-			resolve(true);
-		};
-		cancelButton.onclick = () => {
-			dialog.close();
-			resolve(false);
-		};
-	});
 };
 
 const rowOnClickHandler = (event) =>  {

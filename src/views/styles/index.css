@@ -253,6 +253,8 @@ dialog::backdrop {
     padding: 20px;
     text-align: center;
     border: 1px solid var(--secondary);
+    width: 250px;
+    height: 180px;
 }
 
 .alert {

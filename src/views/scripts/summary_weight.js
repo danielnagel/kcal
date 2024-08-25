@@ -1,9 +1,10 @@
 import {
-	bootstrapApp, serviceWorkerOnMessageHandler, promptUser, errorAlert
+	bootstrapApp, serviceWorkerOnMessageHandler, promptUser, errorAlert, confirmationDialog, infoAlert
 } from './utils.js';
 import './chart.umd.js';
 
 let chartInstance = undefined;
+let user = '';
 
 const renderChart = (data) => {
 	if (!Array.isArray(data)) return;
@@ -43,6 +44,7 @@ const renderChart = (data) => {
 
 const renderWeightTarget = async (data) => {
 	const container = document.getElementById('target-summary-container');
+	container.innerHTML = '';
 	const text = document.createElement('p');
 	text.innerHTML = `Target is <strong>${data.weightTarget}kg</strong>.`;
 	const text2 = document.createElement('p');
@@ -85,6 +87,7 @@ const renderTable = (data) => {
 
 		row.append(...cells);
 		row.setAttribute('data-kcal', JSON.stringify(item));
+		row.onclick = rowOnClickHandler;
 		return row;
 	});
 
@@ -95,6 +98,54 @@ const renderTable = (data) => {
 	tableContainer.appendChild(table);
 };
 
+
+const rowOnClickHandler = (event) =>  {
+	if (event.target instanceof HTMLTableCellElement) {
+		const cell = event.target;
+		const row = cell.parentElement;
+		if (row instanceof HTMLTableRowElement) {
+			const data = row.getAttribute('data-kcal');
+			let jsonData = null;
+			try {
+				jsonData = JSON.parse(data);
+			} catch (e) {
+				console.error(`Could not parse row data, reason: ${e.message}`);
+			}
+			const dialog = document.querySelector('#weight-detail-modal');
+
+			document.querySelector('#weight-detail-form-cancel-button').onclick = () => {
+				dialog.close();
+			};
+			const dateInput = dialog.querySelector('#date');
+			const parts = jsonData.date.split('.');
+			if (parts.length === 3) {
+				dateInput.value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+			}
+			const weightInput = dialog.querySelector('#weight');
+			weightInput.value = jsonData.weight;
+			const waistInput = dialog.querySelector('#waist');
+			waistInput.value = jsonData.waist;
+
+			const deleteButton = dialog.querySelector('#weight-detail-form-delete-button');
+			deleteButton.onclick = async () => {
+				if (!await confirmationDialog('Delete data?')) return;
+				const response = await fetch(`/api/weight?id=${jsonData.id}&user=${user}`, {
+					method: 'delete'
+				});
+				if (response.status == 404) {
+					errorAlert('There is no connection to the server.');
+				} else if (response.status === 500) {
+					const data = await response.json();
+					errorAlert(data.message);
+				} else {
+					getDataAndRender(user);
+					infoAlert('Deleted data successfully.');
+				}
+			};
+			dialog.showModal();
+		}
+	}
+};
 
 const getDataAndRender = async (user) => {
 	const response = await fetch(`/api/weight?user=${user}`);
@@ -117,7 +168,7 @@ const getDataAndRender = async (user) => {
 (() => {
 	bootstrapApp();
 	window.onload = async () => {
-		const user = promptUser(getDataAndRender);
+		user = promptUser(getDataAndRender);
 		if (user) {
 			await getDataAndRender(user);
 			serviceWorkerOnMessageHandler(renderChart);

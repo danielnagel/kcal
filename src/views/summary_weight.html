@@ -15,6 +15,19 @@
 <body>
     <header>
         <h1>+k</h1>
+        <dialog id="weight-detail-modal" class="kcal-dialog">
+            <form method="dialog" class="input-form" id="weight-detail-form" tabindex="0">
+                <label for="date">date</label>
+                <input class="form-input" type="date" name="date" id="date" required />
+                <label for="weight">weight</label>
+                <input class="form-input" type="number" name="weight" id="weight" step="0.1" required />
+                <label for="waist">waist</label>
+                <input class="form-input" type="number" name="waist" id="waist" step="0.1" required />
+                <input class="form-submit" type="submit" id="weight-detail-form-update-button" value="Update" />
+                <input class="form-submit" type="submit" id="weight-detail-form-delete-button" value="Delete" />
+                <input class="form-submit" type="button" id="weight-detail-form-cancel-button" value="Cancel" />
+            </form>
+        </dialog>
         <ul>
             <li><a href="/">home</a></li>
             <li><a href="/input_kcal">+k</a></li>
