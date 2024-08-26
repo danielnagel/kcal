@@ -142,6 +142,31 @@ const rowOnClickHandler = (event) =>  {
 					infoAlert('Deleted data successfully.');
 				}
 			};
+
+			const udpateButton = dialog.querySelector('#weight-detail-form-update-button');
+			udpateButton.onclick = async () => {
+				if (!await confirmationDialog('Update data?')) return;
+				jsonData.weight = weightInput.value;
+				jsonData.waist = waistInput.value;
+				jsonData.date = dateInput.value;
+
+				const response = await fetch(`/api/weight?user=${user}`, {
+					method: 'put',
+					body: JSON.stringify(jsonData),
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+				if (response.status == 404) {
+					errorAlert('There is no connection to the server.');
+				} else if (response.status === 500) {
+					const data = await response.json();
+					errorAlert(data.message);
+				} else {
+					getDataAndRender(user);
+					infoAlert('Updated data successfully.');
+				}
+			};
 			dialog.showModal();
 		}
 	}
