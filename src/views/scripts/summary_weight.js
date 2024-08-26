@@ -73,7 +73,7 @@ const renderTable = (data) => {
 	header.append(...headers);
 	table.appendChild(header);
 
-	const body = data.map(item => {
+	const body = data.toReversed().map(item => {
 		const row = document.createElement('tr');
 		row.classList.add('kcal-summary-table-row');
 		
