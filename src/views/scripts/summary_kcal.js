@@ -95,7 +95,7 @@ const renderTable = (data) => {
 	tableContainer.appendChild(table);
 };
 
-const getDataAndRenderTable = async () => {
+const getDataAndRenderTable = async (user) => {
 	const response = await fetch(`/api/kcal?user=${user}&order=desc&page=${nextPage++}&group=date`);
 	const data = await response.json();
 	if (response.status === 500) {
