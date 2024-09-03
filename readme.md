@@ -24,7 +24,7 @@ When the browser visits the website for the first time,
 the user is prompted to provide a name, i.e., to sign in.
 
 <p align="center">
-    <img src="/docs/login-dialog.png" width="300"/>
+    <img src="/docs/login.png" width="300"/>
 </p>
 
 The current calorie intake can be viewed on the home page.
@@ -36,26 +36,39 @@ The current calorie intake can be viewed on the home page.
 Additional calories can be entered.
 
 <p align="center">
-    <img src="/docs/calories-input.png" width="300"/>
+    <img src="/docs/k.png" width="300"/>
 </p>
 
 All entered calories can be viewed, in descending order.
 Only today's date shows a detailed view of the entered data.
 
 <p align="center">
-    <img src="/docs/calories-list.png" width="300"/>
+    <img src="/docs/lsk.png" width="300"/>
 </p>
+
+A dialog opens, when clicked on a row, which allows to update or delete the selected entry.
+
+<p align="center">
+    <img src="/docs/lsk-dialog.png" width="300"/>
+</p>
+
 
 Weight can be entered.
 
 <p align="center">
-    <img src="/docs/weight-input.png" width="300"/>
+    <img src="/docs/w.png" width="300"/>
 </p>
 
-Weight can also be recorded and viewed in a graph.
+Weight can also be recorded and viewed in a graph or in a list.
 
 <p align="center">
-    <img src="/docs/weight-list.png" width="300"/>
+    <img src="/docs/lsw.png" width="300"/>
+</p>
+
+A dialog opens, when clicked on a row, which allows to update or delete the selected entry.
+
+<p align="center">
+    <img src="/docs/lsw-dialog.png" width="300"/>
 </p>
 
 User preferences can be configured
@@ -66,7 +79,7 @@ User preferences can be configured
 - kcal history count, daily calories target history, seen on the home screen
 
 <p align="center">
-    <img src="/docs/configuration.png" width="300"/>
+    <img src="/docs/conf.png" width="300"/>
 </p>
 
 User configuration
@@ -77,7 +90,7 @@ User configuration
 - new, create a new user
 
 <p align="center">
-    <img src="/docs/user-configuration.png" width="300"/>
+    <img src="/docs/conf-user.png" width="300"/>
 </p>
 
 ## install
