@@ -17,6 +17,10 @@ import {
 	app.use(bodyParser.json());
 	app.use('/', router);
 
+	app.use((_req, res) => {
+		res.sendFile(`${staticPath}/404.html`);
+	});
+
 
 	app.listen(port, () => {
 		console.log(`listening on port ${port} ...`);
