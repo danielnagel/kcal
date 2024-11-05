@@ -15,9 +15,7 @@ const urls_to_cache = [
 	'/summary_weight.js',
 	'/configuration.js',
 	'/chart.umd.js',
-	'/tabulator.min.js',
 	'/index.css',
-	'/tabulator.min.css',
 	'/favicon.ico',
 ];
 
