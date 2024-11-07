@@ -186,3 +186,18 @@ export const confirmationDialog = async (message) => {
 		};
 	});
 };
+
+export const getSession = () => {
+	if (!sessionStorage) throw new Error('Site does not work without Session storage!');
+	const userName = sessionStorage.getItem('userName');
+	const authToken = sessionStorage.getItem('authToken');
+
+	if (!userName || !authToken) {
+		window.open('/login', '_self');
+	}
+	
+	return {
+		userName,
+		authToken 
+	};
+};

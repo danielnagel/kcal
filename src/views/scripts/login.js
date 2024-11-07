@@ -12,6 +12,7 @@ import {
 			const credentials = btoa(`${data.username}:${data.password}`);
 			sessionStorage.setItem('userName', data.username);
 			sessionStorage.setItem('authToken', `Basic ${credentials}`);
+			window.open('/', '_self');
 		};
 	};
 })();
