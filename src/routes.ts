@@ -183,6 +183,7 @@ router.post('/api/configuration', postConfiguration);
 router.get('/user_configuration', sendHtml);
 router.post('/api/user/new', postNewUserJson);
 router.post('/api/user/update', postUpdateUserJson);
+router.get('/login', sendHtml);
 
 export {
 	router 
