@@ -1,10 +1,11 @@
 import {
-	bootstrapApp, serviceWorkerOnMessageHandler, promptUser, errorAlert, confirmationDialog, infoAlert
+	bootstrapApp, serviceWorkerOnMessageHandler, errorAlert, confirmationDialog, infoAlert, getSession
 } from './utils.js';
 import './chart.umd.js';
 
 let chartInstance = undefined;
 let user = '';
+let auth = '';
 
 const renderChart = (data) => {
 	if (!Array.isArray(data)) return;
@@ -130,7 +131,10 @@ const rowOnClickHandler = (event) =>  {
 			deleteButton.onclick = async () => {
 				if (!await confirmationDialog('Delete data?')) return;
 				const response = await fetch(`/api/weight?id=${jsonData.id}&user=${user}`, {
-					method: 'delete'
+					method: 'delete',
+					headers: {
+						'Authorization': auth
+					}
 				});
 				if (response.status == 404) {
 					errorAlert('There is no connection to the server.');
@@ -155,6 +159,7 @@ const rowOnClickHandler = (event) =>  {
 					body: JSON.stringify(jsonData),
 					headers: {
 						'Content-Type': 'application/json',
+						'Authorization': auth
 					},
 				});
 				if (response.status == 404) {
@@ -172,8 +177,12 @@ const rowOnClickHandler = (event) =>  {
 	}
 };
 
-const getDataAndRender = async (user) => {
-	const response = await fetch(`/api/weight?user=${user}`);
+const getDataAndRender = async (userName, authToken) => {
+	const response = await fetch(`/api/weight?user=${userName}`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
@@ -181,7 +190,11 @@ const getDataAndRender = async (user) => {
 		renderChart(data);
 		renderTable(data);
 	}
-	const targetResponse = await fetch(`/api/weight?summary=true&user=${user}`);
+	const targetResponse = await fetch(`/api/weight?summary=true&user=${userName}`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const targetData = await targetResponse.json();
 	if (targetResponse.status === 500) {
 		errorAlert(targetData.message);
@@ -192,10 +205,12 @@ const getDataAndRender = async (user) => {
 
 (() => {
 	bootstrapApp();
+	const {userName, authToken} = getSession();
 	window.onload = async () => {
-		user = promptUser(getDataAndRender);
-		if (user) {
-			await getDataAndRender(user);
+		if (userName && authToken) {
+			user = userName;
+			auth = authToken;
+			await getDataAndRender(userName, authToken);
 			serviceWorkerOnMessageHandler(renderChart);
 		}
 	};

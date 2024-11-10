@@ -1,5 +1,9 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, copyToClipboard, getFormDataJson,
+	bootstrapApp,
+	serviceWorkerOnMessageHandler,
+	copyToClipboard,
+	getFormDataJson,
+	getSession,
 	infoAlert,
 	errorAlert
 } from './utils.js';
@@ -52,18 +56,19 @@ const getParsedStoredData = () => {
 	return result;
 };
 
-const sendDataList = async (dataList, user) => {
-	const response = await fetch(`/api/input_kcal?user=${user}`, {
+const sendDataList = async (dataList, userName, authToken) => {
+	const response = await fetch(`/api/input_kcal?user=${userName}`, {
 		method: 'POST',
 		body: JSON.stringify(dataList),
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': authToken
 		},
 	});
 	if (response.status == 404) {
 		if (localStorage) localStorage.setItem(storageItemKey, JSON.stringify(dataList));
 		errorAlert('There is no connection to the server.');
-		renderOfflineInfo(user);
+		renderOfflineInfo(userName);
 	} else if (response.status === 500) {
 		const data = await response.json();
 		errorAlert(data.message);
@@ -77,11 +82,11 @@ const sendDataList = async (dataList, user) => {
 	}
 };
 
-const formHandling = (user) => {
+const formHandling = (userName, authToken) => {
 	const form = document.getElementById('kcal-form');
 	form.onsubmit = async (e) => {
 		e.preventDefault();
-		sendDataList([...getParsedStoredData(), getFormDataJson(form)], user);
+		sendDataList([...getParsedStoredData(), getFormDataJson(form)], userName, authToken);
 	};
 };
 
@@ -95,7 +100,7 @@ const hideOfflineContainer = () => {
 	if (!offlineContainer.classList.contains('hidden')) offlineContainer.classList.add('hidden');
 };
 
-const renderOfflineInfo = (user) => {
+const renderOfflineInfo = (userName) => {
 	if (localStorage) {
 		const storedData = localStorage.getItem(storageItemKey);
 		if (storedData) {
@@ -112,7 +117,7 @@ const renderOfflineInfo = (user) => {
 			offlineMessage.innerText = `Data could not be send, ${data.length} stored items.`;
 			copyButton.onclick = () => copyToClipboard(storedData);
 			sendButton.onclick = async () => {
-				await sendDataList(getParsedStoredData(), user);
+				await sendDataList(getParsedStoredData(), userName);
 				if (localStorage && !localStorage.getItem(storageItemKey)) hideOfflineContainer();
 			};
 			showOfflineContainer();
@@ -122,8 +127,12 @@ const renderOfflineInfo = (user) => {
 	hideOfflineContainer();
 };
 
-const getAndRenderSuggestionList = async (user) => {
-	const response = await fetch(`/api/kcal?select=what&user=${user}`);
+const getAndRenderSuggestionList = async (userName, authToken) => {
+	const response = await fetch(`/api/kcal?select=what&user=${userName}`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
@@ -134,14 +143,14 @@ const getAndRenderSuggestionList = async (user) => {
 
 (() => {
 	bootstrapApp();
-	window.onload = async () => {
+	const {userName, authToken} = getSession();
+	window.onload(async () => {
 		updateDateTimeInput();
-		const user = promptUser(getAndRenderSuggestionList);
-		if (user) {
-			await getAndRenderSuggestionList(user);
-			formHandling(user);
-			renderOfflineInfo(user);
+		if (userName && authToken) {
+			await getAndRenderSuggestionList(userName, authToken);
+			formHandling(userName, authToken);
+			renderOfflineInfo(userName);
 			serviceWorkerOnMessageHandler(renderSuggestionList);
 		}
-	};
+	});
 })();

@@ -1,6 +1,8 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler,
-	errorAlert
+	bootstrapApp,
+	serviceWorkerOnMessageHandler,
+	errorAlert,
+	getSession
 } from './utils.js';
 
 const renderProgressBar = (is, goal) => {
@@ -71,8 +73,12 @@ const renderDailyCalories = (data) => {
 	}
 };
 
-const getAndRenderTodayCalories = async (user) => {
-	const response = await fetch(`/api/kcal?range=today&user=${user}`);
+const getAndRenderTodayCalories = async (userName, authToken) => {
+	const response = await fetch(`/api/kcal?range=today&user=${userName}`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
@@ -83,10 +89,10 @@ const getAndRenderTodayCalories = async (user) => {
 
 (() => {
 	bootstrapApp();
+	const {userName, authToken} = getSession();
 	window.onload = async () => {
-		const user = promptUser(getAndRenderTodayCalories);
-		if (user) {
-			await getAndRenderTodayCalories(user);
+		if (userName && authToken) {
+			await getAndRenderTodayCalories(userName, authToken);
 			serviceWorkerOnMessageHandler(renderDailyCalories);
 		}
 	};

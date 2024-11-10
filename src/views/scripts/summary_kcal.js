@@ -1,13 +1,17 @@
 import {
-	bootstrapApp, serviceWorkerOnMessageHandler, promptUser,
+	bootstrapApp,
+	serviceWorkerOnMessageHandler,
 	infoAlert,
-	errorAlert, confirmationDialog
+	errorAlert,
+	confirmationDialog,
+	getSession
 } from './utils.js';
 
 let loadedData =  {
 };
 let nextPage = 1;
 let user = '';
+let auth = '';
 
 const renderTable = (data) => {
 	loadedData = {
@@ -95,8 +99,12 @@ const renderTable = (data) => {
 	tableContainer.appendChild(table);
 };
 
-const getDataAndRenderTable = async (user) => {
-	const response = await fetch(`/api/kcal?user=${user}&order=desc&page=${nextPage++}&group=date`);
+const getDataAndRenderTable = async (userName, authToken) => {
+	const response = await fetch(`/api/kcal?user=${userName}&order=desc&page=${nextPage++}&group=date`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
@@ -134,7 +142,10 @@ const rowOnClickHandler = (event) =>  {
 			deleteButton.onclick = async () => {
 				if (!await confirmationDialog('Delete data?')) return;
 				const response = await fetch(`/api/kcal?id=${jsonData.id}&user=${user}`, {
-					method: 'delete'
+					method: 'delete',
+					headers: {
+						'Authorization': auth
+					}
 				});
 				if (response.status == 404) {
 					errorAlert('There is no connection to the server.');
@@ -163,6 +174,7 @@ const rowOnClickHandler = (event) =>  {
 					body: JSON.stringify(jsonData),
 					headers: {
 						'Content-Type': 'application/json',
+						'Authorization': auth
 					},
 				});
 				if (response.status == 404) {
@@ -202,14 +214,16 @@ const groupHeaderRowOnClickHandler = (event) => {
 
 (() => {
 	bootstrapApp();
+	const {userName, authToken} = getSession();
 	window.onload = async () => {
 		document.getElementById('next-page-button').onclick = getDataAndRenderTable;
 		document.querySelector('#kcal-detail-form-cancel-button').onclick = () => {
 			document.querySelector('#kcal-detail-modal').close();
 		};
-		user = promptUser(getDataAndRenderTable);
-		if (user) {
-			await getDataAndRenderTable(user);
+		if (userName && authToken) {
+			user = userName;
+			auth = authToken;
+			await getDataAndRenderTable(userName, authToken);
 			serviceWorkerOnMessageHandler(renderTable);
 		}
 	};

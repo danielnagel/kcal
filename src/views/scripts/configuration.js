@@ -1,5 +1,9 @@
 import {
-	bootstrapApp, promptUser, serviceWorkerOnMessageHandler, getFormDataJson, updateColor,
+	bootstrapApp,
+	serviceWorkerOnMessageHandler,
+	getFormDataJson,
+	getSession,
+	updateColor,
 	errorAlert,
 	infoAlert
 } from './utils.js';
@@ -31,12 +35,13 @@ const updateColorFromInput = () => {
 	};
 };
 
-const sendConfiguration = async (form, user) => {
-	const response = await fetch(`/api/configuration?user=${user}`, {
+const sendConfiguration = async (form, userName, authToken) => {
+	const response = await fetch(`/api/configuration?user=${userName}`, {
 		method: 'POST',
 		body: JSON.stringify(getFormDataJson(form)),
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': authToken
 		},
 	});
 	if (response.status === 500) {
@@ -47,16 +52,20 @@ const sendConfiguration = async (form, user) => {
 	}
 };
 
-const formHandling = (user) => {
+const formHandling = (userName, authToken) => {
 	const form = document.getElementById('configuration-form');
 	form.onsubmit = async (e) => {
 		e.preventDefault();
-		await sendConfiguration(form, user);
+		await sendConfiguration(form, userName, authToken);
 	};
 };
 
-const getAndUpdateConfiguration = async (user) => {
-	const response = await fetch(`/api/configuration?user=${user}`);
+const getAndUpdateConfiguration = async (userName, authToken) => {
+	const response = await fetch(`/api/configuration?user=${userName}`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
@@ -67,11 +76,11 @@ const getAndUpdateConfiguration = async (user) => {
 
 (() => {
 	bootstrapApp();
+	const {userName, authToken} = getSession();
 	window.onload = async () => {
-		const user = promptUser(getAndUpdateConfiguration);
-		if (user) {
-			await getAndUpdateConfiguration(user);
-			formHandling(user);
+		if (userName && authToken) {
+			await getAndUpdateConfiguration(userName, authToken);
+			formHandling(userName, authToken);
 			serviceWorkerOnMessageHandler(updateConfiguration);
 		}
 		updateColorFromInput();

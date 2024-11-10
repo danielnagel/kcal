@@ -1,5 +1,9 @@
 import {
-	bootstrapApp, promptUser, getFormDataJson, errorAlert, infoAlert
+	bootstrapApp,
+	getFormDataJson,
+	getSession,
+	errorAlert,
+	infoAlert
 } from './utils.js';
 
 const updateDateTimeInput = () => {
@@ -12,12 +16,13 @@ const updateDateTimeInput = () => {
 
 };
 
-const sendWeightInput = async (form, user) => {
-	const response = await fetch(`/api/input_weight?user=${user}`, {
+const sendWeightInput = async (form, userName, authToken) => {
+	const response = await fetch(`/api/input_weight?user=${userName}`, {
 		method: 'POST',
 		body: JSON.stringify(getFormDataJson(form)),
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': authToken
 		},
 	});
 
@@ -33,21 +38,21 @@ const sendWeightInput = async (form, user) => {
 	}
 };
 
-const formHandling = (user) => {
+const formHandling = (userName, authToken) => {
 	const form = document.getElementById('weight-form');
 	form.onsubmit = async (e) => {
 		e.preventDefault();
-		sendWeightInput(form, user);
+		sendWeightInput(form, userName, authToken);
 	};
 };
 
 (() => {
 	bootstrapApp();
-	window.onload = () => {
-		const user = promptUser();
-		if (user) {
+	const {userName, authToken} = getSession();
+	window.onload = async () => {
+		if (userName && authToken) {
 			updateDateTimeInput();
-			formHandling(user);
+			formHandling(userName, authToken);
 		}
 	};
 })();

@@ -1,14 +1,18 @@
 import {
-	bootstrapApp, promptUser, getFormDataJson, updateColor, errorAlert, infoAlert
+	bootstrapApp, getFormDataJson, updateColor, errorAlert, infoAlert, getSession
 } from './utils.js';
 
-const updateUserInput = (user) => {
+const updateUserInput = (userName) => {
 	const userInput = document.getElementById('user');
-	userInput.value = user;
+	userInput.value = userName;
 };
 
-const updateUserColor = async (user) => {
-	const response = await fetch(`/api/configuration?user=${user}`);
+const updateUserColor = async (user, authToken) => {
+	const response = await fetch(`/api/configuration?user=${user}`, {
+		headers: {
+			'Authorization': authToken
+		}
+	});
 	const data = await response.json();
 	if (response.status === 500) {
 		errorAlert(data.message);
@@ -17,7 +21,7 @@ const updateUserColor = async (user) => {
 	}
 };
 
-const handleUpdate = async (formData, user) => {
+const handleUpdate = async (formData, user, authToken) => {
 	const response = await fetch('/api/user/update', {
 		method: 'POST',
 		body: JSON.stringify({
@@ -26,6 +30,7 @@ const handleUpdate = async (formData, user) => {
 		}), 
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': authToken
 		},
 	});
 	if (response.status == 404) {
@@ -39,7 +44,7 @@ const handleUpdate = async (formData, user) => {
 	}
 };
 
-const handleCreation = async (formData) => {
+const handleCreation = async (formData, authToken) => {
 	const response = await fetch('/api/user/new', {
 		method: 'POST',
 		body: JSON.stringify({
@@ -47,6 +52,7 @@ const handleCreation = async (formData) => {
 		}),
 		headers: {
 			'Content-Type': 'application/json',
+			'Authorization': authToken
 		},
 	});
 
@@ -57,31 +63,28 @@ const handleCreation = async (formData) => {
 		errorAlert(data.message);
 	} else {
 		localStorage.setItem('user', formData.user);
-		updateUserColor(formData.user);
+		updateUserColor(formData.user, authToken);
 		infoAlert('Created user successfully.');
 	}
 };
 
-const formHandling = () => {
+const formHandling = (userName, authToken) => {
 	const form = document.getElementById('user-configuration-form');
 	form.onsubmit = async (e) => {
 		e.preventDefault();
-		let user = null;
-		if (localStorage) user = localStorage.getItem('user');
-		if (!user) return;
 
 		const formData = getFormDataJson(form);
 
 		switch (e.submitter.value) {
 		case 'update':
-			await handleUpdate(formData, user);
+			await handleUpdate(formData, userName, authToken);
 			break;
 		case 'new':
-			await handleCreation(formData);
+			await handleCreation(formData, authToken);
 			break;
 		case 'change':
 			localStorage.setItem('user', formData.user);
-			updateUserColor(formData.user);
+			updateUserColor(formData.user, authToken);
 			infoAlert(`Logged in as ${formData.user}.`);
 			break;
 		default:
@@ -94,12 +97,11 @@ const formHandling = () => {
 
 (() => {
 	bootstrapApp();
-	
+	const {userName, authToken} = getSession();
 	window.onload = async () => {
-		const user = promptUser();
-		if (user) {
-			formHandling();
-			updateUserInput(user);
+		if (userName, authToken) {
+			formHandling(userName, authToken);
+			updateUserInput(userName);
 		}
 	};
 })();
