@@ -74,6 +74,17 @@ const getAndUpdateConfiguration = async (userName, authToken) => {
 	}
 };
 
+const logoutClickHandler = () => {
+	const logoutButton = document.getElementById('logout-button');
+	logoutButton.onclick = () => {
+		if (sessionStorage) {
+			sessionStorage.removeItem('userName');
+			sessionStorage.removeItem('authToken');
+			window.open('/login', '_self');
+		}
+	}
+};
+
 (() => {
 	bootstrapApp();
 	const {userName, authToken} = getSession();
@@ -83,6 +94,7 @@ const getAndUpdateConfiguration = async (userName, authToken) => {
 			formHandling(userName, authToken);
 			serviceWorkerOnMessageHandler(updateConfiguration);
 		}
+		logoutClickHandler();
 		updateColorFromInput();
 	};
 })();
