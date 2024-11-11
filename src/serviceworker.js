@@ -35,7 +35,7 @@ const putInCache = async (request, response) => {
 };
 
 const update = async (request) => {
-	const response = await fetch(request.url);
+	const response = await fetch(request.url, {credentials: 'same-origin'});
 	await putInCache(request, response);
 	return Promise.resolve(response);
 };
@@ -60,7 +60,7 @@ const respondCacheOrFetch = (e) => {
 		caches.match(e.request)
 			.then((cached) => {
 				// cache first strategy
-				return cached || fetch(e.request);
+				return cached || fetch(e.request, {credentials: 'same-origin'});
 			})
 	);
 };
