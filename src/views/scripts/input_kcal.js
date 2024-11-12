@@ -143,12 +143,12 @@ const getAndRenderSuggestionList = async (userName, authToken) => {
 (() => {
 	bootstrapApp();
 	const {userName, authToken} = getSession();
-	window.onload(async () => {
+	window.onload = async () => {
 		updateDateTimeInput();
 		if (userName && authToken) {
 			await getAndRenderSuggestionList(userName, authToken);
 			formHandling(userName, authToken);
 			renderOfflineInfo(userName);
 		}
-	});
+	};
 })();
