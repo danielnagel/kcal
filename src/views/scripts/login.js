@@ -8,10 +8,13 @@ import {
 		form.onsubmit = async (e) => {
 			e.preventDefault();
 			const data = getFormDataJson(form);
-			console.log(data);
 			const credentials = btoa(`${data.username}:${data.password}`);
+			const authToken = `Basic ${credentials}`;
 			sessionStorage.setItem('userName', data.username);
-			sessionStorage.setItem('authToken', `Basic ${credentials}`);
+			sessionStorage.setItem('authToken', authToken);
+			if(navigator.serviceWorker) {
+				navigator.serviceWorker.controller.postMessage({type: 'AUTHORIZATION', payload: authToken});
+			}
 			window.open('/', '_self');
 		};
 	};

@@ -18,6 +18,7 @@ const urls_to_cache = [
 	'/index.css',
 	'/favicon.ico',
 ];
+let authToken = '';
 
 self.addEventListener('install', (e) => {
 	e.waitUntil(caches.open(cache_name).then((cache) => {
@@ -35,7 +36,9 @@ const putInCache = async (request, response) => {
 };
 
 const update = async (request) => {
-	const response = await fetch(request.url, {credentials: 'same-origin'});
+	const response = await fetch(request.url, {headers: {
+		'Authorization': authToken
+	}});
 	await putInCache(request, response);
 	return Promise.resolve(response);
 };
@@ -60,7 +63,9 @@ const respondCacheOrFetch = (e) => {
 		caches.match(e.request)
 			.then((cached) => {
 				// cache first strategy
-				return cached || fetch(e.request, {credentials: 'same-origin'});
+				return cached || fetch(e.request, {headers: {
+					'Authorization': authToken
+				}});
 			})
 	);
 };
@@ -74,5 +79,12 @@ self.addEventListener('fetch', (e) => {
 	} else {
 		// static files
 		respondCacheOrFetch(e);
+	}
+});
+
+self.addEventListener('message', (event) => {
+	if (event.data && event.data.type === 'AUTHORIZATION' && event.data.payload) {
+		authToken = event.data.payload;
+		console.log('Serviceworker authorized!');
 	}
 });
