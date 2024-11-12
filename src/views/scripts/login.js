@@ -12,8 +12,11 @@ import {
 			const authToken = `Basic ${credentials}`;
 			sessionStorage.setItem('userName', data.username);
 			sessionStorage.setItem('authToken', authToken);
-			if(navigator.serviceWorker) {
-				navigator.serviceWorker.controller.postMessage({type: 'AUTHORIZATION', payload: authToken});
+			if (navigator.serviceWorker) {
+				navigator.serviceWorker.controller.postMessage({
+					type: 'AUTHORIZATION',
+					payload: authToken
+				});
 			}
 			window.open('/', '_self');
 		};

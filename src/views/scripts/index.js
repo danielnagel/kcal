@@ -1,6 +1,5 @@
 import {
 	bootstrapApp,
-	serviceWorkerOnMessageHandler,
 	errorAlert,
 	getSession
 } from './utils.js';
@@ -93,7 +92,6 @@ const getAndRenderTodayCalories = async (userName, authToken) => {
 	window.onload = async () => {
 		if (userName && authToken) {
 			await getAndRenderTodayCalories(userName, authToken);
-			serviceWorkerOnMessageHandler(renderDailyCalories);
 		}
 	};
 })();

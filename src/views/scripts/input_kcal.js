@@ -1,6 +1,5 @@
 import {
 	bootstrapApp,
-	serviceWorkerOnMessageHandler,
 	copyToClipboard,
 	getFormDataJson,
 	getSession,
@@ -150,7 +149,6 @@ const getAndRenderSuggestionList = async (userName, authToken) => {
 			await getAndRenderSuggestionList(userName, authToken);
 			formHandling(userName, authToken);
 			renderOfflineInfo(userName);
-			serviceWorkerOnMessageHandler(renderSuggestionList);
 		}
 	});
 })();

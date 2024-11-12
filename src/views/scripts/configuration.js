@@ -1,6 +1,5 @@
 import {
 	bootstrapApp,
-	serviceWorkerOnMessageHandler,
 	getFormDataJson,
 	getSession,
 	updateColor,
@@ -82,7 +81,7 @@ const logoutClickHandler = () => {
 			sessionStorage.removeItem('authToken');
 			window.open('/login', '_self');
 		}
-	}
+	};
 };
 
 (() => {
@@ -92,7 +91,6 @@ const logoutClickHandler = () => {
 		if (userName && authToken) {
 			await getAndUpdateConfiguration(userName, authToken);
 			formHandling(userName, authToken);
-			serviceWorkerOnMessageHandler(updateConfiguration);
 		}
 		logoutClickHandler();
 		updateColorFromInput();

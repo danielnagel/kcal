@@ -1,5 +1,10 @@
 import {
-	bootstrapApp, getFormDataJson, updateColor, errorAlert, infoAlert, getSession
+	bootstrapApp,
+	getFormDataJson,
+	updateColor,
+	errorAlert,
+	infoAlert,
+	getSession
 } from './utils.js';
 
 const updateUserInput = (userName) => {

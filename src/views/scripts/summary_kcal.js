@@ -1,6 +1,5 @@
 import {
 	bootstrapApp,
-	serviceWorkerOnMessageHandler,
 	infoAlert,
 	errorAlert,
 	confirmationDialog,
@@ -224,7 +223,6 @@ const groupHeaderRowOnClickHandler = (event) => {
 			user = userName;
 			auth = authToken;
 			await getDataAndRenderTable(userName, authToken);
-			serviceWorkerOnMessageHandler(renderTable);
 		}
 	};
 })();

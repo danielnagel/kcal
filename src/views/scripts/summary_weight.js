@@ -1,5 +1,9 @@
 import {
-	bootstrapApp, serviceWorkerOnMessageHandler, errorAlert, confirmationDialog, infoAlert, getSession
+	bootstrapApp,
+	errorAlert,
+	confirmationDialog,
+	infoAlert,
+	getSession
 } from './utils.js';
 import './chart.umd.js';
 
@@ -211,7 +215,6 @@ const getDataAndRender = async (userName, authToken) => {
 			user = userName;
 			auth = authToken;
 			await getDataAndRender(userName, authToken);
-			serviceWorkerOnMessageHandler(renderChart);
 		}
 	};
 })();
