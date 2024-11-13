@@ -44,7 +44,7 @@ const handleUpdate = async (formData, user, authToken) => {
 		const data = await response.json();
 		errorAlert(data.message);
 	} else {
-		localStorage.setItem('user', formData.user);
+		sessionStorage.setItem('userName', formData.user);
 		infoAlert('Updated user successfully.');
 	}
 };
@@ -67,7 +67,7 @@ const handleCreation = async (formData, authToken) => {
 		const data = await response.json();
 		errorAlert(data.message);
 	} else {
-		localStorage.setItem('user', formData.user);
+		sessionStorage.setItem('userName', formData.user);
 		updateUserColor(formData.user, authToken);
 		infoAlert('Created user successfully.');
 	}
@@ -88,7 +88,7 @@ const formHandling = (userName, authToken) => {
 			await handleCreation(formData, authToken);
 			break;
 		case 'change':
-			localStorage.setItem('user', formData.user);
+			sessionStorage.setItem('userName', formData.user);
 			updateUserColor(formData.user, authToken);
 			infoAlert(`Logged in as ${formData.user}.`);
 			break;
@@ -96,7 +96,7 @@ const formHandling = (userName, authToken) => {
 			console.error(`Unknown user configuration request: ${e.submitter.value}`);
 		}
 		form.reset();
-		updateUserInput(localStorage.getItem('user'));
+		updateUserInput(sessionStorage.getItem('userName'));
 	};
 };
 
