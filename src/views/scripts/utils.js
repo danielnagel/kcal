@@ -45,56 +45,6 @@ const setColorFromStorage = () => {
 	}
 };
 
-const createPromptUserDialog = () => {
-	let dialog = document.getElementById('user-prompt-modal');
-	if (dialog) return dialog;
-
-	dialog = document.createElement('dialog');
-	dialog.setAttribute('id', 'user-prompt-modal');
-	dialog.classList.add('confirmation-dialog');
-	const title = document.createElement('p');
-	title.innerText = 'Login';
-	const form = document.createElement('form');
-	form.setAttribute('method', 'dialog');
-	form.setAttribute('id', 'user-prompt-form');
-	const input = document.createElement('input');
-	input.setAttribute('type', 'text');
-	input.setAttribute('name', 'username');
-	input.setAttribute('placeholder', 'What is your username?');
-	input.setAttribute('required', true);
-	input.classList.add('form-input');
-	const button = document.createElement('button');
-	button.innerText = 'Login';
-	button.classList.add('form-submit');
-	form.append(input, button);
-	dialog.append(title, form);
-	document.body.appendChild(dialog);
-
-	return dialog;
-};
-
-export const promptUser = (callback) => {
-	if (localStorage) {
-		const user = localStorage.getItem('user');
-		if (!user) {
-			const dialog = createPromptUserDialog();
-			dialog.showModal();
-			const form = document.getElementById('user-prompt-form');
-			form.onsubmit = e => {
-				e.preventDefault();
-				const formData = new FormData(form);
-				const newUser = formData.get('username');
-				if (newUser) {
-					localStorage.setItem('user', newUser);
-				}
-				dialog.close();
-				if (typeof callback === 'function') callback(newUser);
-			};
-		}
-		return user;
-	}
-};
-
 export const bootstrapApp = () => {
 	installServiceWorker();
 	persistData();
