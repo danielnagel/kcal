@@ -10,9 +10,6 @@ With the kcal web server, daily nutrition can be tracked.
 Additionally, today's calorie intake is summarized on the homepage.
 Furthermore, the current weight and waist can be entered and tracked over time in a graph.
 The simple user management is file-based.
-The username is stored in the browser's localStorage.
-If there is no name in localStorage, it is requested through a dialog.
-The username is appended to each request to the server to load the data from the correct file.
 
 This project runs exclusively on a Debian-based Linux system.
 The project has been tested on a Raspberry Pi 3 with the operating system Raspbian GNU/Linux 12.
@@ -21,7 +18,7 @@ Node version 21 is required
 ## frontend
 
 When the browser visits the website for the first time,
-the user is prompted to provide a name, i.e., to sign in.
+the user is prompted to sign in.
 
 <p align="center">
     <img src="/docs/login.png" width="300"/>
@@ -166,4 +163,6 @@ But it [currently doesn't support arm32 architecture](https://github.com/denolan
 9. Refreshed knowledge on eslint.
 10. Refreshed knowledge on github workflows.
 11. Simple, file-based, user mangement.
-12. Working with the browsers local storage
+12. Working with the browsers local storage.
+13. Working with the browsers session storage.
+14. Different use of Basic Authentication.
