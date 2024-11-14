@@ -11,18 +11,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [21.x, 22.x]
-
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - name: Use Node.js 21.x
+      uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 21.x
         cache: 'npm'
-    - run: npm ci --legacy-peer-deps
+    - run: npm ci
     - run: npm run lint
-    - run: npm run build
     - run: npm test
+    - run: npm run build:production
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: website-dist
+        path: dist

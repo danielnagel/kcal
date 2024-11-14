@@ -16,4 +16,8 @@ cp src/manifest.json dist/public
 # copy chart.js files
 cp node_modules/chart.js/dist/chart.umd.js dist/public
 cp node_modules/chart.js/dist/chart.umd.js.map dist/public
-   
+
+if [ "$1" == "production" ]; then
+    cp package*.json dist
+    cp dockerfile dist
+fi

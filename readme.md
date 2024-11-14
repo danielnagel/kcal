@@ -92,6 +92,9 @@ User configuration
 
 ## install
 
+An installation is onlay neccessary if you wish to run this project on your local machine.
+If you would like to run a docker container, see deployment.
+
 ### setup environment
 
 Before running the `install.sh` script,
@@ -135,6 +138,26 @@ sudo systemctl stop kcal.service
 sudo systemctl disable backup-kcal.timer
 sudo systemctl stop backup-kcal.timer
 ```
+
+## deployment
+
+A current version of the project is built with each commit,
+provided there were no linting errors and all tests passed.
+This artifact can be downloaded, and then a Docker container can be started in the unpacked directory:
+
+```bash
+# in downloaded and unpacked artifact directory
+# build image
+docker build -t kcal-website .
+# run container
+docker run --name kcal-website -p 80:8080 -d kcal-website
+```
+
+I decided to let the GitHub Action handle the build instead of the Docker container to save time during deployment.
+This way, I save at least 60 seconds per deployment,
+as no dependencies need to be installed and the code doesn't need to be transpiled.
+Additionally, the pipeline ensures that only functional artifacts can be released,
+thanks to the previously executed linters and tests.
 
 ## about
 
