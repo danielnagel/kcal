@@ -146,7 +146,7 @@ const rowOnClickHandler = (event) =>  {
 					const data = await response.json();
 					errorAlert(data.message);
 				} else {
-					getDataAndRender(user);
+					getDataAndRender(user, auth);
 					infoAlert('Deleted data successfully.');
 				}
 			};
@@ -172,7 +172,7 @@ const rowOnClickHandler = (event) =>  {
 					const data = await response.json();
 					errorAlert(data.message);
 				} else {
-					getDataAndRender(user);
+					getDataAndRender(user, auth);
 					infoAlert('Updated data successfully.');
 				}
 			};

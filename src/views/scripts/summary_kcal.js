@@ -154,7 +154,7 @@ const rowOnClickHandler = (event) =>  {
 				} else {
 					loadedData = [];
 					nextPage = 1;
-					getDataAndRenderTable();
+					getDataAndRenderTable(user, auth);
 					infoAlert('Deleted data successfully.');
 				}
 			};
@@ -184,7 +184,7 @@ const rowOnClickHandler = (event) =>  {
 				} else {
 					loadedData = [];
 					nextPage = 1;
-					getDataAndRenderTable();
+					getDataAndRenderTable(user, auth);
 					infoAlert('Updated data successfully.');
 				}
 			};
@@ -215,7 +215,7 @@ const groupHeaderRowOnClickHandler = (event) => {
 	bootstrapApp();
 	const {userName, authToken} = getSession();
 	window.onload = async () => {
-		document.getElementById('next-page-button').onclick = getDataAndRenderTable;
+		document.getElementById('next-page-button').onclick = getDataAndRenderTable(userName, authToken);
 		document.querySelector('#kcal-detail-form-cancel-button').onclick = () => {
 			document.querySelector('#kcal-detail-modal').close();
 		};
