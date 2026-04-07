@@ -24,7 +24,7 @@ const addIdToData = (dataStructure) => {
 
 	const path = process.argv[2];
 
-	let content = null;
+	let content;
 	try {
 		content = readFileSync(path);
 	} catch (e) {

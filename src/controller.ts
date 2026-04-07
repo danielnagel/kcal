@@ -25,7 +25,9 @@ const createDataDir = async () => {
 	} catch (e: unknown) {
 		if (e instanceof Error) {
 			if (!e.message.startsWith('EEXIST')) {
-				throw Error(`Couldn't create directory ${dataDirPath}. Reason: ${e.message}`);
+				throw new Error(`Couldn't create directory ${dataDirPath}. Reason: ${e.message}`, {
+					cause: e 
+				});
 			}
 		}
 	}
@@ -38,7 +40,9 @@ const writeJsonToFile = async (path: string, data: DataStructure) => {
 	} catch (e: unknown) {
 		let message = `Couldn't create file ${path}.`;
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		throw Error(message);
+		throw new Error(message, {
+			cause: e 
+		});
 	}
 };
 
@@ -126,12 +130,14 @@ const getFileContentForUser = async (user: string): Promise<unknown> => {
 		}
 		let message = `Could not get file content for user '${user}'.`;
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		throw Error(message);
+		throw new Error(message, {
+			cause: e 
+		});
 	}
 };
 
 const readFileContent = async (path: string): Promise<unknown> => {
-	let content = null;
+	let content;
 	try {
 		content = await readFile(path, {
 			encoding: 'utf-8' 
@@ -162,7 +168,9 @@ const getStoredDataStructure = async (user: string): Promise<DataStructure> => {
 	} catch (e: unknown) {
 		let message = 'Could not get stored data structure.';
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		throw Error(message);
+		throw new Error(message, {
+			cause: e 
+		});
 	}
 };
 
@@ -424,7 +432,9 @@ const updateUserJson = async (user: string, newUser: string): Promise<DataStruct
 	} catch (e: unknown) {
 		let message = `Could not get file content for user '${user}'.`;
 		if (e instanceof Error) message += ` Reason: ${e.message}`;
-		throw Error(message);
+		throw new Error(message, {
+			cause: e 
+		});
 	}
 
 	if (!isDataStructure(userContent)) {
@@ -464,7 +474,9 @@ const deleteKcal = async (user?: string, id?: string) => {
 	} catch (e: unknown) {
 		let message = `Could not parse '${id}'`;
 		if (e instanceof Error) message += `, reason: ${e.message}`;
-		throw Error(message);
+		throw new Error(message, {
+			cause: e 
+		});
 	}
 
 	const updatedKcal = kcal.filter(k => k.id !== idNumber);
@@ -535,7 +547,9 @@ const deleteWeight = async (user?: string, id?: string) => {
 	} catch (e: unknown) {
 		let message = `Could not parse '${id}'`;
 		if (e instanceof Error) message += `, reason: ${e.message}`;
-		throw Error(message);
+		throw new Error(message, {
+			cause: e 
+		});
 	}
 
 	const updatedWeight = weight.filter(k => k.id !== idNumber);
