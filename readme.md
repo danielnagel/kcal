@@ -141,23 +141,19 @@ sudo systemctl stop backup-kcal.timer
 
 ## deployment
 
-A current version of the project is built with each commit,
-provided there were no linting errors and all tests passed.
-This artifact can be downloaded, and then a Docker container can be started in the unpacked directory:
+On every push to `main` that passes linting/tests/build, the CI workflow (`.github/workflows/lint-build-test.yml`)
+builds the Docker image (`Dockerfile` at the repo root) and pushes it to the GitHub Container Registry as
+`ghcr.io/danielnagel/kcal:latest` (public package - no `docker login` needed to pull). Deploying is therefore just:
 
 ```bash
-# in downloaded and unpacked artifact directory
-# build image
-docker build -t kcal-website .
-# run container
-docker run --name kcal-website -p 80:8080 -d kcal-website
+docker pull ghcr.io/danielnagel/kcal:latest
+docker run --name kcal-website -p 80:8080 -d ghcr.io/danielnagel/kcal:latest
 ```
 
-I decided to let the GitHub Action handle the build instead of the Docker container to save time during deployment.
-This way, I save at least 60 seconds per deployment,
-as no dependencies need to be installed and the code doesn't need to be transpiled.
-Additionally, the pipeline ensures that only functional artifacts can be released,
-thanks to the previously executed linters and tests.
+This replaces the previous flow (CI uploaded a build artifact, the target system downloaded and built it locally) -
+the image build now happens entirely on GitHub's runners instead of the deployment target, which matters given the
+limited resources described below. Persistent data (calories/weight/config) lives outside the image; run with a
+volume mounted at `/home/node/app/data` to keep it across container recreations.
 
 ## about
 

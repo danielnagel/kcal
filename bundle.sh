@@ -18,6 +18,8 @@ cp node_modules/chart.js/dist/chart.umd.js dist/public
 cp node_modules/chart.js/dist/chart.umd.js.map dist/public
 
 if [ "$1" == "production" ]; then
+    # package*.json is needed in dist so postbuild:production (npm i
+    # --omit=dev) can install just the production deps there - see the
+    # Dockerfile build stage.
     cp package*.json dist
-    cp dockerfile dist
 fi
