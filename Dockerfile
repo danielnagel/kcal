@@ -2,7 +2,7 @@
 # .github/workflows/lint-build-test.yml.
 
 # ---- Build stage ----------------------------------------------------------
-FROM node:21 AS build
+FROM node:24 AS build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build:production
 
 # ---- Runtime stage ----------------------------------------------------------
-FROM node:21
+FROM node:24
 
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 
