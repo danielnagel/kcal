@@ -27,7 +27,7 @@ USER node
 
 # dist/ becomes the app root: controller.ts resolves its data directory as
 # `${__dirname}/data`, so this layout must stay flat (no dist/ subfolder)
-# for the ./kcal-data bind mount in my-webservers to keep working.
+# for a volume mounted at /home/node/app/data to keep working.
 COPY --from=build --chown=node:node /app/dist .
 
 EXPOSE 8080
